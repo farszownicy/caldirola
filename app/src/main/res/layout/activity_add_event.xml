@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ae_scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/ae_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/ae_headline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ae_side_margin"
+            android:layout_marginTop="@dimen/ae_top_margin"
+            android:layout_marginRight="@dimen/ae_side_margin"
+            android:layout_marginBottom="@dimen/ae_bottom_margin"
+            android:fontFamily="sans-serif-light"
+            android:text="Dodaj wydarzenie"
+            android:textAlignment="center"
+            android:textSize="@dimen/headline_font_size" />
+
+        <EditText
+            android:id="@+id/ae_input_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ae_side_margin"
+            android:layout_marginTop="@dimen/ae_top_margin"
+            android:layout_marginRight="@dimen/ae_side_margin"
+            android:layout_marginBottom="@dimen/ae_bottom_margin"
+            android:ems="10"
+            android:fontFamily="sans-serif-light"
+            android:hint="Nazwa"
+            android:inputType="textPersonName"
+            android:textSize="@dimen/ae_input_font_size" />
+
+        <EditText
+            android:id="@+id/ae_input_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ae_side_margin"
+            android:layout_marginTop="@dimen/ae_top_margin"
+            android:layout_marginRight="@dimen/ae_side_margin"
+            android:layout_marginBottom="@dimen/ae_bottom_margin"
+            android:ems="10"
+            android:fontFamily="sans-serif-light"
+            android:hint="Opis"
+            android:inputType="textPersonName"
+            android:textSize="@dimen/ae_input_font_size" />
+
+        <TextView
+            android:id="@+id/ae_start_date"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ae_side_margin"
+            android:layout_marginTop="@dimen/ae_top_margin"
+            android:layout_marginRight="@dimen/ae_side_margin"
+            android:layout_marginBottom="@dimen/ae_bottom_margin"
+            android:ems="10"
+            android:fontFamily="sans-serif-light"
+            android:text="data"
+            android:textSize="@dimen/ae_input_font_size" />
+
+        <TextView
+            android:id="@+id/ae_start_time"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ae_side_margin"
+            android:layout_marginTop="@dimen/ae_top_margin"
+            android:layout_marginRight="@dimen/ae_side_margin"
+            android:layout_marginBottom="@dimen/ae_bottom_margin"
+            android:ems="10"
+            android:fontFamily="sans-serif-light"
+            android:text="czas"
+            android:textSize="@dimen/ae_input_font_size" />
+
+        <Button
+            android:id="@+id/ae_add_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ae_side_margin"
+            android:layout_marginTop="@dimen/ae_top_margin"
+            android:layout_marginRight="@dimen/ae_side_margin"
+            android:layout_marginBottom="@dimen/ae_bottom_margin"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Dodaj mnie"
+            android:textColor="#FF0000"
+            android:textSize="30sp" />
+    </LinearLayout>
+
+
+</ScrollView>

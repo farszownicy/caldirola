@@ -34,6 +34,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        addevent_button.setOnClickListener{
+            val intent = Intent(this, AddEventActivity::class.java)
+            startActivity(intent)
+        }
+
         /**
          * Nasłuchiwanie zmian w  danym dokumencie.
          * activity = this oznacza, że nasłuchiwanie nie będzie działało jak Activity się zatrzyma

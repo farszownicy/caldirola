@@ -2,4 +2,11 @@
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="headline_font_size">28sp</dimen>
+
+    <!-- Add event layout dimens -->
+    <dimen name="ae_top_margin">5dp</dimen>
+    <dimen name="ae_side_margin">10dp</dimen>
+    <dimen name="ae_bottom_margin">15dp</dimen>
+    <dimen name="ae_input_font_size">22sp</dimen>
 </resources>
