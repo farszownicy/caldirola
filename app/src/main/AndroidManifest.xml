@@ -12,7 +12,10 @@
         <activity
             android:name=".activities.PlanActivity"
             android:label="@string/title_activity_plan"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.AgendaActivity"
+            android:label="@string/title_activity_agenda"/>
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

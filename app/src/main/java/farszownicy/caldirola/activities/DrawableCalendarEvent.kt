@@ -1,3 +1,4 @@
+// Ta klasa jest z przykładu z githuba
 package farszownicy.caldirola.activities
 import com.github.tibolte.agendacalendarview.models.BaseCalendarEvent
 import com.github.tibolte.agendacalendarview.models.CalendarEvent

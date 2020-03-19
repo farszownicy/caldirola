@@ -21,7 +21,7 @@ class PlanActivity : AppCompatActivity(), CalendarPickerController {
     lateinit var mAgendaCalendarView: AgendaCalendarView
 
     companion object{
-        const val LOG_TAG = "DUPA"
+        const val LOG_TAG = "DEBUG"
     }
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -69,7 +69,7 @@ class PlanActivity : AppCompatActivity(), CalendarPickerController {
         startTime2.add(Calendar.DAY_OF_YEAR, 1)
         val endTime2 = Calendar.getInstance()
         endTime2.add(Calendar.DAY_OF_YEAR, 3)
-        startTime2[Calendar.HOUR_OF_DAY] = 14
+        startTime2[Calendar.HOUR_OF_DAY]= 14
         startTime2[Calendar.MINUTE] = 0
         endTime2[Calendar.HOUR_OF_DAY] = 15
         endTime2[Calendar.MINUTE] = 0

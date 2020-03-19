@@ -4,7 +4,7 @@ import java.util.*
 
 data class Event(
     var id: String = "-1",
-    var startTime: Date  = Date(),
-    var endTime: Date = Date(),
+    var startTime: Calendar  = Calendar.getInstance(),
+    var endTime: Calendar = Calendar.getInstance(),
     var Location: Place? = null
                  ) : CalendarEntry()
