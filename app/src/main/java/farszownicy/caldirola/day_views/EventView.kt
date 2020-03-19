@@ -48,8 +48,8 @@ class EventView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-//        params.topMargin = (rect.top - headerHeight - headerPadding + topMargin
-//                - resources.getDimensionPixelSize(R.dimen.cdv_extra_dimen))
+                params.topMargin = (rect.top  + topMargin)
+
         params.height = (rect.height()
                 + bottomMargin
                 + 3)//resources.getDimensionPixelSize(R.dimen.cdv_extra_dimen))
