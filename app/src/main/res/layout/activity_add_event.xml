@@ -78,6 +78,32 @@
             android:text="czas"
             android:textSize="@dimen/ae_input_font_size" />
 
+        <TextView
+            android:id="@+id/ae_end_date"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ae_side_margin"
+            android:layout_marginTop="@dimen/ae_top_margin"
+            android:layout_marginRight="@dimen/ae_side_margin"
+            android:layout_marginBottom="@dimen/ae_bottom_margin"
+            android:ems="10"
+            android:fontFamily="sans-serif-light"
+            android:text="data"
+            android:textSize="@dimen/ae_input_font_size" />
+
+        <TextView
+            android:id="@+id/ae_end_time"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ae_side_margin"
+            android:layout_marginTop="@dimen/ae_top_margin"
+            android:layout_marginRight="@dimen/ae_side_margin"
+            android:layout_marginBottom="@dimen/ae_bottom_margin"
+            android:ems="10"
+            android:fontFamily="sans-serif-light"
+            android:text="czas"
+            android:textSize="@dimen/ae_input_font_size" />
+
         <Button
             android:id="@+id/ae_add_button"
             android:layout_width="match_parent"
@@ -88,7 +114,7 @@
             android:layout_marginBottom="@dimen/ae_bottom_margin"
             android:fontFamily="sans-serif-condensed"
             android:text="Dodaj mnie"
-            android:textColor="#FF0000"
+            android:textColor="@android:color/holo_purple"
             android:textSize="30sp" />
     </LinearLayout>
 
