@@ -17,8 +17,9 @@ class EventView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     : FrameLayout(context, attrs, defStyleAttr)  {
     var mEvent: Event? = null
         set(event){
-            event_name_tv.text = event?.name
             field = event
+            event_name_tv.text = event?.name
+            location_tv.text = event?.Location?.name
         }
     var mEventClickListener: OnEventClickListener? = null
 
@@ -43,17 +44,18 @@ class EventView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         mEventClickListener = listener
     }
 
-    fun setPosition(rect: Rect, topMargin: Int, bottomMargin: Int) {
+    fun setPosition(rect: Rect, topMargin: Int) {
         val params = LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-                params.topMargin = (rect.top  + topMargin)
+        params.topMargin = rect.top  + topMargin
 
-        params.height = (rect.height()
-                + bottomMargin
-                + 3)//resources.getDimensionPixelSize(R.dimen.cdv_extra_dimen))
+        params.height = (rect.height())
+                //+ bottomMargin)
+                //+ 3)//resources.getDimensionPixelSize(R.dimen.cdv_extra_dimen))
         params.leftMargin = rect.left
+        params.rightMargin = rect.right
         layoutParams = params
     }
 

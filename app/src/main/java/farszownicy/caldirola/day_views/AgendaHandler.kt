@@ -15,7 +15,7 @@ class AgendaHandler(private var mContext: Context) {
     ): EventView {
         val eventView = EventView(mContext)
         eventView.mEvent = event
-        eventView.setPosition(eventBound!!, -hourHeight, hourHeight - separateHeight * 2)
+        eventView.setPosition(eventBound!!, hourHeight)//- separateHeight * 2)
         eventView.setOnEventClickListener(mEventClickListener)
         return eventView
     }

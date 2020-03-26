@@ -85,7 +85,7 @@ class PlanActivity : AppCompatActivity(), CalendarPickerController {
         endTime3[Calendar.HOUR_OF_DAY] = 15
         endTime3[Calendar.MINUTE] = 0
         val event3 = DrawableCalendarEvent(
-            "zrob kupe",
+            "przygotuj farsz",
             "",
             "New York",
             ContextCompat.getColor(this, R.color.blue_selected),

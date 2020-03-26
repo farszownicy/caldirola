@@ -44,16 +44,24 @@ class AgendaActivity : AppCompatActivity() {
         val timeEnd1 = timeStart1.clone() as Calendar
         timeEnd1[Calendar.HOUR_OF_DAY] = 15
         timeEnd1[Calendar.MINUTE] = 30
-        val event1 = Event("abc", timeStart1, timeEnd1, Place("Dom"))
+        val event1 = Event("Hurtownie Danych", "laby", "id1", timeStart1, timeEnd1, Place("Uczelnia"))
         events.add(event1)
         val timeStart2 = Calendar.getInstance()
         timeStart2[Calendar.HOUR_OF_DAY] = 18
         timeStart2[Calendar.MINUTE] = 0
         val timeEnd2 = Calendar.getInstance()
         timeEnd2[Calendar.HOUR_OF_DAY] = 20
-        timeEnd2[Calendar.MINUTE] = 30
-        val event2 = Event("abc", timeStart2, timeEnd2, Place("Uczelnia"))
+        timeEnd2[Calendar.MINUTE] = 0
+        val event2 = Event("Zlot fanów farszu", "cos tam", "id2",timeStart2, timeEnd2, Place("stołówka SKS"))
         events.add(event2)
+        val timeStart3 = Calendar.getInstance()
+        timeStart3[Calendar.HOUR_OF_DAY] = 15
+        timeStart3[Calendar.MINUTE] = 30
+        val timeEnd3 = Calendar.getInstance()
+        timeEnd3[Calendar.HOUR_OF_DAY] = 17
+        timeEnd3[Calendar.MINUTE] = 45
+        val event3 = Event("Wyjazd do Iraku", "aaa", "id3", timeStart3, timeEnd3, Place("Irak"))
+        events.add(event3)
         agenda.mEvents = events
     }
 
