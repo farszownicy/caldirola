@@ -33,6 +33,10 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, PlanActivity::class.java)
             startActivity(intent)
         }
+        agenda_btn.setOnClickListener(){
+            val intent = Intent(this, AgendaActivity::class.java)
+            startActivity(intent)
+        }
 
         addevent_button.setOnClickListener{
             val intent = Intent(this, AddEventActivity::class.java)

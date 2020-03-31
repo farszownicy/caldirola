@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="farszownicy.caldirola.activities.AgendaActivity"
+    >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:background="#FFF"
+        android:paddingTop="@dimen/day_height"
+        >
+        <farszownicy.caldirola.day_views.CalendarDayView
+            android:id="@+id/agenda"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:eventMarginLeft="0dp"
+            app:dayHeight="@dimen/day_height"/>
+    </ScrollView>
+
+</RelativeLayout>
