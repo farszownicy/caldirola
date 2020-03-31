@@ -5,17 +5,24 @@ import android.app.TimePickerDialog
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.contains
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.R
+import farszownicy.caldirola.data_classes.Place
+import farszownicy.caldirola.utils.MultiSpinner
 import kotlinx.android.synthetic.main.activity_add_event.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AddEventActivity : AppCompatActivity()
-{
+class AddEventActivity : AppCompatActivity(), MultiSpinner.MultiSpinnerListener,
+    AdapterView.OnItemSelectedListener {
     companion object
     {
         const val NAME_KEY = "name"
@@ -30,6 +37,8 @@ class AddEventActivity : AppCompatActivity()
 
     private val db = FirebaseFirestore.getInstance()
     private val userDoc = db.collection("events").document("sKNWMetaOLJXTIkXeU0W")
+    private val locations = db.collection("locations")
+    private val places = ArrayList<String>()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?)
@@ -40,6 +49,26 @@ class AddEventActivity : AppCompatActivity()
         ae_add_button.setOnClickListener {
             addEvent()
         }
+
+        locations.get()
+            .addOnSuccessListener { documents ->
+                for(document in documents){
+                    Log.d(TAG, "${document.id} => ${document.data}")
+                    val name = document.getString(NAME_KEY)
+                    places.add(name!!)
+                }
+            }.addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents: ", exception)
+            }
+
+        //TODO NAPRAWIC SPINNER
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, places)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        ae_location.adapter = adapter
+        ae_location.onItemSelectedListener = this
+
+
+       //multiSpinner.setItems(places, "Wybierz miejsce", this@AddEventActivity)
 
         setDatePicker(ae_start_date)
         setTimePicker(ae_start_time)
@@ -117,13 +146,16 @@ class AddEventActivity : AppCompatActivity()
         val cal_start = getCalFromTV(ae_start_date, ae_start_time)
         val cal_end = getCalFromTV(ae_end_date, ae_end_time)
 
+        val selected_locations = ArrayList<String>()
+
         if(name.isEmpty() || description.isEmpty())
             return
         val event_data = hashMapOf(
             NAME_KEY to name,
             DESCRIPTION_KEY to description,
             START_DATE_KEY to cal_start.time,
-            END_DATE_KEY to cal_end.time
+            END_DATE_KEY to cal_end.time,
+            LOCATION_KEY to selected_locations
         )
         db.collection("events").add(event_data).addOnSuccessListener {
             documentReference -> Log.d(TAG, "Event added with ID: ${documentReference.id}")
@@ -140,5 +172,21 @@ class AddEventActivity : AppCompatActivity()
         cal.add(Calendar.HOUR, _time.hours)
         cal.add(Calendar.MINUTE, _time.minutes)
         return cal
+    }
+
+    override fun onItemsSelected(selected: BooleanArray?): ArrayList<String> {
+        for (item in places) {
+
+        }
+        return ArrayList<String>()
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+        val t = p0!!.getItemAtPosition(p2).toString()
+        Toast.makeText(p0.context, t, Toast.LENGTH_LONG).show()
     }
 }

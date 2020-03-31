@@ -13,7 +13,7 @@
 
         <TextView
             android:id="@+id/ae_headline"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/ae_side_margin"
             android:layout_marginTop="@dimen/ae_top_margin"
@@ -26,7 +26,7 @@
 
         <EditText
             android:id="@+id/ae_input_name"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/ae_side_margin"
             android:layout_marginTop="@dimen/ae_top_margin"
@@ -40,7 +40,7 @@
 
         <EditText
             android:id="@+id/ae_input_description"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/ae_side_margin"
             android:layout_marginTop="@dimen/ae_top_margin"
@@ -54,7 +54,7 @@
 
         <TextView
             android:id="@+id/ae_start_date"
-            android:layout_width="240dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/ae_side_margin"
             android:layout_marginTop="@dimen/ae_top_margin"
@@ -67,7 +67,7 @@
 
         <TextView
             android:id="@+id/ae_start_time"
-            android:layout_width="240dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/ae_side_margin"
             android:layout_marginTop="@dimen/ae_top_margin"
@@ -80,7 +80,7 @@
 
         <TextView
             android:id="@+id/ae_end_date"
-            android:layout_width="240dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/ae_side_margin"
             android:layout_marginTop="@dimen/ae_top_margin"
@@ -93,7 +93,7 @@
 
         <TextView
             android:id="@+id/ae_end_time"
-            android:layout_width="240dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/ae_side_margin"
             android:layout_marginTop="@dimen/ae_top_margin"
@@ -103,6 +103,16 @@
             android:fontFamily="sans-serif-light"
             android:text="czas"
             android:textSize="@dimen/ae_input_font_size" />
+
+        <Spinner
+            android:id="@+id/ae_location"
+            android:layout_marginLeft="@dimen/ae_side_margin"
+            android:layout_marginTop="@dimen/ae_top_margin"
+            android:layout_marginRight="@dimen/ae_side_margin"
+            android:layout_marginBottom="@dimen/ae_bottom_margin"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
 
         <Button
             android:id="@+id/ae_add_button"
