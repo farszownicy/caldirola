@@ -12,14 +12,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.contains
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.R
-import farszownicy.caldirola.data_classes.Place
+import farszownicy.caldirola.data_classes.Event
+import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.MultiSpinner
+import farszownicy.caldirola.utils.readObjectsFromSharedPreferences
+import farszownicy.caldirola.utils.writeObjectToSharedPreferences
 import kotlinx.android.synthetic.main.activity_add_event.*
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class AddEventActivity : AppCompatActivity(), MultiSpinner.MultiSpinnerListener,
     AdapterView.OnItemSelectedListener {
@@ -161,6 +164,26 @@ class AddEventActivity : AppCompatActivity(), MultiSpinner.MultiSpinnerListener,
             documentReference -> Log.d(TAG, "Event added with ID: ${documentReference.id}")
         }.addOnFailureListener{
             e -> Log.w(TAG, "Error adding event", e)}
+
+        saveEventToInternalMemory(Event(name, description, startTime = cal_start, endTime = cal_end))
+    }
+
+    private fun saveEventToInternalMemory(event: Event){
+        var eventList = readObjectsFromSharedPreferences<ArrayList<Event>>(
+            applicationContext,
+            Constants.SHARED_PREF_CALENDAR_FILE_NAME,
+            Constants.SHARED_PREF_EVENTS_LIST_KEY
+        )
+        if(eventList == null) {
+            eventList = ArrayList()
+        }
+        eventList.add(event)
+
+        writeObjectToSharedPreferences(applicationContext,
+            Constants.SHARED_PREF_CALENDAR_FILE_NAME,
+            Constants.SHARED_PREF_EVENTS_LIST_KEY,
+            eventList
+        )
     }
 
     fun getCalFromTV(tvDate:TextView, tvTime:TextView): Calendar

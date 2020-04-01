@@ -8,6 +8,8 @@ import farszownicy.caldirola.R
 import farszownicy.caldirola.data_classes.Place
 import farszownicy.caldirola.day_views.EventView
 import farszownicy.caldirola.data_classes.Event
+import farszownicy.caldirola.utils.Constants
+import farszownicy.caldirola.utils.readObjectsFromSharedPreferences
 import kotlinx.android.synthetic.main.activity_agenda.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -62,6 +64,15 @@ class AgendaActivity : AppCompatActivity() {
         timeEnd3[Calendar.MINUTE] = 45
         val event3 = Event("Wyjazd do Iraku", "aaa", "id3", timeStart3, timeEnd3, Place("Irak"))
         events.add(event3)
+
+        var fileevents = readObjectsFromSharedPreferences<ArrayList<Event>>(
+            this.baseContext,
+            Constants.SHARED_PREF_CALENDAR_FILE_NAME,
+            Constants.SHARED_PREF_EVENTS_LIST_KEY
+        )
+        if(fileevents == null) fileevents = ArrayList()
+        events.addAll(fileevents)
+
         agenda.mEvents = events
     }
 
