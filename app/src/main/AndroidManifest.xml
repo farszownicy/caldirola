@@ -18,6 +18,10 @@
             android:label="@string/title_activity_add_event"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
+            android:name=".activities.AddTaskActivity"
+            android:label="@string/title_activity_add_event"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+    <activity
             android:name=".activities.AgendaActivity"
             android:label="@string/title_activity_agenda"/>
         <activity android:name=".activities.MainActivity">

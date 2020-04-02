@@ -15,8 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.R
 import farszownicy.caldirola.data_classes.Event
+import farszownicy.caldirola.utils.CalendarUtils
 import farszownicy.caldirola.utils.Constants
-import farszownicy.caldirola.utils.MultiSpinner
 import farszownicy.caldirola.utils.readObjectsFromSharedPreferences
 import farszownicy.caldirola.utils.writeObjectToSharedPreferences
 import kotlinx.android.synthetic.main.activity_add_event.*
@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class AddEventActivity : AppCompatActivity(), MultiSpinner.MultiSpinnerListener,
+class AddEventActivity : AppCompatActivity(),
     AdapterView.OnItemSelectedListener {
     companion object
     {
@@ -34,14 +34,13 @@ class AddEventActivity : AppCompatActivity(), MultiSpinner.MultiSpinnerListener,
         const val END_DATE_KEY = "end_date"
         const val LOCATION_KEY = "location"
         const val TAG = "debug"
-        const val DATE_FORMAT = "dd.MM.yyyy"
-        const val TIME_FORMAT = "HH:mm:ss"
     }
 
     private val db = FirebaseFirestore.getInstance()
     private val userDoc = db.collection("events").document("sKNWMetaOLJXTIkXeU0W")
     private val locations = db.collection("locations")
     private val places = ArrayList<String>()
+    private val calendar_utils = CalendarUtils()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?)
@@ -65,18 +64,12 @@ class AddEventActivity : AppCompatActivity(), MultiSpinner.MultiSpinnerListener,
             }
 
         //TODO NAPRAWIC SPINNER
-        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, places)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, places)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        ae_location.onItemSelectedListener = this@AddEventActivity
         ae_location.adapter = adapter
-        ae_location.onItemSelectedListener = this
 
-
-       //multiSpinner.setItems(places, "Wybierz miejsce", this@AddEventActivity)
-
-        setDatePicker(ae_start_date)
-        setTimePicker(ae_start_time)
-        setDatePicker(ae_end_date)
-        setTimePicker(ae_end_time)
+        setAllDatePickers()
 
         userDoc.addSnapshotListener(this
         ) { snapshot, e ->
@@ -97,48 +90,18 @@ class AddEventActivity : AppCompatActivity(), MultiSpinner.MultiSpinnerListener,
         }
     }
 
-    fun setDatePicker(tv: TextView)
+    private fun setAllDatePickers()
     {
-        val cal = Calendar.getInstance()
-        val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-            cal.set(Calendar.YEAR, year)
-            cal.set(Calendar.MONTH, monthOfYear)
-            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-
-            val myFormat = DATE_FORMAT
-            val sdf = SimpleDateFormat(myFormat, Locale.FRANCE)
-            tv.text = sdf.format(cal.time)
-        }
-
-        tv.setOnClickListener{
-            DatePickerDialog(this@AddEventActivity, dateSetListener,
-                cal.get(Calendar.YEAR),
-                cal.get(Calendar.MONTH),
-                cal.get(Calendar.DAY_OF_MONTH))//.setButton(DialogInterface.BUTTON_POSITIVE)
-                .show()
-            //Emulowanie kliknięcia na wybór czasu po wybraniu daty TODO?
-            //ae_start_time.performClick()
-        }
+        calendar_utils.setDatePicker(ae_start_date, this@AddEventActivity)
+        calendar_utils.setTimePicker(ae_start_time,this@AddEventActivity)
+        calendar_utils.setDatePicker(ae_end_date,this@AddEventActivity)
+        calendar_utils.setTimePicker(ae_end_time,this@AddEventActivity)
+        calendar_utils.setDefaultDate(ae_start_date, 0)
+        calendar_utils.setDefaultDate(ae_end_date, 1)
+        calendar_utils.setDefaultTime(ae_start_time)
+        calendar_utils.setDefaultTime(ae_end_time)
     }
 
-    fun setTimePicker(tv: TextView)
-    {
-        val cal = Calendar.getInstance()
-        val timeSetListener = TimePickerDialog.OnTimeSetListener { view, hour, minute ->
-            cal.set(Calendar.HOUR_OF_DAY, hour)
-            cal.set(Calendar.MINUTE, minute)
-
-            val myFormat = TIME_FORMAT
-            val sdf = SimpleDateFormat(myFormat, Locale.FRANCE)
-            tv.text = sdf.format(cal.time)
-        }
-        tv.setOnClickListener{
-            TimePickerDialog(this@AddEventActivity, timeSetListener,
-                cal.get(Calendar.HOUR_OF_DAY),
-                cal.get(Calendar.MINUTE),
-                true).show()
-        }
-    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun addEvent()
@@ -146,10 +109,10 @@ class AddEventActivity : AppCompatActivity(), MultiSpinner.MultiSpinnerListener,
         val name = ae_input_name.text.toString()
         val description = ae_input_description.text.toString()
 
-        val cal_start = getCalFromTV(ae_start_date, ae_start_time)
-        val cal_end = getCalFromTV(ae_end_date, ae_end_time)
+        val cal_start = calendar_utils.getCalFromTV(ae_start_date, ae_start_time)
+        val cal_end = calendar_utils.getCalFromTV(ae_end_date, ae_end_time)
 
-        val selected_locations = ArrayList<String>()
+        val selected_location = places
 
         if(name.isEmpty() || description.isEmpty())
             return
@@ -158,7 +121,7 @@ class AddEventActivity : AppCompatActivity(), MultiSpinner.MultiSpinnerListener,
             DESCRIPTION_KEY to description,
             START_DATE_KEY to cal_start.time,
             END_DATE_KEY to cal_end.time,
-            LOCATION_KEY to selected_locations
+            LOCATION_KEY to selected_location
         )
         db.collection("events").add(event_data).addOnSuccessListener {
             documentReference -> Log.d(TAG, "Event added with ID: ${documentReference.id}")
@@ -186,30 +149,13 @@ class AddEventActivity : AppCompatActivity(), MultiSpinner.MultiSpinnerListener,
         )
     }
 
-    fun getCalFromTV(tvDate:TextView, tvTime:TextView): Calendar
-    {
-        val _date = SimpleDateFormat(DATE_FORMAT).parse(tvDate.text.toString())
-        val _time = SimpleDateFormat(TIME_FORMAT).parse(tvTime.text.toString())
-        val cal = Calendar.getInstance()
-        cal.time = _date
-        cal.add(Calendar.HOUR, _time.hours)
-        cal.add(Calendar.MINUTE, _time.minutes)
-        return cal
-    }
-
-    override fun onItemsSelected(selected: BooleanArray?): ArrayList<String> {
-        for (item in places) {
-
-        }
-        return ArrayList<String>()
-    }
-
+    //SPINNER METHODS
     override fun onNothingSelected(p0: AdapterView<*>?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+        Toast.makeText(applicationContext, "Test", Toast.LENGTH_SHORT).show()
         val t = p0!!.getItemAtPosition(p2).toString()
-        Toast.makeText(p0.context, t, Toast.LENGTH_LONG).show()
     }
 }
