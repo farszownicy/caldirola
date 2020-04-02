@@ -32,12 +32,12 @@ class EventView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 mEventClickListener!!.onEventClick(this@EventView, mEvent)
             }
         }
-        val eventItemClickListener =
-            OnClickListener { v ->
-                if (mEventClickListener != null) {
-                    mEventClickListener!!.onEventViewClick(v, this@EventView, mEvent)
-                }
-            }
+//        val eventItemClickListener =
+//            OnClickListener { v ->
+//                if (mEventClickListener != null) {
+//                    mEventClickListener!!.onEventViewClick(v, this@EventView, mEvent)
+//                }
+//            }
     }
 
     fun setOnEventClickListener(listener: OnEventClickListener?) {
@@ -61,10 +61,10 @@ class EventView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     interface OnEventClickListener {
         fun onEventClick(view: EventView?, data: Event?)
-        fun onEventViewClick(
-            view: View?,
-            eventView: EventView?,
-            data: Event?
-        )
+//        fun onEventViewClick(
+//            view: View?,
+//            eventView: EventView?,
+//            data: Event?
+//        )
     }
 }
