@@ -8,13 +8,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import farszownicy.caldirola.R
-import farszownicy.caldirola.data_classes.*
+import farszownicy.caldirola.data_classes.AgendaDrawableEntry
+import farszownicy.caldirola.data_classes.Event
+import farszownicy.caldirola.data_classes.Task
+import farszownicy.caldirola.data_classes.TaskSlice
 import kotlinx.android.synthetic.main.agenda_view.view.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-import kotlin.time.minutes
 
 //Widok agendy dnia
 class CalendarDayView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
@@ -58,25 +60,14 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
     init{
         LayoutInflater.from(context).inflate(R.layout.agenda_view, this, true)
         mHourHeight = resources.getDimensionPixelSize(R.dimen.day_height)
-//        if (attrs != null) {
-//            val arr =
-//                context.obtainStyledAttributes(attrs, R.styleable.CalendarDayView)
-//            try {
-//                mEventMarginSide = arr.getDimensionPixelSize(
-//                    R.styleable.CalendarDayView_eventMarginLeft,
-//                    mEventMarginSide
-//                )
-//                mDayHeight =
-//                    arr.getDimensionPixelSize(R.styleable.CalendarDayView_dayHeight, mDayHeight)
-//                mStartHour = arr.getInt(R.styleable.CalendarDayView_startHour, mStartHour)
-//                mEndHour = arr.getInt(R.styleable.CalendarDayView_endHour, mEndHour)
-//            } finally {
-//                arr.recycle()
-//            }
-//        }
         mHandler = AgendaHandler(context)
         //extractTaskSlices()
         drawHourViews()
+    }
+
+    companion object {
+        const val SECOND_MILLIS: Long = 1000
+        const val MINUTE_MILLIS = SECOND_MILLIS * 60
     }
 
     /**
@@ -183,7 +174,7 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
         while(currTime.time < task.deadline.time && totalInsertedDuration < task.duration.inMinutes) {
 
             for(insertedEntry in mAllInsertedEntries){
-                if(insertedEntry.startTime.time.before(currTime.time) && insertedEntry.endTime.time.after(currTime.time)) //jesli jakis event nachodzi na aktualny czas
+                if(isBefore(insertedEntry.startTime.time,currTime.time) && insertedEntry.endTime.time.after(currTime.time)) //jesli jakis event nachodzi na aktualny czas
                     currTime = insertedEntry.endTime.clone() as Calendar //to przesun sie na czas konca tego eventu
             }
 
@@ -200,6 +191,7 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
             val slice = TaskSlice(task, slotStartTime, slotEndTime)
             mTaskSlices.add(slice)
             mAllInsertedEntries.add(slice)
+            mAllInsertedEntries.sortBy{it.startTime}
             totalInsertedDuration += sliceDuration
         }
         if(totalInsertedDuration < task.duration.inMinutes)
@@ -215,6 +207,7 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
             val slice = TaskSlice(task, startTime, endTime)
             mTaskSlices.add(slice)
             mAllInsertedEntries.add(slice)
+            mAllInsertedEntries.sortBy { it.startTime }
         }
         else
             Log.d("LOG", "zadania ${task.name} nie da sie wcisnac do kalendarza")
@@ -236,7 +229,7 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
                 val st = insertedEntry.startTime.time
                 val et = insertedEntry.endTime.time
                 val ct = currTime.time
-                if(st.before(ct) && et.after(ct)) //jesli jakis event nachodzi na aktualny czas
+                if(isBefore(st,ct) && et.after(ct)) //jesli jakis event nachodzi na aktualny czas
                     currTime = insertedEntry.endTime.clone() as Calendar } //to przesun sie na czas konca tego eventu
 
             slotStartTime = currTime.clone() as Calendar
@@ -253,7 +246,11 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     private fun isTimeAvailable(currTime: Calendar): Boolean {
-        return !mEvents.any{it.startTime.time.before(currTime.time) && it.endTime.time.after(currTime.time)}
+        return !mEvents.any{isBefore(it.startTime.time, currTime.time) && it.endTime.time > currTime.time}
+    }
+
+    fun isBefore(earlierDate: Date, laterDate: Date): Boolean {
+        return (laterDate.time / MINUTE_MILLIS - earlierDate.time / MINUTE_MILLIS) >= 0
     }
 
 

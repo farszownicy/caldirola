@@ -29,14 +29,14 @@ class AgendaActivity : AppCompatActivity() {
         (agenda.mHandler)!!.setOnEventClickListener(
             object : EventView.OnEventClickListener {
                 override fun onEventClick(view: EventView?, data: Event?) {
-                    Log.e("TAG", "onEventClick:" + data!!.name)
+                    Log.e("TAG", "onEventClick: ${data!!.name}, event start: ${data.startTime.time}, event end: ${data.endTime.time}, top:${view!!.top}, bottom:${view!!.bottom}")
                     //addTasks()
                 }
             })
         agenda.mHandler!!.setOnTaskSliceClickListener(
             object : TaskSliceView.OnTaskClickListener{
                 override fun onTaskClick(view: TaskSliceView?, data: TaskSlice?) {
-                    Log.e("TAG","onTaskClick:" + data!!.parent.name)
+                    Log.e("TAG","onTaskClick:${data!!.parent.name}, task start: ${data.startTime.time}, task end: ${data.endTime.time}, top:${view!!.top}, bottom:${view!!.bottom}")
                 }
             })
         addEvents()
@@ -49,8 +49,8 @@ class AgendaActivity : AppCompatActivity() {
         val deadline1 = Calendar.getInstance()
         deadline1.set(Calendar.HOUR_OF_DAY, 22) //[Calendar.HOUR_OF_DAY] = 23
         deadline1.set(Calendar.MINUTE, 0)
-        val task1 = Task("id2", "graj w minikraft", "graj w minikraft",
-            deadline1, 800.minutes, 0,divisible=true)
+        val task1 = Task("id2", "ulep pierogi", "graj w minikraft",
+            deadline1, 720.minutes, 0,divisible=true)
         tasks.add(task1)
 
         val deadline2 = Calendar.getInstance()
@@ -63,7 +63,7 @@ class AgendaActivity : AppCompatActivity() {
         val deadline3 = Calendar.getInstance()
         deadline3.set(Calendar.HOUR_OF_DAY, 23) //[Calendar.HOUR_OF_DAY] = 23
         deadline3.set(Calendar.MINUTE, 0)
-        val task3 = Task("id3", "ulep pierogi", "opis",
+        val task3 = Task("id3", "graj w minecraft", "opis",
             deadline3, 60.minutes, 0,divisible=false)
         tasks.add(task3)
         agenda.mTasks = tasks
@@ -71,10 +71,10 @@ class AgendaActivity : AppCompatActivity() {
 
     private fun addEvents() {
         val timeStart1 = Calendar.getInstance()
-        timeStart1[Calendar.HOUR_OF_DAY] = 11
+        timeStart1[Calendar.HOUR_OF_DAY] = 2
         timeStart1[Calendar.MINUTE] = 0
         val timeEnd1 = timeStart1.clone() as Calendar
-        timeEnd1[Calendar.HOUR_OF_DAY] = 13
+        timeEnd1[Calendar.HOUR_OF_DAY] = 3
         timeEnd1[Calendar.MINUTE] = 30
         val event1 = Event("id1","Hurtownie Danych", "laby", timeStart1, timeEnd1, Place("Uczelnia"))
         events.add(event1)
