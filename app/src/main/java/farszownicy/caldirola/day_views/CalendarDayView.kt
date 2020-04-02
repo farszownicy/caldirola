@@ -26,6 +26,8 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
      * SECTION CLASS VARIABLES
      * */
 
+    //TODO: przerob AllInsertedEntries na SortedListe, ogarnij zeby jak w activity dodasz taska juz po onCreate to zeby on sie pojawił
+
     private var mHourHeight = 0
     private var mEventMarginSide = 4
     private var mHourTextWidth = 120
@@ -36,12 +38,14 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     var mHandler: AgendaHandler? = null
 
+    @ExperimentalTime
     var mEvents: ArrayList<Event> = ArrayList()
     set(events){
         events.sortBy{it.startTime.time}
         field = events
         updateAllEntries()
         drawEvents()
+        //drawEvents()
     }
 
     @ExperimentalTime
@@ -51,6 +55,7 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
         field = tasks
         distributeTasks()
         //updateAllEntries()
+        //drawTasks()
         drawTasks()
     }
 
@@ -74,17 +79,20 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
      * SECTION: DRAWING AND POSITIONING
      * */
 
+    @ExperimentalTime
     private fun updateAllEntries() {
         mAllInsertedEntries = ArrayList()
         mAllInsertedEntries.addAll(mEvents)
         mAllInsertedEntries.addAll(mTaskSlices)
+        mAllInsertedEntries.sortBy{it.startTime}
     }
 
     @ExperimentalTime
-    fun refresh() {
+    fun refreshWholeView() {
         drawHourViews()
+        event_container.removeAllViews()
         drawEvents()
-        distributeTasks()
+        //distributeTasks()
         drawTasks()
     }
 
@@ -101,8 +109,9 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
         mSeparateHourHeight = hourView.separateHeight.toInt()
     }
 
+    @ExperimentalTime
     private fun drawEvents() {
-        event_container.removeAllViews()
+//        event_container.removeAllViews()
         for (event in mEvents) {
             val rect = getTimeBound(event)
             val eventView: EventView =
@@ -130,7 +139,8 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
             getPositionOfTime(entry.endTime) - mSeparateHourHeight
         rect.left = mHourTextWidth + mEventMarginSide
         Log.d("Debug", "eventMargin: $mEventMarginSide")
-        rect.right = width - mEventMarginSide
+        rect.right = -mEventMarginSide//width - mEventMarginSide
+        Log.d("Debug", "width: $width")
         return rect
     }
 
@@ -145,7 +155,7 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
         require(startHour < endHour) { "start hour must precede end hour" }
         mStartHour = startHour
         mEndHour = endHour
-        refresh()
+        refreshWholeView()
     }
 
     /**
@@ -245,6 +255,7 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
         return null
     }
 
+    @ExperimentalTime
     private fun isTimeAvailable(currTime: Calendar): Boolean {
         return !mEvents.any{isBefore(it.startTime.time, currTime.time) && it.endTime.time > currTime.time}
     }

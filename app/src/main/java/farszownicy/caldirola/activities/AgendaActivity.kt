@@ -30,17 +30,18 @@ class AgendaActivity : AppCompatActivity() {
             object : EventView.OnEventClickListener {
                 override fun onEventClick(view: EventView?, data: Event?) {
                     Log.e("TAG", "onEventClick: ${data!!.name}, event start: ${data.startTime.time}, event end: ${data.endTime.time}, top:${view!!.top}, bottom:${view!!.bottom}")
-                    //addTasks()
+                    addTasks()
                 }
             })
         agenda.mHandler!!.setOnTaskSliceClickListener(
             object : TaskSliceView.OnTaskClickListener{
                 override fun onTaskClick(view: TaskSliceView?, data: TaskSlice?) {
                     Log.e("TAG","onTaskClick:${data!!.parent.name}, task start: ${data.startTime.time}, task end: ${data.endTime.time}, top:${view!!.top}, bottom:${view!!.bottom}")
+                    //addEvents()
                 }
             })
         addEvents()
-        addTasks()
+        //addTasks()
     }
 
     @ExperimentalTime
@@ -69,6 +70,7 @@ class AgendaActivity : AppCompatActivity() {
         agenda.mTasks = tasks
     }
 
+    @ExperimentalTime
     private fun addEvents() {
         val timeStart1 = Calendar.getInstance()
         timeStart1[Calendar.HOUR_OF_DAY] = 2
