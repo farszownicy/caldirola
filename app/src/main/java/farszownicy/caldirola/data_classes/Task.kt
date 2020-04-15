@@ -1,15 +1,13 @@
 package farszownicy.caldirola.data_classes
 
-import java.time.Duration
-import java.util.*
+import java.time.LocalDateTime
 import kotlin.time.ExperimentalTime
-import kotlin.time.hours
 import kotlin.time.minutes
 
 class Task @ExperimentalTime constructor(id: String = "-1",
                                          name: String,
                                          description: String,
-                                         var deadline: Calendar, //= Calendar.getInstance(),
+                                         var deadline: LocalDateTime, //= Calendar.getInstance(),
                                          var duration: kotlin.time.Duration = 0.minutes,
                                          var priority: Int = 0,
                                          var prerequisites: List<Task> = mutableListOf(),

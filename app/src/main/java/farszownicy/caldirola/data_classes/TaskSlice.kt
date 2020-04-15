@@ -1,8 +1,8 @@
 package farszownicy.caldirola.data_classes
 
-import java.util.*
+import java.time.LocalDateTime
 
 class TaskSlice constructor(val parent: Task,
-                            startTime: Calendar,
-                            endTime: Calendar)
+                            startTime: LocalDateTime,
+                            endTime: LocalDateTime)
     : AgendaDrawableEntry(startTime, endTime)

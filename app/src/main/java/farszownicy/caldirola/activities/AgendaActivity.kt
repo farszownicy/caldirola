@@ -12,6 +12,7 @@ import farszownicy.caldirola.data_classes.Event
 import farszownicy.caldirola.data_classes.Task
 import farszownicy.caldirola.data_classes.TaskSlice
 import kotlinx.android.synthetic.main.activity_agenda.*
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.time.ExperimentalTime
@@ -29,14 +30,14 @@ class AgendaActivity : AppCompatActivity() {
         (agenda.mHandler)!!.setOnEventClickListener(
             object : EventView.OnEventClickListener {
                 override fun onEventClick(view: EventView?, data: Event?) {
-                    Log.e("TAG", "onEventClick: ${data!!.name}, event start: ${data.startTime.time}, event end: ${data.endTime.time}, top:${view!!.top}, bottom:${view!!.bottom}")
+                    Log.e("TAG", "onEventClick: ${data!!.name}, event start: ${data.startTime}, event end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
                     addTasks()
                 }
             })
         agenda.mHandler!!.setOnTaskSliceClickListener(
             object : TaskSliceView.OnTaskClickListener{
                 override fun onTaskClick(view: TaskSliceView?, data: TaskSlice?) {
-                    Log.e("TAG","onTaskClick:${data!!.parent.name}, task start: ${data.startTime.time}, task end: ${data.endTime.time}, top:${view!!.top}, bottom:${view!!.bottom}")
+                    Log.e("TAG","onTaskClick:${data!!.parent.name}, task start: ${data.startTime}, task end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
                     //addEvents()
                 }
             })
@@ -46,24 +47,27 @@ class AgendaActivity : AppCompatActivity() {
 
     @ExperimentalTime
     private fun addTasks() {
-
-        val deadline1 = Calendar.getInstance()
-        deadline1.set(Calendar.HOUR_OF_DAY, 22) //[Calendar.HOUR_OF_DAY] = 23
-        deadline1.set(Calendar.MINUTE, 0)
+        val deadline1 = LocalDateTime.now().withHour(22).withMinute(0)
         val task1 = Task("id2", "ulep pierogi", "graj w minikraft",
-            deadline1, 720.minutes, 0,divisible=true)
+            deadline1, 340.minutes, 0,divisible=true)
         tasks.add(task1)
 
-        val deadline2 = Calendar.getInstance()
-        deadline2.set(Calendar.HOUR_OF_DAY, 15) //[Calendar.HOUR_OF_DAY] = 23
-        deadline2.set(Calendar.MINUTE, 0)
+        val deadline4 = LocalDateTime.now().withHour(22).withMinute(0)
+        val task4 = Task("id4", "podzielne zadanie", "graj w minikraft",
+            deadline4, 400.minutes, 0,divisible=true)
+        tasks.add(task4)
+        val deadline5 = LocalDateTime.now().withHour(22).withMinute(30)
+        val task5 = Task("id4", "podzielne zadanie 2", "graj w minikraft",
+            deadline5, 200.minutes, 0,divisible=true)
+        //tasks.add(task5)
+
+
+        val deadline2 = LocalDateTime.now().withHour(15).withMinute(0)
         val task2 = Task("id1", "wałkuj ciasto", "opis",
             deadline2, 120.minutes, 0,divisible=false)
         tasks.add(task2)
 
-        val deadline3 = Calendar.getInstance()
-        deadline3.set(Calendar.HOUR_OF_DAY, 23) //[Calendar.HOUR_OF_DAY] = 23
-        deadline3.set(Calendar.MINUTE, 0)
+        val deadline3 = LocalDateTime.now().withHour(23).withMinute(0)
         val task3 = Task("id3", "graj w minecraft", "opis",
             deadline3, 60.minutes, 0,divisible=false)
         tasks.add(task3)
@@ -72,30 +76,18 @@ class AgendaActivity : AppCompatActivity() {
 
     @ExperimentalTime
     private fun addEvents() {
-        val timeStart1 = Calendar.getInstance()
-        timeStart1[Calendar.HOUR_OF_DAY] = 2
-        timeStart1[Calendar.MINUTE] = 0
-        val timeEnd1 = timeStart1.clone() as Calendar
-        timeEnd1[Calendar.HOUR_OF_DAY] = 3
-        timeEnd1[Calendar.MINUTE] = 30
+        val timeStart1 = LocalDateTime.now().withHour(2).withMinute(0)
+        val timeEnd1 = timeStart1.withHour(3).withMinute(30)
         val event1 = Event("id1","Hurtownie Danych", "laby", timeStart1, timeEnd1, Place("Uczelnia"))
         events.add(event1)
 
-        val timeStart2 = Calendar.getInstance()
-        timeStart2[Calendar.HOUR_OF_DAY] = 18
-        timeStart2[Calendar.MINUTE] = 0
-        val timeEnd2 = Calendar.getInstance()
-        timeEnd2[Calendar.HOUR_OF_DAY] = 20
-        timeEnd2[Calendar.MINUTE] = 0
+        val timeStart2 = LocalDateTime.now().withHour(18).withMinute(0)
+        val timeEnd2 = LocalDateTime.now().withHour(20).withMinute(0)
         val event2 = Event("id2","Zlot fanów farszu", "cos tam", timeStart2, timeEnd2, Place("stołówka SKS"))
         events.add(event2)
 
-        val timeStart3 = Calendar.getInstance()
-        timeStart3[Calendar.HOUR_OF_DAY] = 14
-        timeStart3[Calendar.MINUTE] = 0
-        val timeEnd3 = Calendar.getInstance()
-        timeEnd3[Calendar.HOUR_OF_DAY] = 15
-        timeEnd3[Calendar.MINUTE] = 15
+        val timeStart3 = LocalDateTime.now().withHour(14).withMinute(0)
+        val timeEnd3 = LocalDateTime.now().withHour(15).withMinute(15)
         val event3 = Event("id3","Wyjazd do Iraku", "aaa",  timeStart3, timeEnd3, Place("Irak"))
         events.add(event3)
         agenda.mEvents = events

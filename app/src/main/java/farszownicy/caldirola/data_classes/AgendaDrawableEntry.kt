@@ -1,8 +1,9 @@
 package farszownicy.caldirola.data_classes
 
+import java.time.LocalDateTime
 import java.util.*
 
 abstract class AgendaDrawableEntry(
-    var startTime: Calendar,
-    var endTime: Calendar
+    var startTime: LocalDateTime,
+    var endTime: LocalDateTime
 )
