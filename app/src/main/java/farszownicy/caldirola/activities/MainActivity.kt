@@ -6,8 +6,13 @@ import android.os.Bundle
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.R
+import farszownicy.caldirola.crud_activities.AddEventActivity
+import farszownicy.caldirola.crud_activities.AddTaskActivity
 import farszownicy.caldirola.data_classes.User
+import farszownicy.caldirola.utils.memory.loadEventsFromMemory
+import farszownicy.caldirola.utils.memory.loadTasksFromMemory
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.time.ExperimentalTime
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private val db = FirebaseFirestore.getInstance()
     private val userDoc = db.collection("users").document("RL68xbDoaO34qCnG1pti")
 
+    @ExperimentalTime
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -65,6 +71,8 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "Current data: null")
             }
         }
+        loadTasksFromMemory(this)
+        loadEventsFromMemory(this)
     }
 
     /**

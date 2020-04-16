@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.widget.TextView
-import farszownicy.caldirola.activities.AddEventActivity
 import java.text.SimpleDateFormat
 import java.util.*
 

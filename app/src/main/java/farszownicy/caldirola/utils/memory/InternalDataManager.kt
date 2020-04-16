@@ -1,9 +1,8 @@
-package farszownicy.caldirola.utils
+package farszownicy.caldirola.utils.memory
 
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.io.File
 
 fun writeObjectToSharedPreferences(
     ctx : Context,

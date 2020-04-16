@@ -17,7 +17,10 @@ import farszownicy.caldirola.data_classes.Event
 import farszownicy.caldirola.data_classes.Task
 import farszownicy.caldirola.data_classes.TaskSlice
 import farszownicy.caldirola.utils.Constants
-import farszownicy.caldirola.utils.readObjectsFromSharedPreferences
+import farszownicy.caldirola.utils.memory.loadEventsFromMemory
+import farszownicy.caldirola.utils.memory.loadTasksFromMemory
+import farszownicy.caldirola.utils.memory.saveEventsToMemory
+import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_agenda.*
 import java.time.LocalDateTime
 import kotlin.collections.ArrayList
@@ -25,8 +28,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.minutes
 
 class AgendaActivity : AppCompatActivity() {
-    var events: ArrayList<Event> = ArrayList()
-    var tasks: ArrayList<Task> = ArrayList()
+    var memoryUpToDate = true;
 
     @ExperimentalTime
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,21 +88,23 @@ class AgendaActivity : AppCompatActivity() {
 
     @ExperimentalTime
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK)
+        if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 Constants.ADD_EVENT_CODE -> {
                     agenda.drawEvents()
                 }
-                Constants.ADD_TASK_CODE ->{
+                Constants.ADD_TASK_CODE -> {
                     agenda.drawTasks()
                 }
             }
+            memoryUpToDate = false
+        }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
     @ExperimentalTime
     private fun addTasks() {
-        val deadline1 = LocalDateTime.now().withHour(22).withMinute(0)
+/*        val deadline1 = LocalDateTime.now().withHour(22).withMinute(0)
         val task1 = Task("id2", "ulep pierogi", "graj w minikraft",
             deadline1, 340.minutes, 0,divisible=true)
         tasks.add(task1)
@@ -123,14 +127,13 @@ class AgendaActivity : AppCompatActivity() {
         val deadline3 = LocalDateTime.now().withHour(23).withMinute(0)
         val task3 = Task("id3", "graj w minecraft", "opis",
             deadline3, 60.minutes, 0,divisible=false)
-        tasks.add(task3)
-        PlanManager.mTasks = tasks
+        tasks.add(task3)*/
         agenda.drawTasks()
     }
 
     @ExperimentalTime
     private fun addEvents() {
-        val timeStart1 = LocalDateTime.now().withHour(2).withMinute(0)
+/*        val timeStart1 = LocalDateTime.now().withHour(2).withMinute(0)
         val timeEnd1 = timeStart1.withHour(3).withMinute(30)
         val event1 = Event("id1","Hurtownie Danych", "laby", timeStart1, timeEnd1, Place("Uczelnia"))
         PlanManager.addEvent(event1)
@@ -143,9 +146,19 @@ class AgendaActivity : AppCompatActivity() {
         val timeStart3 = LocalDateTime.now().withHour(14).withMinute(0)
         val timeEnd3 = LocalDateTime.now().withHour(15).withMinute(15)
         val event3 = Event("id3","Wyjazd do Iraku", "aaa",  timeStart3, timeEnd3, Place("Irak"))
-        //events.add(event3)//PlanManager.addEvent(event3)
-        PlanManager.addEvent(event3)
+
+        PlanManager.addEvent(event3)*/
         agenda.drawEvents()
+    }
+
+    @ExperimentalTime
+    override fun onStop() {
+        if(!memoryUpToDate){
+            saveEventsToMemory(this)
+            saveTasksToMemory(this)
+            memoryUpToDate = true
+        }
+        super.onStop()
     }
 
 }
