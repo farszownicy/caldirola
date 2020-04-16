@@ -1,13 +1,18 @@
 package farszownicy.caldirola.day_views
 
+import TaskSliceView
 import android.content.Context
 import android.graphics.Rect
 import farszownicy.caldirola.data_classes.Event
+import farszownicy.caldirola.data_classes.TaskSlice
+import kotlin.time.ExperimentalTime
 
 //Tworzy i zwraca widoki eventów i godzin
 class AgendaHandler(private var mContext: Context) {
 
     var mEventClickListener: EventView.OnEventClickListener? = null
+    @ExperimentalTime
+    var mTaskSliceClickListener: TaskSliceView.OnTaskClickListener? = null
 
     fun getEventView(
         event: Event, eventBound: Rect?, hourHeight: Int,
@@ -27,8 +32,25 @@ class AgendaHandler(private var mContext: Context) {
         return hourView
     }
 
+    @ExperimentalTime
+    fun getTaskSliceView(
+        slice: TaskSlice, eventBound: Rect?, hourTextHeight: Int,
+        separateHeight: Int
+    ): TaskSliceView {
+        val tsView = TaskSliceView(mContext)
+        tsView.mTaskSlice = slice
+        tsView.setPosition(eventBound!!, hourTextHeight)//- separateHeight * 2)
+        tsView.setOnEventClickListener(mTaskSliceClickListener)
+        return tsView
+    }
+
     fun setOnEventClickListener(listener: EventView.OnEventClickListener?) {
         mEventClickListener = listener
+    }
+
+    @ExperimentalTime
+    fun setOnTaskSliceClickListener(listener: TaskSliceView.OnTaskClickListener?) {
+        mTaskSliceClickListener = listener
     }
 
 }

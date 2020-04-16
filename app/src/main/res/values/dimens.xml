@@ -3,6 +3,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="day_height">80dp</dimen>
+
     <dimen name="headline_font_size">28sp</dimen>
 
     <!-- Add event layout dimens -->
