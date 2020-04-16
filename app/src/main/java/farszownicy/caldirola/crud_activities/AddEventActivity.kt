@@ -25,8 +25,9 @@ import java.util.*
 import kotlin.time.ExperimentalTime
 
 
-class AddEventActivity : AppCompatActivity(),
-    AdapterView.OnItemSelectedListener {
+class AddEventActivity : AppCompatActivity()
+    //,AdapterView.OnItemSelectedListener
+{
     companion object
     {
         const val NAME_KEY = "name"
@@ -66,11 +67,23 @@ class AddEventActivity : AppCompatActivity(),
             }
 
         //TODO NAPRAWIC SPINNER
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, places)
+        val adapter = ArrayAdapter<String>(this@AddEventActivity, android.R.layout.simple_spinner_item, places)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        ae_location.onItemSelectedListener = this@AddEventActivity
         ae_location.adapter = adapter
+        ae_location.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                Toast.makeText(this@AddEventActivity,"???", Toast.LENGTH_SHORT).show()
+            }
 
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                Toast.makeText(this@AddEventActivity,"!!!", Toast.LENGTH_SHORT).show()
+            }
+        }
         setAllDatePickers()
 
         userDoc.addSnapshotListener(this
@@ -168,12 +181,12 @@ class AddEventActivity : AppCompatActivity(),
     }
 
     //SPINNER METHODS
-    override fun onNothingSelected(p0: AdapterView<*>?) {
+   /* override fun onNothingSelected(p0: AdapterView<*>?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
         Toast.makeText(applicationContext, "Test", Toast.LENGTH_SHORT).show()
         val t = p0!!.getItemAtPosition(p2).toString()
-    }
+    }*/
 }

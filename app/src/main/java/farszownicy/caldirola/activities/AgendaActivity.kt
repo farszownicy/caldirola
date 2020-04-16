@@ -5,10 +5,12 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.crud_activities.AddEventActivity
+import farszownicy.caldirola.crud_activities.AddTaskActivity
 import farszownicy.caldirola.data_classes.Place
 import farszownicy.caldirola.day_views.EventView
 import farszownicy.caldirola.data_classes.Event
@@ -45,8 +47,7 @@ class AgendaActivity : AppCompatActivity() {
                 }
             })
         addButton.setOnClickListener{
-            val intent = Intent(this, AddEventActivity::class.java)
-            startActivityForResult(intent, Constants.ADD_EVENT_CODE)
+            AddDialog()
         }
         addEvents()
         //addTasks()
@@ -58,6 +59,9 @@ class AgendaActivity : AppCompatActivity() {
             when (requestCode) {
                 Constants.ADD_EVENT_CODE -> {
                     agenda.drawEvents()
+                }
+                Constants.ADD_TASK_CODE -> {
+                    agenda.drawTasks()
                 }
             }
         super.onActivityResult(requestCode, resultCode, data)
@@ -102,7 +106,7 @@ class AgendaActivity : AppCompatActivity() {
 
         val timeStart2 = LocalDateTime.now().withHour(18).withMinute(0)
         val timeEnd2 = LocalDateTime.now().withHour(20).withMinute(0)
-        val event2 = Event("id2","Zlot fanów farszu", "cos tam", timeStart2, timeEnd2, Place("stołówka SKS"))
+        val event2 = Event("id2","Zlot fanów farszu", "cos tam", timeStart2, timeEgitnd2, Place("stołówka SKS"))
         PlanManager.addEvent(event2)
 
         val timeStart3 = LocalDateTime.now().withHour(14).withMinute(0)
@@ -111,6 +115,23 @@ class AgendaActivity : AppCompatActivity() {
         events.add(event3)//PlanManager.addEvent(event3)
         PlanManager.addEvent(event3)
         agenda.drawEvents()
+    }
+
+    private fun AddDialog(){
+        AlertDialog.Builder(this@AgendaActivity).setTitle("CHOOSE ENTRY TYPE")
+            .setPositiveButton("EVENT"){dialog, id -> StartAEActivity()}
+            .setNegativeButton("TASK"){dialog, id -> StartATActivity()}
+            .create().show()
+    }
+
+    private fun StartAEActivity(){
+        val intent = Intent(this, AddEventActivity::class.java)
+        startActivityForResult(intent, Constants.ADD_EVENT_CODE)
+    }
+
+    private fun StartATActivity(){
+        val intent = Intent(this, AddTaskActivity::class.java)
+        startActivityForResult(intent, Constants.ADD_TASK_CODE)
     }
 
 }
