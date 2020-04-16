@@ -128,7 +128,7 @@ class AddEventActivity : AppCompatActivity(),
         }.addOnFailureListener{
             e -> Log.w(TAG, "Error adding event", e)}
 
-        saveEventToInternalMemory(Event(name, description, startTime = cal_start, endTime = cal_end))
+        //saveEventToInternalMemory(Event(name, description, startTime = cal_start, endTime = cal_end))
     }
 
     private fun saveEventToInternalMemory(event: Event){
