@@ -1,16 +1,26 @@
 package farszownicy.caldirola.crud_activities
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
+import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.activities.MainActivity
+import farszownicy.caldirola.data_classes.Task
+import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.activity_add_task.*
-import java.util.ArrayList
+import java.lang.Exception
+import java.time.LocalTime
+import java.util.*
+import kotlin.time.ExperimentalTime
+import kotlin.time.minutes
 
 class AddTaskActivity : AppCompatActivity() {
     companion object
@@ -22,6 +32,7 @@ class AddTaskActivity : AppCompatActivity() {
         const val TASKS_KEY = "tasks"
         const val DIVISIBILITY_KEY = "divisibility"
         const val PRIORITY_KEY = "priority"
+        const val DURATION_KEY = "priority"
         const val TAG = "debug"
     }
     private val db = FirebaseFirestore.getInstance()
@@ -30,6 +41,7 @@ class AddTaskActivity : AppCompatActivity() {
     private val places = ArrayList<String>()
     private val calendarUtils = DateTimeUtils()
 
+    @ExperimentalTime
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -81,6 +93,7 @@ class AddTaskActivity : AppCompatActivity() {
     }
 
     //TODO: event->task
+    @ExperimentalTime
     @RequiresApi(Build.VERSION_CODES.O)
     fun addTask()
     {
@@ -89,9 +102,19 @@ class AddTaskActivity : AppCompatActivity() {
         val deadline = calendarUtils.getDTFromTV(at_deadline_date, at_deadline_time)
         //val selected_location = places
         val divisible = at_divisible.isSelected
-        val priority = at_input_priority.text
+        val priority = at_input_priority.text.toString()
+        val duration: Int
+        val time: LocalTime
+        try {
+            time = LocalTime.parse(at_input_time.text.toString())
+        }
+        catch(e: Exception){
+            Toast.makeText(this, "Podano czas trwania w niepoprawnym formacie. Wymagany format: hh:mm", Toast.LENGTH_SHORT).show()
+            return
+        }
+        duration = time.hour *60 + time.minute
 
-        if(name.isEmpty() || description.isEmpty())
+        if(name.isEmpty() || description.isEmpty() || duration<= 0)
             return
         val task_data = hashMapOf(
             NAME_KEY to name,
@@ -99,12 +122,26 @@ class AddTaskActivity : AppCompatActivity() {
             DEADLINE_KEY to deadline,
             //LOCATION_KEY to selected_location,
             DIVISIBILITY_KEY to divisible,
-            PRIORITY_KEY to priority
+            PRIORITY_KEY to priority,
+            DURATION_KEY to duration
         )
-        db.collection("tasks").add(task_data).addOnSuccessListener {
-                documentReference -> Log.d(TAG, "Task added with ID: ${documentReference.id}")
-        }.addOnFailureListener{
-                e -> Log.w(TAG, "Error adding task", e)}
+        val task = Task(UUID.randomUUID().toString(), name, description,
+            deadline, duration.minutes, priority= priority.toInt(),divisible=divisible)
+        val taskIntent = Intent()
+
+        val taskAdded = PlanManager.addTask(task)
+        if(taskAdded) {
+            db.collection("tasks").add(task_data).addOnSuccessListener { documentReference ->
+                Log.d(TAG, "Task added with ID: ${documentReference.id}")
+            }.addOnFailureListener { e -> Log.w(TAG, "Error adding task", e) }
+            //TODO saveTaskToInternalMemory
+            taskIntent.putExtra(Constants.ADD_TASK_KEY, taskAdded)
+            setResult(Activity.RESULT_OK, taskIntent)
+            finish()
+        }
+        else{
+            Toast.makeText(this, "Taska ${task.name} nie da sie wcisnac do kalendarza.", Toast.LENGTH_SHORT).show()
+        }
     }
 
 

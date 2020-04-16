@@ -43,7 +43,7 @@
         app:layout_constraintTop_toBottomOf="@+id/nameET" />
 
     <Button
-        android:id="@+id/addButton"
+        android:id="@+id/addEventButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -60,7 +60,7 @@
         android:text="Fetch Data"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addButton" />
+        app:layout_constraintTop_toBottomOf="@+id/addEventButton" />
 
     <Button
         android:id="@+id/plan_button"

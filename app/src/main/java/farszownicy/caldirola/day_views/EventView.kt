@@ -22,6 +22,7 @@ class EventView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             location_tv.text = event?.Location?.name
         }
     var mEventClickListener: OnEventClickListener? = null
+    var mEventLongClickListener: OnEventLongClickListener? = null
 
 
     init {
@@ -32,16 +33,20 @@ class EventView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 mEventClickListener!!.onEventClick(this@EventView, mEvent)
             }
         }
-//        val eventItemClickListener =
-//            OnClickListener { v ->
-//                if (mEventClickListener != null) {
-//                    mEventClickListener!!.onEventViewClick(v, this@EventView, mEvent)
-//                }
-//            }
+        super.setOnLongClickListener {
+            if (mEventLongClickListener != null) {
+                mEventLongClickListener!!.onEventClick(this@EventView, mEvent)
+            }
+            true
+        }
     }
 
     fun setOnEventClickListener(listener: OnEventClickListener?) {
         mEventClickListener = listener
+    }
+
+    fun setOnEventLongClickListener(listener: OnEventLongClickListener?) {
+        mEventLongClickListener = listener
     }
 
     fun setPosition(rect: Rect, topMargin: Int) {
@@ -66,5 +71,9 @@ class EventView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 //            eventView: EventView?,
 //            data: Event?
 //        )
+    }
+
+    interface OnEventLongClickListener {
+        fun onEventClick(view: EventView?, data: Event?)
     }
 }

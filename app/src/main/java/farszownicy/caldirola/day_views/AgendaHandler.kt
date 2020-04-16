@@ -11,8 +11,11 @@ import kotlin.time.ExperimentalTime
 class AgendaHandler(private var mContext: Context) {
 
     var mEventClickListener: EventView.OnEventClickListener? = null
+    var mEventLongClickListener: EventView.OnEventLongClickListener? = null
     @ExperimentalTime
     var mTaskSliceClickListener: TaskSliceView.OnTaskClickListener? = null
+    @ExperimentalTime
+    var mTaskSliceLongClickListener :TaskSliceView.OnTaskLongClickListener? = null
 
     fun getEventView(
         event: Event, eventBound: Rect?, hourHeight: Int,
@@ -22,6 +25,7 @@ class AgendaHandler(private var mContext: Context) {
         eventView.mEvent = event
         eventView.setPosition(eventBound!!, hourHeight)//- separateHeight * 2)
         eventView.setOnEventClickListener(mEventClickListener)
+        eventView.setOnEventLongClickListener(mEventLongClickListener)
         return eventView
     }
 
@@ -40,7 +44,8 @@ class AgendaHandler(private var mContext: Context) {
         val tsView = TaskSliceView(mContext)
         tsView.mTaskSlice = slice
         tsView.setPosition(eventBound!!, hourTextHeight)//- separateHeight * 2)
-        tsView.setOnEventClickListener(mTaskSliceClickListener)
+        tsView.setOnTaskClickListener(mTaskSliceClickListener)
+        tsView.setOnTaskLongClickListener(mTaskSliceLongClickListener)
         return tsView
     }
 
@@ -48,9 +53,18 @@ class AgendaHandler(private var mContext: Context) {
         mEventClickListener = listener
     }
 
+    fun setOnEventLongClickListener(listener: EventView.OnEventLongClickListener?) {
+        mEventLongClickListener = listener
+    }
+
     @ExperimentalTime
     fun setOnTaskSliceClickListener(listener: TaskSliceView.OnTaskClickListener?) {
         mTaskSliceClickListener = listener
+    }
+
+    @ExperimentalTime
+    fun setOnTaskSliceLongClickListener(listener: TaskSliceView.OnTaskLongClickListener) {
+        mTaskSliceLongClickListener = listener
     }
 
 }

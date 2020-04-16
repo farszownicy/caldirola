@@ -112,21 +112,21 @@ class AddEventActivity : AppCompatActivity(),
         val name = ae_input_name.text.toString()
         val description = ae_input_description.text.toString()
 
-        val cal_start = datetime_utils.getDTFromTV(ae_start_date, ae_start_time)
-        val cal_end = datetime_utils.getDTFromTV(ae_end_date, ae_end_time)
+        val dt_start = datetime_utils.getDTFromTV(ae_start_date, ae_start_time)
+        val dt_end = datetime_utils.getDTFromTV(ae_end_date, ae_end_time)
 
         val selected_location = places
 
-        if(name.isEmpty() || description.isEmpty())
+        if(name.isEmpty() || description.isEmpty() ||  PlanManager.areEqual(dt_start, dt_end))
             return
         val event_data = hashMapOf(
             NAME_KEY to name,
             DESCRIPTION_KEY to description,
-            START_DATE_KEY to cal_start,
-            END_DATE_KEY to cal_end,
+            START_DATE_KEY to dt_start,
+            END_DATE_KEY to dt_end,
             LOCATION_KEY to selected_location
         )
-        val event = Event(name, description, startTime = cal_start, endTime = cal_end)
+        val event = Event(UUID.randomUUID().toString(),name, description, startTime = dt_start, endTime = dt_end)
         val eventIntent = Intent()
 
         val eventAdded = PlanManager.addEvent(event)
