@@ -34,6 +34,7 @@ class TaskSliceView @JvmOverloads constructor(context: Context, attrs: Attribute
             duration_tv.text = "${durationHours}hr ${durationMinutes} min"
         }
     var mTaskClickListener: OnTaskClickListener? = null
+    var mTaskLongClickListener: OnTaskLongClickListener? = null
 
 
     init {
@@ -44,16 +45,20 @@ class TaskSliceView @JvmOverloads constructor(context: Context, attrs: Attribute
                 mTaskClickListener!!.onTaskClick(this@TaskSliceView, mTaskSlice)
             }
         }
-//        val eventItemClickListener =
-//            OnClickListener { v ->
-//                if (mTaskClickListener != null) {
-//                    mTaskClickListener!!.onTaskViewClick(v, this@TaskView, mTask)
-//                }
-//            }
+        super.setOnLongClickListener {
+            if (mTaskLongClickListener != null) {
+                mTaskLongClickListener!!.onTaskClick(this@TaskSliceView, mTaskSlice)
+            }
+            true
+        }
+
     }
 
-    fun setOnEventClickListener(listener: OnTaskClickListener?) {
+    fun setOnTaskClickListener(listener: OnTaskClickListener?) {
         mTaskClickListener = listener
+    }
+    fun setOnTaskLongClickListener(listener: OnTaskLongClickListener?) {
+        mTaskLongClickListener = listener
     }
 
     fun setPosition(rect: Rect, hourTextHeight: Int) {
@@ -73,10 +78,9 @@ class TaskSliceView @JvmOverloads constructor(context: Context, attrs: Attribute
 
     interface OnTaskClickListener {
         fun onTaskClick(view: TaskSliceView?, data: TaskSlice?)
-//        fun onTaskViewClick(
-//            view: View?,
-//            taskView: TaskView?,
-//            data: Task?
-//        )
+    }
+
+    interface OnTaskLongClickListener {
+        fun onTaskClick(view: TaskSliceView?, data: TaskSlice?)
     }
 }

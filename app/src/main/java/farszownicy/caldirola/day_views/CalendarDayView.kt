@@ -67,6 +67,14 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
         drawTasks()
     }
 
+    @ExperimentalTime
+    fun refreshEntries() {
+        event_container.removeAllViews()
+        drawEvents()
+        //distributeTasks()
+        drawTasks()
+    }
+
     fun drawHourViews() {
         if(dayview_container != null)
             dayview_container.removeAllViews()

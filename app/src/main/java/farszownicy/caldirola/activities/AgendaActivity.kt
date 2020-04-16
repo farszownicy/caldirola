@@ -5,10 +5,12 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.crud_activities.AddEventActivity
+import farszownicy.caldirola.crud_activities.AddTaskActivity
 import farszownicy.caldirola.data_classes.Place
 import farszownicy.caldirola.day_views.EventView
 import farszownicy.caldirola.data_classes.Event
@@ -34,23 +36,52 @@ class AgendaActivity : AppCompatActivity() {
         (agenda.mHandler)!!.setOnEventClickListener(
             object : EventView.OnEventClickListener {
                 override fun onEventClick(view: EventView?, data: Event?) {
+                    Toast.makeText(this@AgendaActivity,
+                        "onEventClick: ${data!!.name}, event start: ${data.startTime}, event end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}",
+                        Toast.LENGTH_SHORT).show()
                     Log.e("TAG", "onEventClick: ${data!!.name}, event start: ${data.startTime}, event end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
-                    addTasks()
                 }
             })
+        (agenda.mHandler)!!.setOnEventLongClickListener(
+            object : EventView.OnEventLongClickListener {
+                override fun onEventClick(view: EventView?, data: Event?) {
+                    Log.e("TAG", "onEventLongClick: ${data!!.name}, event start: ${data.startTime}, event end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
+                    PlanManager.mEvents.remove(data)
+                    PlanManager.mAllInsertedEntries.remove(data)
+                    agenda.refreshEntries()
+                }
+            })
+
         agenda.mHandler!!.setOnTaskSliceClickListener(
             object : TaskSliceView.OnTaskClickListener{
                 override fun onTaskClick(view: TaskSliceView?, data: TaskSlice?) {
+                    Toast.makeText(this@AgendaActivity,
+                        "onTaskClick:${data!!.parent.name}, task start: ${data.startTime}, task end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}",
+                        Toast.LENGTH_SHORT).show()
                     Log.e("TAG","onTaskClick:${data!!.parent.name}, task start: ${data.startTime}, task end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
-                    //addEvents()
                 }
             })
-        addButton.setOnClickListener{
+
+        agenda.mHandler!!.setOnTaskSliceLongClickListener(
+            object : TaskSliceView.OnTaskLongClickListener{
+                override fun onTaskClick(view: TaskSliceView?, data: TaskSlice?) {
+                    Log.e("TAG","onTaskClick:${data!!.parent.name}, task start: ${data.startTime}, task end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
+                    PlanManager.mTaskSlices.remove(data)
+                    PlanManager.mAllInsertedEntries.remove(data)
+                    agenda.refreshEntries()
+                }
+            })
+
+        addEventButton.setOnClickListener{
             val intent = Intent(this, AddEventActivity::class.java)
             startActivityForResult(intent, Constants.ADD_EVENT_CODE)
         }
+        addTaskButton.setOnClickListener(){
+            val intent = Intent(this, AddTaskActivity::class.java)
+            startActivityForResult(intent, Constants.ADD_TASK_CODE)
+        }
         addEvents()
-        //addTasks()
+        addTasks()
     }
 
     @ExperimentalTime
@@ -59,6 +90,9 @@ class AgendaActivity : AppCompatActivity() {
             when (requestCode) {
                 Constants.ADD_EVENT_CODE -> {
                     agenda.drawEvents()
+                }
+                Constants.ADD_TASK_CODE ->{
+                    agenda.drawTasks()
                 }
             }
         super.onActivityResult(requestCode, resultCode, data)
@@ -109,7 +143,7 @@ class AgendaActivity : AppCompatActivity() {
         val timeStart3 = LocalDateTime.now().withHour(14).withMinute(0)
         val timeEnd3 = LocalDateTime.now().withHour(15).withMinute(15)
         val event3 = Event("id3","Wyjazd do Iraku", "aaa",  timeStart3, timeEnd3, Place("Irak"))
-        events.add(event3)//PlanManager.addEvent(event3)
+        //events.add(event3)//PlanManager.addEvent(event3)
         PlanManager.addEvent(event3)
         agenda.drawEvents()
     }

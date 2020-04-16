@@ -190,27 +190,27 @@ object PlanManager {
         return !mEvents.any{isBeforeOrEqual(it.startTime,currTime) && isAfter(it.endTime,currTime)}
     }
 
-    private fun isBeforeOrEqual(earlierDate: LocalDateTime, laterDate: LocalDateTime): Boolean {
+    fun isBeforeOrEqual(earlierDate: LocalDateTime, laterDate: LocalDateTime): Boolean {
         return differenceInMinutes(earlierDate, laterDate) >= 0
     }
 
-    private fun isBefore(earlierDate: LocalDateTime, laterDate: LocalDateTime): Boolean {
+    fun isBefore(earlierDate: LocalDateTime, laterDate: LocalDateTime): Boolean {
         return differenceInMinutes(earlierDate, laterDate) > 0
     }
 
-    private fun isAfter(firstDate: LocalDateTime, secDate: LocalDateTime): Boolean {
+    fun isAfter(firstDate: LocalDateTime, secDate: LocalDateTime): Boolean {
         return differenceInMinutes(firstDate, secDate) < 0
     }
 
-    private fun areEqual(firstDate: LocalDateTime, secDate: LocalDateTime): Boolean {
+    fun areEqual(firstDate: LocalDateTime, secDate: LocalDateTime): Boolean {
         return differenceInMinutes(firstDate, secDate) == 0L
     }
 
-    private fun isAfterOrEqual(earlierDate: LocalDateTime, laterDate: LocalDateTime): Boolean {
+    fun isAfterOrEqual(earlierDate: LocalDateTime, laterDate: LocalDateTime): Boolean {
         return differenceInMinutes(earlierDate, laterDate) <= 0
     }
 
-    private fun differenceInMinutes(earlierDate: LocalDateTime, laterDate: LocalDateTime): Long {
+    fun differenceInMinutes(earlierDate: LocalDateTime, laterDate: LocalDateTime): Long {
         return ChronoUnit.MINUTES.between(
             earlierDate.truncatedTo(ChronoUnit.MINUTES),
             laterDate.truncatedTo(ChronoUnit.MINUTES))
