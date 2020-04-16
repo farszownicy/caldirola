@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Caldirola</string>
     <string name="title_activity_plan">PlanActivity</string>
+    <string name="title_activity_add_event">AddEventActivity</string>
+    <string name="choose_location_prompt">Wybierz lokalizację</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

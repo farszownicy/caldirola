@@ -1,19 +1,22 @@
 package farszownicy.caldirola.activities
 
 import TaskSliceView
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
+import farszownicy.caldirola.crud_activities.AddEventActivity
 import farszownicy.caldirola.data_classes.Place
 import farszownicy.caldirola.day_views.EventView
 import farszownicy.caldirola.data_classes.Event
 import farszownicy.caldirola.data_classes.Task
 import farszownicy.caldirola.data_classes.TaskSlice
+import farszownicy.caldirola.utils.Constants
 import kotlinx.android.synthetic.main.activity_agenda.*
 import java.time.LocalDateTime
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.time.ExperimentalTime
 import kotlin.time.minutes
@@ -41,8 +44,23 @@ class AgendaActivity : AppCompatActivity() {
                     //addEvents()
                 }
             })
+        addButton.setOnClickListener{
+            val intent = Intent(this, AddEventActivity::class.java)
+            startActivityForResult(intent, Constants.ADD_EVENT_CODE)
+        }
         addEvents()
         //addTasks()
+    }
+
+    @ExperimentalTime
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK)
+            when (requestCode) {
+                Constants.ADD_EVENT_CODE -> {
+                    agenda.drawEvents()
+                }
+            }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     @ExperimentalTime
@@ -71,7 +89,8 @@ class AgendaActivity : AppCompatActivity() {
         val task3 = Task("id3", "graj w minecraft", "opis",
             deadline3, 60.minutes, 0,divisible=false)
         tasks.add(task3)
-        agenda.mTasks = tasks
+        PlanManager.mTasks = tasks
+        agenda.drawTasks()
     }
 
     @ExperimentalTime
@@ -79,18 +98,19 @@ class AgendaActivity : AppCompatActivity() {
         val timeStart1 = LocalDateTime.now().withHour(2).withMinute(0)
         val timeEnd1 = timeStart1.withHour(3).withMinute(30)
         val event1 = Event("id1","Hurtownie Danych", "laby", timeStart1, timeEnd1, Place("Uczelnia"))
-        events.add(event1)
+        PlanManager.addEvent(event1)
 
         val timeStart2 = LocalDateTime.now().withHour(18).withMinute(0)
         val timeEnd2 = LocalDateTime.now().withHour(20).withMinute(0)
         val event2 = Event("id2","Zlot fanów farszu", "cos tam", timeStart2, timeEnd2, Place("stołówka SKS"))
-        events.add(event2)
+        PlanManager.addEvent(event2)
 
         val timeStart3 = LocalDateTime.now().withHour(14).withMinute(0)
         val timeEnd3 = LocalDateTime.now().withHour(15).withMinute(15)
         val event3 = Event("id3","Wyjazd do Iraku", "aaa",  timeStart3, timeEnd3, Place("Irak"))
-        events.add(event3)
-        agenda.mEvents = events
+        events.add(event3)//PlanManager.addEvent(event3)
+        PlanManager.addEvent(event3)
+        agenda.drawEvents()
     }
 
 }
