@@ -50,6 +50,7 @@ class AgendaActivity : AppCompatActivity() {
                     Log.e("TAG", "onEventLongClick: ${data!!.name}, event start: ${data.startTime}, event end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
                     PlanManager.mEvents.remove(data)
                     PlanManager.mAllInsertedEntries.remove(data)
+                    memoryUpToDate = false
                     agenda.refreshEntries()
                 }
             })
@@ -58,9 +59,10 @@ class AgendaActivity : AppCompatActivity() {
             object : TaskSliceView.OnTaskClickListener{
                 override fun onTaskClick(view: TaskSliceView?, data: TaskSlice?) {
                     Toast.makeText(this@AgendaActivity,
-                        "onTaskClick:${data!!.parent.name}, task start: ${data.startTime}, task end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}",
+                        "onTaskClick:${data!!.parent.name}, divisible: ${data.parent.divisible}, task start: ${data.startTime}, task end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}",
                         Toast.LENGTH_SHORT).show()
-                    Log.e("TAG","onTaskClick:${data!!.parent.name}, task start: ${data.startTime}, task end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
+                    Log.e("TAG","onTaskClick:${data!!.parent.name}, divisible: ${data.parent.divisible}, task start: ${data.startTime}, task end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
+                    memoryUpToDate = false
                 }
             })
 
