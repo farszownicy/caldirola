@@ -31,7 +31,7 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     //TODO: przerob AllInsertedEntries na SortedListe, ogarnij zeby jak w activity dodasz taska juz po onCreate to zeby on sie pojawił
 
-    private var mHourHeight = 0
+    private var mHourHeight = 0f
     private var mEventMarginSide = 4
     private var mHourTextWidth = 120
     private var mHourTextHeight = 120
@@ -43,7 +43,7 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     init{
         LayoutInflater.from(context).inflate(R.layout.agenda_view, this, true)
-        mHourHeight = resources.getDimensionPixelSize(R.dimen.day_height)
+        mHourHeight = resources.getDimensionPixelSize(R.dimen.day_height).toFloat()
         mHandler = AgendaHandler(context)
         //extractTaskSlices()
         drawHourViews()
@@ -111,11 +111,11 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     private fun getTimeBound(entry: AgendaDrawableEntry): Rect {
         val rect = Rect()
-        rect.top = getPositionOfTime(entry.startTime) + mSeparateHourHeight
+        rect.top = (getPositionOfTime(entry.startTime) + mSeparateHourHeight).toInt()
         Log.d("DEBUG", "separator: $mSeparateHourHeight")
         Log.d("Debug", "mHourTextHeight: $mHourTextHeight")
         rect.bottom =
-            getPositionOfTime(entry.endTime) - mSeparateHourHeight
+            (getPositionOfTime(entry.endTime) - mSeparateHourHeight).toInt()
         rect.left = mHourTextWidth + mEventMarginSide
         Log.d("Debug", "eventMargin: $mEventMarginSide")
         rect.right = -mEventMarginSide//width - mEventMarginSide
@@ -123,7 +123,7 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
         return rect
     }
 
-    private fun getPositionOfTime(dateTime: LocalDateTime): Int {
+    fun getPositionOfTime(dateTime: LocalDateTime): Float {
         val hour = dateTime.hour - mStartHour
         val minute = dateTime.minute//calendar[Calendar.MINUTE]
         return hour * mHourHeight + minute * mHourHeight / 60

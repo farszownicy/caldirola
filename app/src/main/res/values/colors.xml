@@ -14,4 +14,7 @@
     <color name="colorBlueT">#642fb4ff</color>
     <color name="colorPuprleL">#DEB1F9</color>
     <color name="colordata">#B5EBC9FF</color>
+    <color name="curr_time_color">#D81B60</color>
+    <color name="time_label_color">#C05e5e5e</color>
+    <color name="time_separator_color">#5e5e5e</color>
 </resources>

@@ -32,7 +32,10 @@ class AgendaHandler(private var mContext: Context) {
 
     fun getHourView(hour: Int): HourView {
         val hourView = HourView(mContext)
-        hourView.setText(String.format("%1$2s:00", hour))
+        if(hour < 24)
+            hourView.setText(String.format("%1$2s:00", hour))
+        else
+            hourView.setText("")
         return hourView
     }
 
