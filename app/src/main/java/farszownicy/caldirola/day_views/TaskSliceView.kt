@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import farszownicy.caldirola.R
 import farszownicy.caldirola.data_classes.TaskSlice
+import farszownicy.caldirola.utils.Constants.DATETIME_FORMAT
 import kotlinx.android.synthetic.main.task_entry.view.*
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -22,7 +23,7 @@ class TaskSliceView @JvmOverloads constructor(context: Context, attrs: Attribute
             field = task
             task_name_tv.text = mTaskSlice?.parent?.name
             val deadline = mTaskSlice?.parent!!.deadline
-            val simpleDateFormat = DateTimeFormatter.ofPattern("dd.MM.uu HH:mm")
+            val simpleDateFormat = DateTimeFormatter.ofPattern(DATETIME_FORMAT)
             deadline_tv.text = "${simpleDateFormat.format(deadline)}"
 //                "${deadline.getDisplayName(Calendar.DAY_OF_MONTH, Calendar.LONG, Locale.ENGLISH)}." +
 //                    "${deadline.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH)}." +

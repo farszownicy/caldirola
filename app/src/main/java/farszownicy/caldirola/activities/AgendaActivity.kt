@@ -2,7 +2,10 @@ package farszownicy.caldirola.activities
 
 import TaskSliceView
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -11,24 +14,22 @@ import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.crud_activities.AddEventActivity
 import farszownicy.caldirola.crud_activities.AddTaskActivity
-import farszownicy.caldirola.data_classes.Place
 import farszownicy.caldirola.day_views.EventView
 import farszownicy.caldirola.data_classes.Event
-import farszownicy.caldirola.data_classes.Task
 import farszownicy.caldirola.data_classes.TaskSlice
 import farszownicy.caldirola.utils.Constants
-import farszownicy.caldirola.utils.memory.loadEventsFromMemory
-import farszownicy.caldirola.utils.memory.loadTasksFromMemory
+import farszownicy.caldirola.utils.Constants.MINUTES_IN_DAY
 import farszownicy.caldirola.utils.memory.saveEventsToMemory
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_agenda.*
+import kotlinx.android.synthetic.main.activity_agenda.view.*
 import java.time.LocalDateTime
-import kotlin.collections.ArrayList
 import kotlin.time.ExperimentalTime
-import kotlin.time.minutes
 
 class AgendaActivity : AppCompatActivity() {
-    var memoryUpToDate = true;
+    var memoryUpToDate = true
+    lateinit var minuteUpdateReceiver: BroadcastReceiver
+    lateinit var currTime:LocalDateTime
 
     @ExperimentalTime
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -163,4 +164,31 @@ class AgendaActivity : AppCompatActivity() {
         super.onStop()
     }
 
+    override fun onResume(){
+        super.onResume()
+        currTime = LocalDateTime.now()
+        startCurrMinuteUpdater()
+    }
+    override fun onPause(){
+        super.onPause()
+        unregisterReceiver(minuteUpdateReceiver)
+    }
+
+    fun startCurrMinuteUpdater(){
+        val filter = IntentFilter()
+        filter.addAction(Intent.ACTION_TIME_TICK)
+        minuteUpdateReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?){
+                currTime = currTime.plusMinutes(1)
+                updateTime()
+            }
+        }
+        registerReceiver(minuteUpdateReceiver, filter)
+        updateTime()
+    }
+
+    private fun updateTime() {
+        val linePosition = agenda.getPositionOfTime(currTime)
+        agenda.curr_time_line.updatePosition(linePosition, currTime)
+    }
 }

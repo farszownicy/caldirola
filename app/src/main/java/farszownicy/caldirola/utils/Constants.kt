@@ -12,4 +12,5 @@ object Constants {
     const val DATE_FORMAT = "dd.MM.yyyy"
     const val TIME_FORMAT = "HH:mm"
     const val DATETIME_FORMAT = "dd.MM.yyyy HH:mm"
+    const val MINUTES_IN_DAY = 1440f
 }

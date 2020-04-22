@@ -192,13 +192,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="Surname"
+                    android:text="First Name"
                     android:textColor="@color/colorPurple"
                     android:textSize="18dp"
                     tools:layout_marginRight="10dp" />
 
                 <EditText
-                    android:id="@+id/surnameET"
+                    android:id="@+id/firstNameET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
@@ -211,13 +211,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="Name"
+                    android:text="Second Name"
                     android:textColor="@color/colorPurple"
                     android:textSize="18dp"
                     tools:layout_marginRight="10dp" />
 
                 <EditText
-                    android:id="@+id/nameET"
+                    android:id="@+id/secondNameET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"

@@ -21,14 +21,14 @@
             android:layout_marginRight="5dp"
             android:gravity="end"
             android:text="12:00"
-            android:textColor="#5e5e5e"
+            android:textColor="@color/time_label_color"
             android:textSize="12sp" />
 
         <LinearLayout
             android:id="@+id/hour_separator"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="#000000"
+            android:background="@color/time_separator_color"
             android:orientation="horizontal" />
     </LinearLayout>
 </RelativeLayout>
