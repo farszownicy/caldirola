@@ -23,7 +23,7 @@
         android:background="@drawable/header2"
         android:fontFamily="sans-serif-light"
         android:gravity="center"
-        android:text="Dodaj zadanie"
+        android:text="@string/add_task_text"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="@dimen/headline_font_size"
@@ -99,7 +99,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="Nazwa"
+                        android:text="@string/task_name_text"
                         android:textColor="@color/colorPurple"
                         android:textSize="18dp"
                         tools:layout_marginRight="10dp" />
@@ -121,7 +121,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/ae_side_margin"
                         android:layout_marginRight="@dimen/ae_side_margin"
-                        android:text="Opis"
+                        android:text="@string/task_description_text"
                         android:textColor="@color/colorPurple"
                         android:textSize="18dp" />
 
@@ -143,7 +143,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:text="Deadline"
+                        android:text="@string/deadline_text"
                         android:textColor="@color/colorPurple"
                         android:textSize="18dp" />
 
@@ -165,7 +165,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:text="Czas trwania [hh:mm]"
+                        android:text="@string/estimated_duration_text"
                         android:textColor="@color/colorPurple"
                         android:textSize="18dp" />
 
@@ -186,7 +186,7 @@
                             android:fontFamily="sans-serif-light"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
-                            android:text="data"
+                            android:text="date"
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/ae_input_font_size" />
 
@@ -197,7 +197,7 @@
                             android:layout_marginRight="10dp"
                             android:fontFamily="sans-serif-light"
                             android:paddingLeft="10dp"
-                            android:text="czas"
+                            android:text="@string/time_text"
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/ae_input_font_size"
                             tools:paddingRight="10dp" />
@@ -210,7 +210,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:text="Piorytet"
+                        android:text="@string/priority_text"
                         android:textColor="@color/colorPurple"
                         android:textSize="18dp" />
 
@@ -231,7 +231,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:fontFamily="sans-serif-light"
-                        android:text="Divisible task"
+                        android:text="@string/divisible_task_text"
                         android:textColor="@color/colorPurple"
                         android:textSize="@dimen/ae_input_font_size" />
 
@@ -264,7 +264,7 @@
                     android:layout_marginBottom="30dp"
                     android:background="@drawable/bg_ui"
                     android:fontFamily="sans-serif-light"
-                    android:text="Dodaj"
+                    android:text="@string/confirm_text"
                     android:textAllCaps="false"
                     android:textColor="@color/colorWhite"
                     android:textSize="26dp" />
