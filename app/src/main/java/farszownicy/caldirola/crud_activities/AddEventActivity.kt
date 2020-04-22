@@ -18,8 +18,8 @@ import farszownicy.caldirola.activities.MainActivity
 import farszownicy.caldirola.data_classes.Event
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
-import farszownicy.caldirola.utils.readObjectsFromSharedPreferences
-import farszownicy.caldirola.utils.writeObjectToSharedPreferences
+import farszownicy.caldirola.utils.memory.readObjectsFromSharedPreferences
+import farszownicy.caldirola.utils.memory.writeObjectToSharedPreferences
 import kotlinx.android.synthetic.main.activity_add_event.*
 import java.util.*
 import kotlin.time.ExperimentalTime
@@ -147,7 +147,6 @@ class AddEventActivity : AppCompatActivity()
             db.collection("events").add(event_data).addOnSuccessListener { documentReference ->
                 Log.d(TAG, "Event added with ID: ${documentReference.id}")
             }.addOnFailureListener { e -> Log.w(TAG, "Error adding event", e) }
-            saveEventToInternalMemory(event)
             eventIntent.putExtra(Constants.ADD_EVENT_KEY, eventAdded)
             setResult(Activity.RESULT_OK, eventIntent)
             finish()
@@ -160,24 +159,6 @@ class AddEventActivity : AppCompatActivity()
     override fun onBackPressed() {
         super.onBackPressed()
         //finishActivity(Activity.RESULT_CANCELED)
-    }
-
-    private fun saveEventToInternalMemory(event: Event){
-        var eventList = readObjectsFromSharedPreferences<ArrayList<Event>>(
-            applicationContext,
-            Constants.SHARED_PREF_CALENDAR_FILE_NAME,
-            Constants.SHARED_PREF_EVENTS_LIST_KEY
-        )
-        if(eventList == null) {
-            eventList = ArrayList()
-        }
-        eventList.add(event)
-
-        writeObjectToSharedPreferences(applicationContext,
-            Constants.SHARED_PREF_CALENDAR_FILE_NAME,
-            Constants.SHARED_PREF_EVENTS_LIST_KEY,
-            eventList
-        )
     }
 
     //SPINNER METHODS

@@ -17,24 +17,26 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@android:drawable/ic_input_add"
+        tools:background="@color/colorPuprleL" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#FFFFFF"
         android:clipToPadding="false"
-        android:background="#FFF"
         android:paddingTop="@dimen/day_height"
-        >
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
+
         <farszownicy.caldirola.day_views.CalendarDayView
             android:id="@+id/agenda"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:eventMarginLeft="0dp"
-            app:dayHeight="@dimen/day_height">
+            app:dayHeight="@dimen/day_height"
+            app:eventMarginLeft="0dp">
 
         </farszownicy.caldirola.day_views.CalendarDayView>
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

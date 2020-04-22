@@ -1,162 +1,276 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/at_scroll"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rel"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/at_layout"
+    <ImageView
+        android:id="@+id/circle1"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginTop="125dp"
+        android:layout_marginRight="0dp"
+        app:srcCompat="@drawable/circletransparant"
+        tools:layout_alignParentRight="true"
+        tools:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/at_headline"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-
-        <TextView
-            android:id="@+id/at_headline"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/ae_side_margin"
-            android:layout_marginTop="@dimen/ae_top_margin"
-            android:layout_marginRight="@dimen/ae_side_margin"
-            android:layout_marginBottom="@dimen/ae_bottom_margin"
-            android:fontFamily="sans-serif-light"
-            android:text="Dodaj zadanie"
-            android:textAlignment="center"
-            android:textSize="@dimen/headline_font_size" />
-
-        <EditText
-            android:id="@+id/at_input_name"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/ae_side_margin"
-            android:layout_marginTop="@dimen/ae_top_margin"
-            android:layout_marginRight="@dimen/ae_side_margin"
-            android:layout_marginBottom="@dimen/ae_bottom_margin"
-            android:ems="10"
-            android:fontFamily="sans-serif-light"
-            android:hint="Nazwa"
-            android:inputType="textPersonName"
-            android:textSize="@dimen/ae_input_font_size" />
-
-        <EditText
-            android:id="@+id/at_input_description"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/ae_side_margin"
-            android:layout_marginTop="@dimen/ae_top_margin"
-            android:layout_marginRight="@dimen/ae_side_margin"
-            android:layout_marginBottom="@dimen/ae_bottom_margin"
-            android:ems="10"
-            android:fontFamily="sans-serif-light"
-            android:hint="Opis"
-            android:inputType="textPersonName"
-            android:textSize="@dimen/ae_input_font_size" />
-
-        <TableRow
-            android:id="@+id/at_since_table"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/at_since"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/ae_side_margin"
-                android:layout_marginTop="@dimen/ae_top_margin"
-                android:layout_marginRight="@dimen/ae_side_margin"
-                android:layout_marginBottom="@dimen/ae_bottom_margin"
-                android:fontFamily="sans-serif-light"
-                android:text="Deadline"
-                android:textSize="@dimen/ae_input_font_size" />
-
-            <TextView
-                android:id="@+id/at_deadline_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/ae_side_margin"
-                android:layout_marginTop="@dimen/ae_top_margin"
-                android:layout_marginRight="@dimen/ae_side_margin"
-                android:layout_marginBottom="@dimen/ae_bottom_margin"
-                android:background="@drawable/rectangle"
-                android:fontFamily="sans-serif-black"
-                android:text="data"
-                android:textSize="@dimen/ae_input_font_size" />
-
-            <TextView
-                android:id="@+id/at_deadline_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/ae_side_margin"
-                android:layout_marginTop="@dimen/ae_top_margin"
-                android:layout_marginRight="@dimen/ae_side_margin"
-                android:layout_marginBottom="@dimen/ae_bottom_margin"
-                android:background="@drawable/rectangle"
-                android:fontFamily="sans-serif-black"
-                android:text="czas"
-                android:textSize="@dimen/ae_input_font_size" />
-
-        </TableRow>
-
-        <EditText
-        android:id="@+id/at_input_time"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/ae_side_margin"
-        android:layout_marginTop="@dimen/ae_top_margin"
-        android:layout_marginRight="@dimen/ae_side_margin"
-        android:layout_marginBottom="@dimen/ae_bottom_margin"
-        android:ems="10"
+        android:layout_height="125dp"
+        android:background="@drawable/header2"
         android:fontFamily="sans-serif-light"
-        android:hint="Czas trwania [hh:mm]"
-        android:inputType="time"
-        android:textSize="@dimen/ae_input_font_size" />
+        android:gravity="center"
+        android:text="Dodaj zadanie"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/headline_font_size"
+        tools:textSize="32dp" />
 
-        <EditText
-            android:id="@+id/at_input_priority"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/ae_side_margin"
-            android:layout_marginTop="@dimen/ae_top_margin"
-            android:layout_marginRight="@dimen/ae_side_margin"
-            android:layout_marginBottom="@dimen/ae_bottom_margin"
-            android:ems="10"
-            android:fontFamily="sans-serif-light"
-            android:hint="Priorytet"
-            android:inputType="number"
-            android:textSize="@dimen/ae_input_font_size" />
-        <CheckBox
-            android:id="@+id/at_divisible"
+    <ImageButton
+        android:id="@+id/circle4"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="-40dp"
+        android:background="@drawable/bg_ui" />
+
+    <ImageButton
+        android:id="@+id/circle3"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="-85dp"
+        android:layout_marginBottom="-20dp"
+        android:background="@drawable/circletransparant" />
+
+    <ImageButton
+        android:id="@+id/circle2"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginBottom="260dp"
+        android:background="@drawable/circletransparant" />
+
+    <ScrollView
+        android:id="@+id/ae_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/at_headline"
+        android:layout_marginTop="10dp">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Divisible task"
-            android:layout_marginLeft="@dimen/ae_side_margin"
-            android:layout_marginTop="@dimen/ae_top_margin"
-            android:layout_marginRight="@dimen/ae_side_margin"
-            android:layout_marginBottom="@dimen/ae_bottom_margin"
-            android:fontFamily="sans-serif-light"
-            android:textSize="@dimen/ae_input_font_size"/>
+            android:layout_height="wrap_content">
 
-        <Spinner
-            android:id="@+id/at_location"
-            android:layout_marginLeft="@dimen/ae_side_margin"
-            android:layout_marginTop="@dimen/ae_top_margin"
-            android:layout_marginRight="@dimen/ae_side_margin"
-            android:layout_marginBottom="@dimen/ae_bottom_margin"
-            android:layout_width="300dp"
-            android:layout_height="70dp" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:padding="15dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="10dp"
+                tools:layout_marginTop="20dp">
 
+                <LinearLayout
+                    android:id="@+id/at_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white"
+                    android:orientation="vertical"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="20dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="50dp"
+                    tools:layout_marginBottom="p">
 
-        <Button
-            android:id="@+id/at_add_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/ae_side_margin"
-            android:layout_marginTop="@dimen/ae_top_margin"
-            android:layout_marginRight="@dimen/ae_side_margin"
-            android:layout_marginBottom="@dimen/ae_bottom_margin"
-            android:fontFamily="sans-serif-condensed"
-            android:text="Dodaj mnie"
-            android:textColor="@android:color/holo_purple"
-            android:textSize="30sp" />
-    </LinearLayout>
-</ScrollView>
+                    <TextView
+                        android:id="@+id/name_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="Nazwa"
+                        android:textColor="@color/colorPurple"
+                        android:textSize="18dp"
+                        tools:layout_marginRight="10dp" />
+
+                    <EditText
+                        android:id="@+id/at_input_name"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:ems="10"
+                        android:fontFamily="sans-serif-light"
+                        android:inputType="textPersonName"
+                        android:textSize="@dimen/ae_input_font_size" />
+
+                    <TextView
+                        android:id="@+id/desc_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/ae_side_margin"
+                        android:layout_marginRight="@dimen/ae_side_margin"
+                        android:text="Opis"
+                        android:textColor="@color/colorPurple"
+                        android:textSize="18dp" />
+
+                    <EditText
+                        android:id="@+id/at_input_description"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginBottom="@dimen/ae_bottom_margin"
+                        android:ems="10"
+                        android:fontFamily="sans-serif-light"
+                        android:inputType="textPersonName"
+                        android:textSize="@dimen/ae_input_font_size"
+                        tools:layout_marginRight="10dp" />
+
+                    <TextView
+                        android:id="@+id/pior_text2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="Deadline"
+                        android:textColor="@color/colorPurple"
+                        android:textSize="18dp" />
+
+                    <EditText
+                        android:id="@+id/at_input_time"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="@dimen/ae_bottom_margin"
+                        android:ems="10"
+                        android:fontFamily="sans-serif-light"
+                        android:inputType="time"
+                        android:textSize="@dimen/ae_input_font_size" />
+
+                    <TextView
+                        android:id="@+id/pior_text3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="Czas trwania [hh:mm]"
+                        android:textColor="@color/colorPurple"
+                        android:textSize="18dp" />
+
+                    <TableRow
+                        android:id="@+id/at_since_table"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="fill_horizontal"
+                        android:gravity="fill_vertical"
+                        android:textAlignment="center">
+
+                        <TextView
+                            android:id="@+id/at_deadline_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:fontFamily="sans-serif-light"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="data"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/ae_input_font_size" />
+
+                        <TextView
+                            android:id="@+id/at_deadline_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:fontFamily="sans-serif-light"
+                            android:paddingLeft="10dp"
+                            android:text="czas"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/ae_input_font_size"
+                            tools:paddingRight="10dp" />
+
+                    </TableRow>
+
+                    <TextView
+                        android:id="@+id/pior_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="Piorytet"
+                        android:textColor="@color/colorPurple"
+                        android:textSize="18dp" />
+
+                    <EditText
+                        android:id="@+id/at_input_priority"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:ems="10"
+                        android:fontFamily="sans-serif-light"
+                        android:inputType="number"
+                        android:textSize="@dimen/ae_input_font_size" />
+
+                    <CheckBox
+                        android:id="@+id/at_divisible"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Divisible task"
+                        android:textColor="@color/colorPurple"
+                        android:textSize="@dimen/ae_input_font_size" />
+
+                    <Spinner
+                        android:id="@+id/at_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cv"
+                android:layout_alignLeft="@+id/cv"
+                android:layout_alignRight="@+id/cv"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="-30dp"
+                android:layout_marginRight="35dp"
+                android:elevation="10dp">
+
+                <Button
+                    android:id="@+id/at_add_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="30dp"
+                    android:background="@drawable/bg_ui"
+                    android:fontFamily="sans-serif-light"
+                    android:text="Dodaj"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="26dp" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

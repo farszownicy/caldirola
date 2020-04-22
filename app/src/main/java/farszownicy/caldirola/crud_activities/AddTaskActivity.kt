@@ -101,7 +101,7 @@ class AddTaskActivity : AppCompatActivity() {
         val description = at_input_description.text.toString()
         val deadline = calendarUtils.getDTFromTV(at_deadline_date, at_deadline_time)
         //val selected_location = places
-        val divisible = at_divisible.isSelected
+        val divisible = at_divisible.isChecked
         val priority = at_input_priority.text.toString()
         val duration: Int
         val time: LocalTime

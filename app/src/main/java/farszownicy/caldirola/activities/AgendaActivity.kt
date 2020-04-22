@@ -18,6 +18,10 @@ import farszownicy.caldirola.data_classes.Event
 import farszownicy.caldirola.data_classes.Task
 import farszownicy.caldirola.data_classes.TaskSlice
 import farszownicy.caldirola.utils.Constants
+import farszownicy.caldirola.utils.memory.loadEventsFromMemory
+import farszownicy.caldirola.utils.memory.loadTasksFromMemory
+import farszownicy.caldirola.utils.memory.saveEventsToMemory
+import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_agenda.*
 import java.time.LocalDateTime
 import kotlin.collections.ArrayList
@@ -25,8 +29,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.minutes
 
 class AgendaActivity : AppCompatActivity() {
-    var events: ArrayList<Event> = ArrayList()
-    var tasks: ArrayList<Task> = ArrayList()
+    var memoryUpToDate = true;
 
     @ExperimentalTime
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +51,7 @@ class AgendaActivity : AppCompatActivity() {
                     Log.e("TAG", "onEventLongClick: ${data!!.name}, event start: ${data.startTime}, event end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
                     PlanManager.mEvents.remove(data)
                     PlanManager.mAllInsertedEntries.remove(data)
+                    memoryUpToDate = false
                     agenda.refreshEntries()
                 }
             })
@@ -56,9 +60,10 @@ class AgendaActivity : AppCompatActivity() {
             object : TaskSliceView.OnTaskClickListener{
                 override fun onTaskClick(view: TaskSliceView?, data: TaskSlice?) {
                     Toast.makeText(this@AgendaActivity,
-                        "onTaskClick:${data!!.parent.name}, task start: ${data.startTime}, task end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}",
+                        "onTaskClick:${data!!.parent.name}, divisible: ${data.parent.divisible}, task start: ${data.startTime}, task end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}",
                         Toast.LENGTH_SHORT).show()
-                    Log.e("TAG","onTaskClick:${data!!.parent.name}, task start: ${data.startTime}, task end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
+                    Log.e("TAG","onTaskClick:${data!!.parent.name}, divisible: ${data.parent.divisible}, task start: ${data.startTime}, task end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
+                    memoryUpToDate = false
                 }
             })
 
@@ -80,7 +85,7 @@ class AgendaActivity : AppCompatActivity() {
 
     @ExperimentalTime
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK)
+        if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 Constants.ADD_EVENT_CODE -> {
                     agenda.drawEvents()
@@ -89,12 +94,14 @@ class AgendaActivity : AppCompatActivity() {
                     agenda.drawTasks()
                 }
             }
+            memoryUpToDate = false
+        }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
     @ExperimentalTime
     private fun addTasks() {
-        val deadline1 = LocalDateTime.now().withHour(22).withMinute(0)
+/*        val deadline1 = LocalDateTime.now().withHour(22).withMinute(0)
         val task1 = Task("id2", "ulep pierogi", "graj w minikraft",
             deadline1, 340.minutes, 0,divisible=true)
         tasks.add(task1)
@@ -117,14 +124,13 @@ class AgendaActivity : AppCompatActivity() {
         val deadline3 = LocalDateTime.now().withHour(23).withMinute(0)
         val task3 = Task("id3", "graj w minecraft", "opis",
             deadline3, 60.minutes, 0,divisible=false)
-        tasks.add(task3)
-        PlanManager.mTasks = tasks
+        tasks.add(task3)*/
         agenda.drawTasks()
     }
 
     @ExperimentalTime
     private fun addEvents() {
-        val timeStart1 = LocalDateTime.now().withHour(2).withMinute(0)
+/*        val timeStart1 = LocalDateTime.now().withHour(2).withMinute(0)
         val timeEnd1 = timeStart1.withHour(3).withMinute(30)
         val event1 = Event("id1","Hurtownie Danych", "laby", timeStart1, timeEnd1, Place("Uczelnia"))
         PlanManager.addEvent(event1)
@@ -137,11 +143,13 @@ class AgendaActivity : AppCompatActivity() {
         val timeStart3 = LocalDateTime.now().withHour(14).withMinute(0)
         val timeEnd3 = LocalDateTime.now().withHour(15).withMinute(15)
         val event3 = Event("id3","Wyjazd do Iraku", "aaa",  timeStart3, timeEnd3, Place("Irak"))
-        //events.add(event3)//PlanManager.addEvent(event3)
-        PlanManager.addEvent(event3)
+
+        PlanManager.addEvent(event3)*/
         agenda.drawEvents()
     }
 
+
+     @ExperimentalTime
      fun AddDialog(){
         AlertDialog.Builder(this@AgendaActivity).setTitle("CHOOSE ENTRY TYPE")
             .setPositiveButton("EVENT"){dialog, id -> StartAEActivity()}
@@ -154,9 +162,20 @@ class AgendaActivity : AppCompatActivity() {
         startActivityForResult(intent, Constants.ADD_EVENT_CODE)
     }
 
-    fun StartATActivity(){
+    @ExperimentalTime
+    fun StartATActivity() {
         val intent = Intent(this, AddTaskActivity::class.java)
         startActivityForResult(intent, Constants.ADD_TASK_CODE)
+    }
+
+    @ExperimentalTime
+    override fun onStop() {
+        if(!memoryUpToDate){
+            saveEventsToMemory(this)
+            saveTasksToMemory(this)
+            memoryUpToDate = true
+        }
+        super.onStop()
     }
 
 }
