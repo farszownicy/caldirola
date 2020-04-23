@@ -11,4 +11,5 @@
     <dimen name="ae_side_margin">10dp</dimen>
     <dimen name="ae_bottom_margin">15dp</dimen>
     <dimen name="ae_input_font_size">28sp</dimen>
+    <dimen name="ae_input_datetime_size">24sp</dimen>
 </resources>

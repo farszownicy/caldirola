@@ -186,9 +186,9 @@
                             android:fontFamily="sans-serif-light"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
-                            android:text="date"
+                            android:text="@string/date_text"
                             android:textColor="@android:color/black"
-                            android:textSize="@dimen/ae_input_font_size" />
+                            android:textSize="@dimen/ae_input_datetime_size" />
 
                         <TextView
                             android:id="@+id/at_deadline_time"
@@ -199,7 +199,7 @@
                             android:paddingLeft="10dp"
                             android:text="@string/time_text"
                             android:textColor="@android:color/black"
-                            android:textSize="@dimen/ae_input_font_size"
+                            android:textSize="@dimen/ae_input_datetime_size"
                             tools:paddingRight="10dp" />
 
                     </TableRow>
