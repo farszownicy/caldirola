@@ -293,7 +293,8 @@
                         android:layout_marginLeft="@dimen/ae_side_margin"
                         android:layout_marginTop="@dimen/ae_top_margin"
                         android:layout_marginRight="@dimen/ae_side_margin"
-                        android:layout_marginBottom="@dimen/ae_bottom_margin" />
+                        android:layout_marginBottom="@dimen/ae_bottom_margin"
+                        android:spinnerMode="dropdown" />
 
 
                     <TableRow
