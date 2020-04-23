@@ -201,11 +201,10 @@
                         android:layout_marginLeft="@dimen/ae_side_margin"
                         android:layout_marginTop="@dimen/ae_top_margin"
                         android:layout_marginRight="@dimen/ae_side_margin"
-                        android:layout_marginBottom="@dimen/ae_bottom_margin"
                         android:fontFamily="sans-serif"
                         android:text="@string/from_text"
                         android:textColor="@color/colorPurple"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
 
                     <TableRow
                         android:id="@+id/ae_since_table"
@@ -250,11 +249,10 @@
                         android:layout_marginLeft="@dimen/ae_side_margin"
                         android:layout_marginTop="@dimen/ae_top_margin"
                         android:layout_marginRight="@dimen/ae_side_margin"
-                        android:layout_marginBottom="@dimen/ae_bottom_margin"
                         android:fontFamily="sans-serif"
                         android:text="@string/to_text"
                         android:textColor="@color/colorPurple"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
 
                     <TableRow
                         android:id="@+id/ae_to_table"
@@ -293,7 +291,8 @@
                         android:layout_marginLeft="@dimen/ae_side_margin"
                         android:layout_marginTop="@dimen/ae_top_margin"
                         android:layout_marginRight="@dimen/ae_side_margin"
-                        android:layout_marginBottom="@dimen/ae_bottom_margin" />
+                        android:layout_marginBottom="@dimen/ae_bottom_margin"
+                        android:spinnerMode="dropdown" />
 
 
                     <TableRow

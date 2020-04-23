@@ -6,9 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
@@ -16,17 +14,17 @@ import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.activities.MainActivity
 import farszownicy.caldirola.data_classes.Event
+import farszownicy.caldirola.data_classes.Place
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
-import farszownicy.caldirola.utils.memory.readObjectsFromSharedPreferences
-import farszownicy.caldirola.utils.memory.writeObjectToSharedPreferences
 import kotlinx.android.synthetic.main.activity_add_event.*
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.time.ExperimentalTime
 
 
 class AddEventActivity : AppCompatActivity()
-    //,AdapterView.OnItemSelectedListener
+    ,AdapterView.OnItemSelectedListener
 {
     companion object
     {
@@ -55,35 +53,7 @@ class AddEventActivity : AppCompatActivity()
             addEvent()
         }
 
-        locations.get()
-            .addOnSuccessListener { documents ->
-                for(document in documents){
-                    Log.d(TAG, "${document.id} => ${document.data}")
-                    val name = document.getString(NAME_KEY)
-                    places.add(name!!)
-                }
-            }.addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents: ", exception)
-            }
-
-        //TODO NAPRAWIC SPINNER
-        val adapter = ArrayAdapter<String>(this@AddEventActivity, android.R.layout.simple_spinner_item, places)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        ae_location.adapter = adapter
-        ae_location.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                Toast.makeText(this@AddEventActivity,"???", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                Toast.makeText(this@AddEventActivity,"!!!", Toast.LENGTH_SHORT).show()
-            }
-        }
+        setSpinner()
         setAllDatePickers()
 
         userDoc.addSnapshotListener(this
@@ -103,6 +73,23 @@ class AddEventActivity : AppCompatActivity()
                 Log.d(MainActivity.TAG, "Current data: null")
             }
         }
+    }
+
+    private fun setSpinner(){
+        locations.get()
+            .addOnSuccessListener { documents ->
+                for(document in documents){
+                    Log.d(TAG, "${document.id} => ${document.data}")
+                    val name = document.getString(NAME_KEY)
+                    places.add(name!!)
+                }
+                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, places)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                ae_location.onItemSelectedListener = this@AddEventActivity
+                ae_location.adapter = adapter
+            }.addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents: ", exception)
+            }
     }
 
     private fun setAllDatePickers()
@@ -128,7 +115,7 @@ class AddEventActivity : AppCompatActivity()
         val dt_start = datetime_utils.getDTFromTV(ae_start_date, ae_start_time)
         val dt_end = datetime_utils.getDTFromTV(ae_end_date, ae_end_time)
 
-        val selected_location = places
+        val selected_location = Place(ae_location.selectedItem as String)
 
         if(name.isEmpty() || description.isEmpty() ||  PlanManager.areEqual(dt_start, dt_end))
             return
@@ -139,7 +126,7 @@ class AddEventActivity : AppCompatActivity()
             END_DATE_KEY to dt_end,
             LOCATION_KEY to selected_location
         )
-        val event = Event(UUID.randomUUID().toString(),name, description, startTime = dt_start, endTime = dt_end)
+        val event = Event(UUID.randomUUID().toString(),name, description, dt_start, dt_end, selected_location)
         val eventIntent = Intent()
 
         val eventAdded = PlanManager.addEvent(event)
@@ -162,12 +149,10 @@ class AddEventActivity : AppCompatActivity()
     }
 
     //SPINNER METHODS
-   /* override fun onNothingSelected(p0: AdapterView<*>?) {
+    override fun onNothingSelected(p0: AdapterView<*>?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-        Toast.makeText(applicationContext, "Test", Toast.LENGTH_SHORT).show()
-        val t = p0!!.getItemAtPosition(p2).toString()
-    }*/
+    }
 }

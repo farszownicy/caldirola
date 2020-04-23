@@ -17,8 +17,8 @@ import kotlin.time.ExperimentalTime
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        const val NAME_KEY = "name"
-        const val SURN_KEY = "surname"
+        const val FIRST_NAME_KEY = "name"
+        const val SECOND_NAME_KEY = "surname"
         const val TAG = "debug"
     }
     private val db = FirebaseFirestore.getInstance()
@@ -94,14 +94,14 @@ class MainActivity : AppCompatActivity() {
      * Dodaje usera do Firestore'a
      */
     private fun addUser(){
-        val userName = nameET.text.toString()
-        val userSurname = surnameET.text.toString()
+        val userName = firstNameET.text.toString()
+        val userSurname = secondNameET.text.toString()
 
         if(userName.isEmpty() || userSurname.isEmpty())
             return
         val userData = hashMapOf(
-            NAME_KEY to userName,
-            SURN_KEY to userSurname
+            FIRST_NAME_KEY to userName,
+            SECOND_NAME_KEY to userSurname
         )
 
         db.collection("users").add(userData).addOnSuccessListener {

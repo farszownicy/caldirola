@@ -35,7 +35,10 @@
             android:layout_height="wrap_content"
             app:dayHeight="@dimen/day_height"
             app:eventMarginLeft="0dp">
-
+            <farszownicy.caldirola.day_views.CurrentTimeLineView
+                android:id="@+id/curr_time_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
         </farszownicy.caldirola.day_views.CalendarDayView>
     </ScrollView>
 
