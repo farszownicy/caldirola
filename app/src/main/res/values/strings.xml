@@ -2,6 +2,7 @@
     <string name="app_name">Caldirola</string>
     <string name="title_activity_plan">PlanActivity</string>
     <string name="title_activity_add_event">AddEventActivity</string>
+    <string name="title_activity_event_list">EventListActivity</string>
     <string name="choose_location_prompt">Wybierz lokalizację</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
@@ -108,4 +109,5 @@
     <string name="priority_text">Priority</string>
     <string name="divisible_task_text">Divisible task</string>
     <string name="add_task_text">Add task</string>
+    <string name="event_list_headline">List of events and tasks</string>
 </resources>
