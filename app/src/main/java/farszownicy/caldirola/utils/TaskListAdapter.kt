@@ -4,6 +4,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import farszownicy.caldirola.Logic.PlanManager
@@ -29,10 +30,13 @@ class TaskListAdapter() : RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
         holder.descText.text = currentItem.description
         if(currentItem.places.isNotEmpty()){
             holder.locationText.text = currentItem.places[0].name
+        }else {
+            holder.locationText.visibility = View.GONE
+            holder.locationIcon.visibility = View.GONE
         }
         val df = DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT)
         //Zamienić potem na string.xml
-        holder.deadlineText.text = "${df.format(currentItem.deadline)}"
+        holder.deadlineText.text = df.format(currentItem.deadline)
         holder.durationText.text = currentItem.duration.toString()
 
         holder.itemView.setOnClickListener {
@@ -43,7 +47,7 @@ class TaskListAdapter() : RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
 
     @ExperimentalTime
     fun removeTask(position: Int){
-        PlanManager.mTasks.removeAt(position)
+        PlanManager.removeTask(PlanManager.mTasks[position])
         this.notifyItemRemoved(position)
     }
 
@@ -53,5 +57,6 @@ class TaskListAdapter() : RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
         var locationText: TextView = itemView.findViewById(R.id.tl_location_text)
         var deadlineText: TextView = itemView.findViewById(R.id.tl_deadline)
         var durationText: TextView = itemView.findViewById(R.id.tl_duration)
+        var locationIcon: ImageView = itemView.findViewById(R.id.tl_location_icon)
     }
 }

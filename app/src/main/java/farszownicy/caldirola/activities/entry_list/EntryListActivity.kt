@@ -8,6 +8,9 @@ import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import farszownicy.caldirola.R
 import farszownicy.caldirola.activities.entry_list.SectionsPagerAdapter
+import farszownicy.caldirola.utils.memory.saveEventsToMemory
+import farszownicy.caldirola.utils.memory.saveTasksToMemory
+import kotlin.time.ExperimentalTime
 
 class EntryListActivity : AppCompatActivity() {
 
@@ -25,5 +28,12 @@ class EntryListActivity : AppCompatActivity() {
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
+    }
+
+    @ExperimentalTime
+    override fun onStop() {
+        saveTasksToMemory(this)
+        saveEventsToMemory(this)
+        super.onStop()
     }
 }

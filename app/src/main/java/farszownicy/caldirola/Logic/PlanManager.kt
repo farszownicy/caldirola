@@ -61,6 +61,14 @@ object PlanManager {
     }
 
     @ExperimentalTime
+    fun removeTask(task: Task): Boolean{
+        mTaskSlices.removeAll {
+            it.parent == task
+        }
+        return mTasks.remove(task)
+    }
+
+    @ExperimentalTime
     public fun addEvent(event: Event): Boolean{
         if (canEventBeInserted(event)) {
             mEvents.add(event)
