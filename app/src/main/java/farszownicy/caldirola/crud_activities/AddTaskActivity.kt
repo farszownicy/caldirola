@@ -4,11 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,6 +22,7 @@ import farszownicy.caldirola.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.activity_add_event.*
 import kotlinx.android.synthetic.main.activity_add_task.*
 import java.lang.Exception
+import java.sql.Time
 import java.time.LocalTime
 import java.util.*
 import kotlin.time.ExperimentalTime
@@ -38,7 +39,8 @@ class AddTaskActivity : AppCompatActivity(),
         const val TASKS_KEY = "tasks"
         const val DIVISIBILITY_KEY = "divisibility"
         const val PRIORITY_KEY = "priority"
-        const val DURATION_KEY = "priority"
+        const val DURATION_KEY = "duration"
+        const val SLICE_KEY = "slice"
         const val TAG = "debug"
     }
     private val db = FirebaseFirestore.getInstance()
@@ -60,6 +62,8 @@ class AddTaskActivity : AppCompatActivity(),
 
         setSpinner()
         setAllDatePickers()
+        setSlices()
+        validateMinutes()
 
         userDoc.addSnapshotListener(this
         ) { snapshot, e ->
@@ -79,6 +83,25 @@ class AddTaskActivity : AppCompatActivity(),
             }
         }
     }
+
+    private fun setSlices()
+    {
+        at_divisible.setOnCheckedChangeListener {
+                _, isChecked ->
+            at_input_slice_size_hr.isEnabled = isChecked
+            at_input_slice_size_min.isEnabled = isChecked
+        }
+    }
+
+    private fun validateMinutes()
+    {
+        at_input_slice_size_min.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {if(p0.toString() != "") if (Integer.parseInt(p0.toString()) > 59) p0!!.clear()}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        })
+    }
+
     private fun setSpinner() {
         locations.get()
             .addOnSuccessListener { documents ->
@@ -103,6 +126,16 @@ class AddTaskActivity : AppCompatActivity(),
         calendarUtils.setDefaultTime(at_deadline_time)
     }
 
+    private fun getSliceTimeInMinutes(): Int
+    {
+        val slice_hrs = at_input_slice_size_hr.text.toString()
+        val slice_min = at_input_slice_size_min.text.toString()
+        var mins = 0
+        if(slice_min != "") mins += Integer.parseInt(slice_min)
+        if(slice_hrs != "") mins += Constants.MINUTES_IN_HOUR * Integer.parseInt(slice_hrs)
+        return mins
+    }
+
     //TODO: event->task
     @ExperimentalTime
     @RequiresApi(Build.VERSION_CODES.O)
@@ -114,6 +147,7 @@ class AddTaskActivity : AppCompatActivity(),
         val selected_location = Place(at_location.selectedItem as String)
         val divisible = at_divisible.isChecked
         val priority = at_input_priority.text.toString()
+        val minSlice = getSliceTimeInMinutes()
         val duration: Int
         val time: LocalTime
         try {
@@ -123,7 +157,7 @@ class AddTaskActivity : AppCompatActivity(),
             Toast.makeText(this, "Podano czas trwania w niepoprawnym formacie. Wymagany format: hh:mm", Toast.LENGTH_SHORT).show()
             return
         }
-        duration = time.hour *60 + time.minute
+        duration = time.hour * 60 + time.minute
 
         if(name.isEmpty() || description.isEmpty() || duration<= 0)
             return
@@ -134,6 +168,7 @@ class AddTaskActivity : AppCompatActivity(),
             LOCATION_KEY to selected_location,
             DIVISIBILITY_KEY to divisible,
             PRIORITY_KEY to priority,
+            SLICE_KEY to minSlice,
             DURATION_KEY to duration
         )
         val task = Task(UUID.randomUUID().toString(), name, description,

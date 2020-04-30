@@ -237,6 +237,52 @@
                         android:textColor="@color/colorPurple"
                         android:textSize="@dimen/ae_input_font_size" />
 
+                    <TextView
+                        android:id="@+id/pior_text_slice_size"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="Minimal slice length"
+                        android:textColor="@color/colorPurple"
+                        android:textSize="18dp" />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <EditText
+                            android:id="@+id/at_input_slice_size_hr"
+                            android:layout_width="60sp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="@dimen/ae_bottom_margin"
+                            android:ems="10"
+                            android:enabled="false"
+                            android:fontFamily="sans-serif-light"
+                            android:hint="hr"
+                            android:inputType="number"
+                            android:singleLine="true"
+                            android:textSize="@dimen/ae_input_font_size" />
+
+                        <EditText
+                            android:id="@+id/at_input_slice_size_min"
+                            android:layout_width="60sp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="@dimen/ae_bottom_margin"
+                            android:ems="10"
+                            android:enabled="false"
+                            android:fontFamily="sans-serif-light"
+                            android:hint="min"
+                            android:inputType="number"
+                            android:singleLine="true"
+                            android:textSize="@dimen/ae_input_font_size" />
+                    </TableRow>
+
                     <Spinner
                         android:id="@+id/at_location"
                         android:layout_width="match_parent"
