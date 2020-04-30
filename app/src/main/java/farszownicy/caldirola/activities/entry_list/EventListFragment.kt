@@ -1,30 +1,43 @@
-package farszownicy.caldirola.activities
+package farszownicy.caldirola.activities.entry_list
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.utils.EventListAdapter
-import kotlinx.android.synthetic.main.activity_event_list.*
+import kotlin.time.ExperimentalTime
 
-class EventListActivity : AppCompatActivity() {
+class EventListFragment : Fragment() {
 
     private val eventsAdapter = EventListAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_event_list)
-
-        el_recycler_view.adapter = eventsAdapter
-        el_recycler_view.layoutManager = LinearLayoutManager(this)
-
-        val itemTouchHelper = ItemTouchHelper(getLeftSwipeCallback())
-        itemTouchHelper.attachToRecyclerView(el_recycler_view)
     }
 
+    @ExperimentalTime
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val root = inflater.inflate(R.layout.fragment_entry_list, container, false)
+
+        val recyclerView = root.findViewById<RecyclerView>(R.id.el_recycler_view)
+        recyclerView.adapter = eventsAdapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
+
+        val itemTouchHelper = ItemTouchHelper(getLeftSwipeCallback())
+        itemTouchHelper.attachToRecyclerView(recyclerView)
+
+        return root
+    }
+
+    @ExperimentalTime
     private fun getLeftSwipeCallback() : ItemTouchHelper.SimpleCallback{
         return object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(
@@ -36,9 +49,7 @@ class EventListActivity : AppCompatActivity() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-                val position = viewHolder.adapterPosition
-                PlanManager.mAllInsertedEntries.removeAt(position)
-                eventsAdapter.notifyItemRemoved(position)
+                eventsAdapter.removeEvent(viewHolder.adapterPosition)
             }
         }
     }

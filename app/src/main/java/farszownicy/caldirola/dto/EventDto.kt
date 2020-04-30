@@ -12,5 +12,5 @@ data class EventDto(
     var startTime: String = "",
     var endTime: String = "",
     var Location: Place? = null){
-    constructor(event: Event): this(event.id, event.name, event.description, event.startTime.toString(), event.endTime.toString(), event.Location)
+    constructor(event: Event): this(event.id, event.name, event.description, event.startTime.toString(), event.endTime.toString(), event.location)
 }

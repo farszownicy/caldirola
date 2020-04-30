@@ -8,5 +8,5 @@ class Event (
     var description: String = "",
     startTime: LocalDateTime  = LocalDateTime.now(),
     endTime: LocalDateTime = LocalDateTime.now(),
-    var Location: Place? = null
+    var location: Place? = null
                  ) : AgendaDrawableEntry(startTime, endTime)

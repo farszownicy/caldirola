@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.R
+import farszownicy.caldirola.activities.entry_list.EntryListActivity
 import farszownicy.caldirola.crud_activities.AddEventActivity
 import farszownicy.caldirola.crud_activities.AddTaskActivity
-import farszownicy.caldirola.data_classes.Event
 import farszownicy.caldirola.data_classes.User
 import farszownicy.caldirola.utils.memory.loadEventsFromMemory
 import farszownicy.caldirola.utils.memory.loadTasksFromMemory
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         list_button.setOnClickListener{
-            val intent = Intent(this, EventListActivity::class.java)
+            val intent = Intent(this, EntryListActivity::class.java)
             startActivity(intent)
         }
 

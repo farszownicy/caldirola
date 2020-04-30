@@ -110,4 +110,7 @@
     <string name="divisible_task_text">Divisible task</string>
     <string name="add_task_text">Add task</string>
     <string name="event_list_headline">List of events and tasks</string>
+    <string name="title_activity_entry_list">EntryListActivity</string>
+    <string name="entry_list_tab1_name">Events</string>
+    <string name="entry_list_tab2_name">Tasks</string>
 </resources>
