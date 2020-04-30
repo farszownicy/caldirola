@@ -4,13 +4,21 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.github.tibolte.agendacalendarview.AgendaCalendarView
-import com.github.tibolte.agendacalendarview.CalendarManager
-import com.github.tibolte.agendacalendarview.CalendarPickerController
-import com.github.tibolte.agendacalendarview.models.BaseCalendarEvent
-import com.github.tibolte.agendacalendarview.models.CalendarEvent
-import com.github.tibolte.agendacalendarview.models.DayItem
-import com.github.tibolte.agendacalendarview.models.WeekItem
+import com.example.agendacalendar.AgendaCalendarView
+import com.example.agendacalendar.CalendarPickerController
+import com.example.agendacalendar.models.BaseCalendarEvent
+import com.example.agendacalendar.models.CalendarEvent
+import com.example.agendacalendar.models.DayItem
+//import com.github.tibolte.agendacalendarview.AgendaCalendarView
+//import com.github.tibolte.agendacalendarview.CalendarManager
+//import com.github.tibolte.agendacalendarview.CalendarPickerController
+//import com.github.tibolte.agendacalendarview.models.BaseCalendarEvent
+//import com.github.tibolte.agendacalendarview.models.CalendarEvent
+//import com.github.tibolte.agendacalendarview.models.DayItem
+
+
+
+
 import farszownicy.caldirola.R
 import kotlinx.android.synthetic.main.test.*
 import java.util.*

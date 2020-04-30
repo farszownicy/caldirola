@@ -86,7 +86,7 @@ object PlanManager {
 
     @ExperimentalTime
     private fun insertDivisibleTask(task: Task): Boolean {
-        var currTime = LocalDateTime.now().withHour(0).withMinute(0)
+        var currTime = LocalDateTime.now().withHour(9).withMinute(0)
         var totalInsertedDuration = 0
         var sliceDuration: Int
         val insertedTaskSlices:  ArrayList<TaskSlice> = ArrayList()
@@ -158,7 +158,7 @@ object PlanManager {
 
     @ExperimentalTime
     private fun findNextEmptySlotLasting(minutes: Duration, deadline: LocalDateTime): LocalDateTime? {
-        var currTime = LocalDateTime.now().withHour(0).withMinute(0)
+        var currTime = LocalDateTime.now().withHour(9).withMinute(0)
         var slotStartTime:LocalDateTime
         var slotEndTime:LocalDateTime
 

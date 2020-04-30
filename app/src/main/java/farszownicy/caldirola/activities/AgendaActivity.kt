@@ -1,4 +1,4 @@
-package farszownicy.caldirola.activities
+package farszownicy.caldirola.activities;
 
 import TaskSliceView
 import android.app.Activity
