@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/agenda_calendar_view" />
 
-    <com.example.agendacalendar.AgendaCalendarView
+    <farszownicy.caldirola.agendacalendar.AgendaCalendarView
         android:id="@+id/agenda_calendar_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

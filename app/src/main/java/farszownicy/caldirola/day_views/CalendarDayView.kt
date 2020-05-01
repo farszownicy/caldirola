@@ -7,18 +7,14 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import android.widget.Toast
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
-import farszownicy.caldirola.data_classes.AgendaDrawableEntry
-import farszownicy.caldirola.data_classes.Event
-import farszownicy.caldirola.data_classes.Task
-import farszownicy.caldirola.data_classes.TaskSlice
+import farszownicy.caldirola.models.data_classes.AgendaDrawableEntry
+import farszownicy.caldirola.models.data_classes.Event
+import farszownicy.caldirola.models.data_classes.TaskSlice
+import farszownicy.caldirola.utils.DateHelper
 import kotlinx.android.synthetic.main.agenda_view.view.*
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
-import kotlin.collections.ArrayList
-import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 //Widok agendy dnia
@@ -38,6 +34,10 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
     private var mSeparateHourHeight = 0
     private var mStartHour = 0
     private var mEndHour = 24
+
+    private lateinit var mDay:LocalDateTime
+    lateinit var mEvents: List<Event>
+    lateinit var mTaskSlices: List<TaskSlice>
 
     var mHandler: AgendaHandler? = null
 
@@ -91,7 +91,7 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
     @ExperimentalTime
     fun drawEvents() {
 //        event_container.removeAllViews()
-        for (event in PlanManager.mEvents) {
+        for (event in mEvents) {
             val rect = getTimeBound(event)
             val eventView: EventView =
                 mHandler!!.getEventView(event, rect, mHourTextHeight/2, mSeparateHourHeight)
@@ -101,7 +101,7 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     @ExperimentalTime
     fun drawTasks() {
-        for(taskSlice in PlanManager.mTaskSlices) {
+        for(taskSlice in mTaskSlices) {
             val rect = getTimeBound(taskSlice)
             val taskSliceView: TaskSliceView =
                 mHandler!!.getTaskSliceView(taskSlice, rect, mHourTextHeight/2 , mSeparateHourHeight)
@@ -110,12 +110,32 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     private fun getTimeBound(entry: AgendaDrawableEntry): Rect {
+        val isItOneDayEntry = DateHelper.sameDate(entry.startTime,entry.endTime)
+        val startTime: LocalDateTime
+        val endTime: LocalDateTime
+        if(isItOneDayEntry){
+            startTime = entry.startTime
+            endTime = entry.endTime
+        }
+        else{
+            val isCurrentDayTheStartDate = DateHelper.sameDate(entry.startTime, mDay)
+            startTime = if(isCurrentDayTheStartDate)
+                entry.startTime
+            else
+                entry.startTime.withHour(0).withMinute(0).withSecond(0)
+            val isCurrentDayTheEndDate = DateHelper.sameDate(entry.endTime, mDay)
+            endTime = if(isCurrentDayTheEndDate)
+                entry.endTime
+            else
+                entry.endTime.withHour(23).withMinute(59)
+        }
+
         val rect = Rect()
-        rect.top = (getPositionOfTime(entry.startTime) + mSeparateHourHeight).toInt()
+        rect.top = (getPositionOfTime(startTime) + mSeparateHourHeight).toInt()
         Log.d("DEBUG", "separator: $mSeparateHourHeight")
         Log.d("Debug", "mHourTextHeight: $mHourTextHeight")
         rect.bottom =
-            (getPositionOfTime(entry.endTime) - mSeparateHourHeight).toInt()
+            (getPositionOfTime(endTime) - mSeparateHourHeight).toInt()
         rect.left = mHourTextWidth + mEventMarginSide
         Log.d("Debug", "eventMargin: $mEventMarginSide")
         rect.right = -mEventMarginSide//width - mEventMarginSide
@@ -135,6 +155,25 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
         mStartHour = startHour
         mEndHour = endHour
         refreshWholeView()
+    }
+
+    @ExperimentalTime
+    fun setDay(day: Int, month: Int, year: Int) {
+        Log.d("DEBUG", "${day} ${month} ${year}")
+        mDay = LocalDateTime.now().withYear(year).withMonth(month).withDayOfMonth(day).
+                withHour(0).withMinute(0).withSecond(0)
+        mEvents = PlanManager.getEventsByDate(mDay)
+        mTaskSlices = PlanManager.getTaskSlicesByDate(mDay)
+    }
+
+    @ExperimentalTime
+    fun updateEvents(){
+        mEvents = PlanManager.getEventsByDate(mDay)
+    }
+
+    @ExperimentalTime
+    fun updateTasks(){
+        mTaskSlices = PlanManager.getTaskSlicesByDate(mDay)
     }
 
 }

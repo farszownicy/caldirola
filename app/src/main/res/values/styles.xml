@@ -38,4 +38,16 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
+   <!-- FAB -->
+    <style name="fab">
+        <item name="android:src">@mipmap/fab_arrow</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_gravity">bottom|left</item>
+        <item name="elevation">8dp</item>
+        <item name="fabSize">mini</item>
+        <item name="pressedTranslationZ">6dp</item>
+    </style>
+
+
 </resources>

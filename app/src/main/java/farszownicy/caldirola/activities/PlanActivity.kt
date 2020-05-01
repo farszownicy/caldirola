@@ -1,14 +1,5 @@
 package farszownicy.caldirola.activities
 
-import android.os.Bundle
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import com.example.agendacalendar.AgendaCalendarView
-import com.example.agendacalendar.CalendarPickerController
-import com.example.agendacalendar.models.BaseCalendarEvent
-import com.example.agendacalendar.models.CalendarEvent
-import com.example.agendacalendar.models.DayItem
 //import com.github.tibolte.agendacalendarview.AgendaCalendarView
 //import com.github.tibolte.agendacalendarview.CalendarManager
 //import com.github.tibolte.agendacalendarview.CalendarPickerController
@@ -17,13 +8,28 @@ import com.example.agendacalendar.models.DayItem
 //import com.github.tibolte.agendacalendarview.models.DayItem
 
 
-
-
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
+import farszownicy.caldirola.activities.AgendaActivity.Companion.DAY_KEY
+import farszownicy.caldirola.activities.AgendaActivity.Companion.MONTH_KEY
+import farszownicy.caldirola.activities.AgendaActivity.Companion.YEAR_KEY
+import farszownicy.caldirola.agendacalendar.AgendaCalendarView
+import farszownicy.caldirola.agendacalendar.CalendarPickerController
+import farszownicy.caldirola.agendacalendar.render.DefaultEventRenderer
+import farszownicy.caldirola.models.BaseCalendarEvent
+import farszownicy.caldirola.models.DayItem
+import farszownicy.caldirola.models.data_classes.Event
+import farszownicy.caldirola.models.data_classes.Place
+import farszownicy.caldirola.utils.memory.saveEventsToMemory
+import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.test.*
 import java.time.LocalDateTime
 import java.util.*
-import kotlin.collections.ArrayList
+import kotlin.time.ExperimentalTime
 
 
 class PlanActivity : AppCompatActivity(), CalendarPickerController {
@@ -32,6 +38,7 @@ class PlanActivity : AppCompatActivity(), CalendarPickerController {
     companion object{
         const val LOG_TAG = "DEBUG"
     }
+    @ExperimentalTime
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -45,8 +52,9 @@ class PlanActivity : AppCompatActivity(), CalendarPickerController {
         minDate.set(Calendar.DAY_OF_MONTH, 1)
         maxDate.add(Calendar.YEAR, 1)
 
-        val eventList: List<CalendarEvent> = ArrayList()
-        mockList(eventList as MutableList<CalendarEvent>)
+//        val eventList: List<Event> = ArrayList()
+        //mockList(eventList as MutableList<Event>)
+        val eventList = PlanManager.mEvents;
         //val calendarManager = CalendarManager.getInstance(applicationContext)
         //calendarManager.buildCal(minDate, maxDate, Locale.getDefault())
         //Log.d(LOG_TAG, eventList.toString())
@@ -58,60 +66,71 @@ class PlanActivity : AppCompatActivity(), CalendarPickerController {
         //val readyDays: List<DayItem> = calendarManager.days
         //val readyWeeks: List<WeekItem> = calendarManager.weeks
         mAgendaCalendarView.init(eventList, minDate, maxDate, Locale.getDefault(), this)
-        mAgendaCalendarView.addEventRenderer(DrawableEventRenderer())
+        mAgendaCalendarView.addEventRenderer(DefaultEventRenderer())
     }
 
-    private fun mockList(eventList: MutableList<CalendarEvent>) {
-        val timeStart1 = LocalDateTime.now().
-                                withHour(14).withMinute(0)
-        val timeEnd1 = LocalDateTime.now().plusMonths(1).withHour(15).withMinute(0)
-//        endTime1.add(Calendar.MONTH, 1)
-//        startTime1[Calendar.HOUR_OF_DAY] = 14
-//        startTime1[Calendar.MINUTE] = 0
-//        endTime1[Calendar.HOUR_OF_DAY] = 15
-//        endTime1[Calendar.MINUTE] = 0
-        val event1 = BaseCalendarEvent(
-            "Ulep pierogi", "A wonderful journey!", "POLSKA!",
-            ContextCompat.getColor(this, R.color.blue_selected), timeStart1, timeEnd1, true
-        )
+    private fun mockList(eventList: MutableList<Event>) {
+        val timeStart1 = LocalDateTime.now().withHour(2).withMinute(0)
+        val timeEnd1 = timeStart1.withHour(3).withMinute(30)
+        val event1 = Event("id1","Hurtownie Danych", "laby", timeStart1, timeEnd1, Place("Uczelnia"))
         eventList.add(event1)
 
-        val startTime2 = LocalDateTime.now().plusDays(1).withHour(14).withMinute(0)
-        //Calendar.getInstance()
-        //startTime2.add(Calendar.DAY_OF_YEAR, 1)
-        val endTime2 = LocalDateTime.now().plusDays(3).withHour(15).withMinute(0)
-        //Calendar.getInstance()
-        //endTime2.add(Calendar.DAY_OF_YEAR, 3)
-        //startTime2[Calendar.HOUR_OF_DAY]= 14
-        //startTime2[Calendar.MINUTE] = 0
-        //endTime2[Calendar.HOUR_OF_DAY] = 15
-        //endTime2[Calendar.MINUTE] = 0
-        val event2 = BaseCalendarEvent(
-            "Epstein didn't kill himself", "A beautiful small town", "Wrocław",
-            ContextCompat.getColor(this, R.color.yellow), startTime2, endTime2, true
-        )
+        val timeStart2 = LocalDateTime.now().withHour(18).withMinute(0)
+        val timeEnd2 = LocalDateTime.now().withHour(20).withMinute(0)
+        val event2 = Event("id2","Zlot fanów farszu", "cos tam", timeStart2, timeEnd2, Place("stołówka SKS"))
         eventList.add(event2)
 
-        val startTime3 = LocalDateTime.now().withHour(14).withMinute(0)//Calendar.getInstance()
-        val endTime3 = LocalDateTime.now().withHour(15).withMinute(0)//Calendar.getInstance()
-//        startTime3[Calendar.HOUR_OF_DAY] = 14
-//        startTime3[Calendar.MINUTE] = 0
-//        endTime3[Calendar.HOUR_OF_DAY] = 15
-//        endTime3[Calendar.MINUTE] = 0
-        val event3 = BaseCalendarEvent(
-            "przygotuj farsz",
-            "",
-            "New York",
-            ContextCompat.getColor(this, R.color.blue_selected),
-            startTime3,
-            endTime3,
-            false
-        )
+        val timeStart3 = LocalDateTime.now().withHour(14).withMinute(0)
+        val timeEnd3 = LocalDateTime.now().withDayOfMonth(5).withHour(15).withMinute(15)
+        val event3 = Event("id3","Wyjazd do Iraku", "aaa",  timeStart3, timeEnd3, Place("Irak"))
+
         eventList.add(event3)
+//        val timeStart1 = LocalDateTime.now().
+//                                withHour(14).withMinute(0)
+//        val timeEnd1 = LocalDateTime.now().plusMonths(1).withHour(15).withMinute(0)
+//        val event1 = BaseCalendarEvent(
+//            "Ulep pierogi", "A wonderful journey!", "POLSKA!", timeStart1, timeEnd1, true
+//        )
+//        eventList.add(event1)
+//
+//        val startTime2 = LocalDateTime.now().plusDays(1).withHour(10).withMinute(0)
+//        //Calendar.getInstance()
+//        //startTime2.add(Calendar.DAY_OF_YEAR, 1)
+//        val endTime2 = LocalDateTime.now().plusDays(3).withHour(11).withMinute(0)
+//        val event2 = BaseCalendarEvent(
+//            "Epstein didn't kill himself", "A beautiful small town", "", startTime2, endTime2, true
+//        )
+//        eventList.add(event2)
+//
+//        val startTime3 = LocalDateTime.now().withHour(9).withMinute(0)//Calendar.getInstance()
+//        val endTime3 = LocalDateTime.now().withHour(10).withMinute(0)//Calendar.getInstance()
+////        startTime3[Calendar.HOUR_OF_DAY] = 14
+////        startTime3[Calendar.MINUTE] = 0
+////        endTime3[Calendar.HOUR_OF_DAY] = 15
+////        endTime3[Calendar.MINUTE] = 0
+//        val event3 = BaseCalendarEvent(
+//            "przygotuj farsz",
+//            "",
+//            "New York",
+//            startTime3,
+//            endTime3,
+//            false
+//        )
+//        eventList.add(event3)
     }
 
     override fun onDaySelected(dayItem: DayItem?) {
         Log.d(LOG_TAG, String.format("Selected day: %s", dayItem))
+    }
+
+    @ExperimentalTime
+    override fun onStop() {
+        if(!PlanManager.memoryUpToDate){
+            saveEventsToMemory(this)
+            saveTasksToMemory(this)
+            PlanManager.memoryUpToDate = true
+        }
+        super.onStop()
     }
 
     override fun onScrollToDate(calendar: Calendar?) {
@@ -121,7 +140,17 @@ class PlanActivity : AppCompatActivity(), CalendarPickerController {
         }
     }
 
-    override fun onEventSelected(event: CalendarEvent?) {
+    override fun onEventSelected(event: BaseCalendarEvent) {
         Log.d(LOG_TAG, String.format("Selected event: %s", event))
+        val intent = Intent(this, AgendaActivity::class.java)
+        val bundle = Bundle()
+        bundle.putInt(DAY_KEY, event.instanceDay.get(Calendar.DAY_OF_MONTH))
+        bundle.putInt(MONTH_KEY, event.instanceDay.get(Calendar.MONTH)+ 1)
+        bundle.putInt(YEAR_KEY, event.instanceDay.get(Calendar.YEAR))
+
+        intent.putExtras(bundle)
+
+        startActivity(intent)
+        finish()
     }
 }

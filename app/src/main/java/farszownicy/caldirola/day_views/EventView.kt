@@ -4,12 +4,10 @@ import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import farszownicy.caldirola.R
-import farszownicy.caldirola.data_classes.Event
+import farszownicy.caldirola.models.data_classes.Event
 import kotlinx.android.synthetic.main.event_entry.view.*
 
 //Widok eventu

@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import farszownicy.caldirola.R
-import farszownicy.caldirola.data_classes.TaskSlice
+import farszownicy.caldirola.models.data_classes.TaskSlice
 import farszownicy.caldirola.utils.Constants.DATETIME_FORMAT
 import kotlinx.android.synthetic.main.task_entry.view.*
 import java.time.format.DateTimeFormatter
-import java.util.*
 import kotlin.time.ExperimentalTime
 
 //Widok taska

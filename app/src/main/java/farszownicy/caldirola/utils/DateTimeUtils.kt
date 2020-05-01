@@ -17,10 +17,6 @@ class DateTimeUtils {
         //val _time = SimpleDateFormat(Constants.TIME_FORMAT).parse(tvTime.text.toString())
         val dtString = tvDate.text.toString() + " " + tvTime.text.toString()
         val datetime = LocalDateTime.parse(dtString, formatter);
-//        val cal = Calendar.getInstance()
-//        cal.time = _date
-//        cal.add(Calendar.HOUR, _time.hours)
-//        cal.add(Calendar.MINUTE, _time.minutes)
         return datetime
     }
     fun setDatePicker(tv: TextView, context: Context)

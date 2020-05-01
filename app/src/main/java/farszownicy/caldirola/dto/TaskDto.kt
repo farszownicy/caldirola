@@ -1,9 +1,8 @@
 package farszownicy.caldirola.dto
 
-import farszownicy.caldirola.data_classes.Place
-import farszownicy.caldirola.data_classes.Task
+import farszownicy.caldirola.models.data_classes.Place
+import farszownicy.caldirola.models.data_classes.Task
 import kotlinx.serialization.Serializable
-import java.time.LocalDateTime
 import kotlin.time.ExperimentalTime
 
 @Serializable

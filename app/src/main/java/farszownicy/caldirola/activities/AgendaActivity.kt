@@ -8,18 +8,17 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AlertDialog
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.crud_activities.AddEventActivity
 import farszownicy.caldirola.crud_activities.AddTaskActivity
 import farszownicy.caldirola.day_views.EventView
-import farszownicy.caldirola.data_classes.Event
-import farszownicy.caldirola.data_classes.TaskSlice
+import farszownicy.caldirola.models.data_classes.Event
+import farszownicy.caldirola.models.data_classes.TaskSlice
 import farszownicy.caldirola.utils.Constants
-import farszownicy.caldirola.utils.Constants.MINUTES_IN_DAY
 import farszownicy.caldirola.utils.memory.saveEventsToMemory
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_agenda.*
@@ -28,15 +27,39 @@ import java.time.LocalDateTime
 import kotlin.time.ExperimentalTime
 
 class AgendaActivity : AppCompatActivity() {
-    var memoryUpToDate = true
     lateinit var minuteUpdateReceiver: BroadcastReceiver
     lateinit var currTime:LocalDateTime
+    var day: Int = 0
+    var month: Int = 0
+    var year: Int = 0
+
+    companion object{
+        const val LOG_TAG = "DEBUG"
+        const val DAY_KEY = "DAY"
+        const val MONTH_KEY = "MONTH"
+        const val YEAR_KEY = "YEAR"
+    }
 
     @ExperimentalTime
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_agenda)
+        val b = intent.extras
+        if (b != null) {
+            day = b.getInt(DAY_KEY)
+            month = b.getInt(MONTH_KEY)
+            year = b.getInt(YEAR_KEY)
+        }
+
+        agenda.setDay(day, month, year)
         agenda.setLimitTime(0, 24)
+        setOnClickListeners()
+        addEvents()
+        addTasks()
+    }
+
+    @ExperimentalTime
+    private fun setOnClickListeners() {
         (agenda.mHandler)!!.setOnEventClickListener(
             object : EventView.OnEventClickListener {
                 override fun onEventClick(view: EventView?, data: Event?) {
@@ -52,7 +75,8 @@ class AgendaActivity : AppCompatActivity() {
                     Log.e("TAG", "onEventLongClick: ${data!!.name}, event start: ${data.startTime}, event end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
                     PlanManager.mEvents.remove(data)
                     PlanManager.mAllInsertedEntries.remove(data)
-                    memoryUpToDate = false
+                    PlanManager.memoryUpToDate = false
+                    agenda.
                     agenda.refreshEntries()
                 }
             })
@@ -64,7 +88,7 @@ class AgendaActivity : AppCompatActivity() {
                         "onTaskClick:${data!!.parent.name}, divisible: ${data.parent.divisible}, task start: ${data.startTime}, task end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}",
                         Toast.LENGTH_SHORT).show()
                     Log.e("TAG","onTaskClick:${data!!.parent.name}, divisible: ${data.parent.divisible}, task start: ${data.startTime}, task end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
-                    memoryUpToDate = false
+                    PlanManager.memoryUpToDate = false
                 }
             })
 
@@ -77,11 +101,10 @@ class AgendaActivity : AppCompatActivity() {
                     agenda.refreshEntries()
                 }
             })
+
         addButton.setOnClickListener {
             AddDialog()
         }
-        addEvents()
-        addTasks()
     }
 
     @ExperimentalTime
@@ -95,7 +118,6 @@ class AgendaActivity : AppCompatActivity() {
                     agenda.drawTasks()
                 }
             }
-            memoryUpToDate = false
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -171,10 +193,10 @@ class AgendaActivity : AppCompatActivity() {
 
     @ExperimentalTime
     override fun onStop() {
-        if(!memoryUpToDate){
+        if(!PlanManager.memoryUpToDate){
             saveEventsToMemory(this)
             saveTasksToMemory(this)
-            memoryUpToDate = true
+            PlanManager.memoryUpToDate = true
         }
         super.onStop()
     }

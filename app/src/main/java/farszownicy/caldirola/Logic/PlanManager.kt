@@ -1,10 +1,11 @@
 package farszownicy.caldirola.Logic
 
 import android.util.Log
-import farszownicy.caldirola.data_classes.AgendaDrawableEntry
-import farszownicy.caldirola.data_classes.Event
-import farszownicy.caldirola.data_classes.Task
-import farszownicy.caldirola.data_classes.TaskSlice
+import farszownicy.caldirola.models.data_classes.AgendaDrawableEntry
+import farszownicy.caldirola.models.data_classes.Event
+import farszownicy.caldirola.models.data_classes.Task
+import farszownicy.caldirola.models.data_classes.TaskSlice
+import farszownicy.caldirola.utils.DateHelper
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.time.Duration
@@ -13,6 +14,7 @@ import kotlin.time.ExperimentalTime
 object PlanManager {
 
     init{ }
+    var memoryUpToDate = true
     @ExperimentalTime
     var mEvents: ArrayList<Event> = ArrayList()
         set(events){
@@ -64,6 +66,7 @@ object PlanManager {
     public fun addEvent(event: Event): Boolean{
         if (canEventBeInserted(event)) {
             mEvents.add(event)
+            mEvents.sortBy{it.startTime}
             mAllInsertedEntries.add(event)
             mAllInsertedEntries.sortBy{it.startTime}
             return true
@@ -214,5 +217,15 @@ object PlanManager {
         return ChronoUnit.MINUTES.between(
             earlierDate.truncatedTo(ChronoUnit.MINUTES),
             laterDate.truncatedTo(ChronoUnit.MINUTES))
+    }
+
+    @ExperimentalTime
+    fun getEventsByDate(date : LocalDateTime): List<Event>{
+        return mEvents.filter { e -> DateHelper.isBetweenInclusive(date, e.startTime, e.endTime) }
+    }
+
+    @ExperimentalTime
+    fun getTaskSlicesByDate(date : LocalDateTime): List<TaskSlice>{
+        return mTaskSlices.filter { t -> DateHelper.isBetweenInclusive(date, t.startTime, t.endTime) }
     }
 }

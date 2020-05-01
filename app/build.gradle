@@ -4,6 +4,7 @@ plugins {
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
+apply plugin: 'me.tatarka.retrolambda'
 
 apply plugin: 'kotlin-android-extensions'
 
@@ -66,10 +67,10 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
 
     //agenda calendar view
-//    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
     // other libraries
     implementation 'se.emilsjolander:stickylistheaders:2.7.0'
     implementation 'io.reactivex:rxjava:1.1.1'
-    implementation project(path: ':agendacalendar')
+//    implementation project(path: ':agendacalendar')
 }

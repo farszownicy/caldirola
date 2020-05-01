@@ -1,7 +1,7 @@
 package farszownicy.caldirola.dto
 
-import farszownicy.caldirola.data_classes.Event
-import farszownicy.caldirola.data_classes.Place
+import farszownicy.caldirola.models.data_classes.Event
+import farszownicy.caldirola.models.data_classes.Place
 import kotlinx.serialization.Serializable
 
 @Serializable

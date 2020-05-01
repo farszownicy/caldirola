@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.agendacalendar.agenda.AgendaEventView
+<farszownicy.caldirola.agendacalendar.agenda.AgendaEventView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -58,10 +58,10 @@
             app:layout_constraintTop_toBottomOf="@+id/event_name_tv" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.example.agendacalendar.agenda.AgendaEventView >
+</farszownicy.caldirola.agendacalendar.agenda.AgendaEventView>
 
 <!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<com.example.agendacalendar.agenda.AgendaEventView-->
+<!--<farszownicy.caldirola.agendacalendar.agenda.AgendaEventView-->
 <!--        xmlns:android="http://schemas.android.com/apk/res/android"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="wrap_content"-->
@@ -108,4 +108,4 @@
 
 <!--    </LinearLayout>-->
 
-<!--</com.example.agendacalendar.agenda.AgendaEventView>-->
+<!--</farszownicy.caldirola.agendacalendar.agenda.AgendaEventView>-->
