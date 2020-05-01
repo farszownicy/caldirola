@@ -1,5 +1,6 @@
 package com.example.agendacalendar.models;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 
 public interface CalendarEvent {
@@ -8,17 +9,17 @@ public interface CalendarEvent {
 
     void setId(long mId);
 
-    Calendar getStartTime();
+    LocalDateTime getStartTime();
 
-    void setStartTime(Calendar mStartTime);
+    void setStartTime(LocalDateTime mStartTime);
 
-    Calendar getEndTime();
+    LocalDateTime getEndTime();
 
-    void setEndTime(Calendar mEndTime);
+    void setEndTime(LocalDateTime mEndTime);
 
-    String getTitle();
+    String getName();
 
-    void setTitle(String mTitle);
+    void setName(String mTitle);
 
     Calendar getInstanceDay();
 

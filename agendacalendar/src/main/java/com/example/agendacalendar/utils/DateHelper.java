@@ -10,6 +10,9 @@ import android.content.Context;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -35,6 +38,12 @@ public class DateHelper {
                 && cal.get(Calendar.DAY_OF_MONTH) == selectedDate.get(Calendar.DAY_OF_MONTH);
     }
 
+    public static boolean sameDate(LocalDateTime date, LocalDateTime selectedDate) {
+        return date.getMonthValue() == selectedDate.getMonthValue()
+                && date.getYear() == selectedDate.getYear()
+                && date.getDayOfMonth() == selectedDate.getDayOfMonth();
+    }
+
     /**
      * Check if a Date instance and a Calendar instance have the same time (by month, year and day
      * of month)
@@ -55,19 +64,30 @@ public class DateHelper {
      * Check if a Date instance is between two Calendar instances' dates (inclusively) in time.
      *
      * @param selectedDate The date to verify.
-     * @param startCal     The start time.
-     * @param endCal       The end time.
+     * @param startDate     The start time.
+     * @param endDate       The end time.
      * @return True if the verified date is between the two specified dates.
      */
-    public static boolean isBetweenInclusive(Date selectedDate, Calendar startCal, Calendar endCal) {
-        Calendar selectedCal = Calendar.getInstance();
-        selectedCal.setTime(selectedDate);
+    public static boolean isBetweenInclusive(Date selectedDate, LocalDateTime startDate, LocalDateTime endDate) {
         // Check if we deal with the same day regarding startCal and endCal
-        if (sameDate(selectedCal, startCal)) {
+        LocalDateTime ldtSelectedDate = convertToLDT(selectedDate);
+        if (sameDate(ldtSelectedDate, startDate)) {
             return true;
         } else {
-            return selectedCal.after(startCal) && selectedCal.before(endCal);
+            return ldtSelectedDate.isAfter(startDate) && ldtSelectedDate.isBefore(endDate);
         }
+    }
+
+    public static LocalDateTime convertToLDT(Date date){
+        return Instant.ofEpochMilli( date.getTime() )
+                .atZone( ZoneId.systemDefault() )
+                .toLocalDateTime();
+    }
+
+    public static Date convertToDate(LocalDateTime date){
+        return Date.from(date.
+                atZone( ZoneId.systemDefault()).
+                toInstant());
     }
 
     /**

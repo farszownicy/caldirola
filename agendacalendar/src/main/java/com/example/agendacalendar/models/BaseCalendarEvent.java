@@ -1,5 +1,8 @@
 package com.example.agendacalendar.models;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 
 /**
@@ -34,11 +37,11 @@ public class BaseCalendarEvent implements CalendarEvent {
     /**
      * Start time of the event.
      */
-    private Calendar mStartTime;
+    private LocalDateTime mStartTime;
     /**
      * End time of the event.
      */
-    private Calendar mEndTime;
+    private LocalDateTime mEndTime;
     /**
      * Indicates if the event lasts all day.
      */
@@ -48,11 +51,7 @@ public class BaseCalendarEvent implements CalendarEvent {
      * no event for that day.
      */
     private boolean mPlaceHolder;
-    /**
-     * Tells if this BaseCalendarEvent instance is used as a forecast information holder in the agenda
-     * view.
-     */
-    private boolean mWeather;
+
     /**
      * Duration of the event.
      */
@@ -67,14 +66,6 @@ public class BaseCalendarEvent implements CalendarEvent {
      * calendar view and the agenda view.
      */
     private WeekItem mWeekReference;
-    /**
-     * Weather icon string returned by the Dark Sky API.
-     */
-    private String mWeatherIcon;
-    /**
-     * Temperature value returned by the Dark Sky API.
-     */
-    private double mTemperature;
 
     // region Constructor
 
@@ -100,10 +91,11 @@ public class BaseCalendarEvent implements CalendarEvent {
         this.mDescription = description;
         this.mLocation = location;
 
-        this.mStartTime = Calendar.getInstance();
-        this.mStartTime.setTimeInMillis(dateStart);
-        this.mEndTime = Calendar.getInstance();
-        this.mEndTime.setTimeInMillis(dateEnd);
+        this.mStartTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(dateStart), ZoneId.systemDefault());
+        //LocalDateTime.now();
+//        this.mStartTime.setTimeInMillis(dateStart);
+        this.mEndTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(dateEnd), ZoneId.systemDefault());
+//        this.mEndTime.setTimeInMillis(dateEnd);
     }
 
     /**
@@ -116,7 +108,8 @@ public class BaseCalendarEvent implements CalendarEvent {
      * @param endTime The end time of the event.
      * @param allDay Indicates if the event lasts the whole day.
      */
-    public BaseCalendarEvent(String title, String description, String location, int color, Calendar startTime, Calendar endTime, boolean allDay) {
+    public BaseCalendarEvent(String title, String description, String location, int color,
+                             LocalDateTime startTime, LocalDateTime endTime, boolean allDay) {
         this.mTitle = title;
         this.mDescription = description;
         this.mLocation = location;
@@ -131,7 +124,7 @@ public class BaseCalendarEvent implements CalendarEvent {
         this.mColor = calendarEvent.getColor();
         this.mAllDay = calendarEvent.isAllDay();
         this.mDuration = calendarEvent.getDuration();
-        this.mTitle = calendarEvent.getTitle();
+        this.mTitle = calendarEvent.getName();
         this.mDescription = calendarEvent.getDescription();
         this.mLocation = calendarEvent.getLocation();
         this.mStartTime = calendarEvent.getStartTime();
@@ -192,11 +185,11 @@ public class BaseCalendarEvent implements CalendarEvent {
         this.mInstanceDay.set(Calendar.AM_PM, 0);
     }
 
-    public Calendar getEndTime() {
+    public LocalDateTime getEndTime() {
         return mEndTime;
     }
 
-    public void setEndTime(Calendar mEndTime) {
+    public void setEndTime(LocalDateTime mEndTime) {
         this.mEndTime = mEndTime;
     }
 
@@ -216,19 +209,19 @@ public class BaseCalendarEvent implements CalendarEvent {
         this.mLocation = mLocation;
     }
 
-    public Calendar getStartTime() {
+    public LocalDateTime getStartTime() {
         return mStartTime;
     }
 
-    public void setStartTime(Calendar mStartTime) {
+    public void setStartTime(LocalDateTime mStartTime) {
         this.mStartTime = mStartTime;
     }
 
-    public String getTitle() {
+    public String getName() {
         return mTitle;
     }
 
-    public void setTitle(String mTitle) {
+    public void setName(String mTitle) {
         this.mTitle = mTitle;
     }
 
@@ -248,14 +241,6 @@ public class BaseCalendarEvent implements CalendarEvent {
         this.mPlaceHolder = mPlaceHolder;
     }
 
-    public boolean isWeather() {
-        return mWeather;
-    }
-
-    public void setWeather(boolean mWeather) {
-        this.mWeather = mWeather;
-    }
-
     public DayItem getDayReference() {
         return mDayReference;
     }
@@ -272,21 +257,6 @@ public class BaseCalendarEvent implements CalendarEvent {
         this.mWeekReference = mWeekReference;
     }
 
-    public String getWeatherIcon() {
-        return mWeatherIcon;
-    }
-
-    public void setWeatherIcon(String mWeatherIcon) {
-        this.mWeatherIcon = mWeatherIcon;
-    }
-
-    public double getTemperature() {
-        return mTemperature;
-    }
-
-    public void setTemperature(double mTemperature) {
-        this.mTemperature = mTemperature;
-    }
 
     @Override
     public CalendarEvent copy() {

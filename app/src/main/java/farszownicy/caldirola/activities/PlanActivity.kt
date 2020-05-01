@@ -21,6 +21,7 @@ import com.example.agendacalendar.models.DayItem
 
 import farszownicy.caldirola.R
 import kotlinx.android.synthetic.main.test.*
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -61,46 +62,50 @@ class PlanActivity : AppCompatActivity(), CalendarPickerController {
     }
 
     private fun mockList(eventList: MutableList<CalendarEvent>) {
-        val startTime1 = Calendar.getInstance()
-        val endTime1 = Calendar.getInstance()
-        endTime1.add(Calendar.MONTH, 1)
-        startTime1[Calendar.HOUR_OF_DAY] = 14
-        startTime1[Calendar.MINUTE] = 0
-        endTime1[Calendar.HOUR_OF_DAY] = 15
-        endTime1[Calendar.MINUTE] = 0
+        val timeStart1 = LocalDateTime.now().
+                                withHour(14).withMinute(0)
+        val timeEnd1 = LocalDateTime.now().plusMonths(1).withHour(15).withMinute(0)
+//        endTime1.add(Calendar.MONTH, 1)
+//        startTime1[Calendar.HOUR_OF_DAY] = 14
+//        startTime1[Calendar.MINUTE] = 0
+//        endTime1[Calendar.HOUR_OF_DAY] = 15
+//        endTime1[Calendar.MINUTE] = 0
         val event1 = BaseCalendarEvent(
             "Ulep pierogi", "A wonderful journey!", "POLSKA!",
-            ContextCompat.getColor(this, R.color.blue_selected), startTime1, endTime1, true
+            ContextCompat.getColor(this, R.color.blue_selected), timeStart1, timeEnd1, true
         )
         eventList.add(event1)
-        val startTime2 = Calendar.getInstance()
-        startTime2.add(Calendar.DAY_OF_YEAR, 1)
-        val endTime2 = Calendar.getInstance()
-        endTime2.add(Calendar.DAY_OF_YEAR, 3)
-        startTime2[Calendar.HOUR_OF_DAY]= 14
-        startTime2[Calendar.MINUTE] = 0
-        endTime2[Calendar.HOUR_OF_DAY] = 15
-        endTime2[Calendar.MINUTE] = 0
+
+        val startTime2 = LocalDateTime.now().plusDays(1).withHour(14).withMinute(0)
+        //Calendar.getInstance()
+        //startTime2.add(Calendar.DAY_OF_YEAR, 1)
+        val endTime2 = LocalDateTime.now().plusDays(3).withHour(15).withMinute(0)
+        //Calendar.getInstance()
+        //endTime2.add(Calendar.DAY_OF_YEAR, 3)
+        //startTime2[Calendar.HOUR_OF_DAY]= 14
+        //startTime2[Calendar.MINUTE] = 0
+        //endTime2[Calendar.HOUR_OF_DAY] = 15
+        //endTime2[Calendar.MINUTE] = 0
         val event2 = BaseCalendarEvent(
             "Epstein didn't kill himself", "A beautiful small town", "Wrocław",
             ContextCompat.getColor(this, R.color.yellow), startTime2, endTime2, true
         )
         eventList.add(event2)
-        val startTime3 = Calendar.getInstance()
-        val endTime3 = Calendar.getInstance()
-        startTime3[Calendar.HOUR_OF_DAY] = 14
-        startTime3[Calendar.MINUTE] = 0
-        endTime3[Calendar.HOUR_OF_DAY] = 15
-        endTime3[Calendar.MINUTE] = 0
-        val event3 = DrawableCalendarEvent(
+
+        val startTime3 = LocalDateTime.now().withHour(14).withMinute(0)//Calendar.getInstance()
+        val endTime3 = LocalDateTime.now().withHour(15).withMinute(0)//Calendar.getInstance()
+//        startTime3[Calendar.HOUR_OF_DAY] = 14
+//        startTime3[Calendar.MINUTE] = 0
+//        endTime3[Calendar.HOUR_OF_DAY] = 15
+//        endTime3[Calendar.MINUTE] = 0
+        val event3 = BaseCalendarEvent(
             "przygotuj farsz",
             "",
             "New York",
             ContextCompat.getColor(this, R.color.blue_selected),
             startTime3,
             endTime3,
-            false,
-            R.drawable.ic_launcher_background//ic_dialog_info
+            false
         )
         eventList.add(event3)
     }
