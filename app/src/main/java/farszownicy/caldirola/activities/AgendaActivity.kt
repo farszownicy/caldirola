@@ -15,6 +15,7 @@ import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.crud_activities.AddEventActivity
 import farszownicy.caldirola.crud_activities.AddTaskActivity
+import farszownicy.caldirola.crud_activities.EditEventActivity
 import farszownicy.caldirola.day_views.EventView
 import farszownicy.caldirola.data_classes.Event
 import farszownicy.caldirola.data_classes.TaskSlice
@@ -159,13 +160,13 @@ class AgendaActivity : AppCompatActivity() {
     }
 
     fun StartAEActivity(){
-        val intent = Intent(this, AddEventActivity::class.java)
+        val intent = Intent(this, EditEventActivity::class.java)
         startActivityForResult(intent, Constants.ADD_EVENT_CODE)
     }
-
+    //TODO: ZMIENIC NA ADD EVENT, ADD TASK
     @ExperimentalTime
     fun StartATActivity() {
-        val intent = Intent(this, AddTaskActivity::class.java)
+        val intent = Intent(this, AddEventActivity::class.java)
         startActivityForResult(intent, Constants.ADD_TASK_CODE)
     }
 

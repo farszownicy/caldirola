@@ -1,10 +1,8 @@
 package farszownicy.caldirola.Logic
 
 import android.util.Log
-import farszownicy.caldirola.data_classes.AgendaDrawableEntry
-import farszownicy.caldirola.data_classes.Event
-import farszownicy.caldirola.data_classes.Task
-import farszownicy.caldirola.data_classes.TaskSlice
+import androidx.core.util.rangeTo
+import farszownicy.caldirola.data_classes.*
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.time.Duration
@@ -28,6 +26,36 @@ object PlanManager {
             field = tasks
             distributeTasks()
         }
+
+    @ExperimentalTime
+    public fun getEvent(id: String): Event?{
+        var returnEvent: Event? = null
+        mEvents.forEach{event ->
+            if(event.id.equals(id)) returnEvent = event
+        }
+        return returnEvent
+    }
+
+    @ExperimentalTime
+    public fun updateEvent(event: Event, nName: String, nDesc: String, nST : LocalDateTime, nET : LocalDateTime, nLoc : Place?):Boolean{
+
+        var newEvent: Event = Event()
+        newEvent!!.name = nName
+        newEvent!!.description = nDesc
+        newEvent!!.startTime = nST
+        newEvent!!.endTime = nET
+        newEvent!!.Location = nLoc
+        if(canEventBeEdited(newEvent!!, event!!))
+        {
+            event!!.Location = nLoc
+            event!!.name = nName
+            event!!.description = nDesc
+            event!!.endTime = nET
+            event!!.startTime = nST
+            updateAllEntries()
+            return true
+        } else return false
+    }
 
     var mTaskSlices: ArrayList<TaskSlice> = ArrayList()
     var mAllInsertedEntries: ArrayList<AgendaDrawableEntry> = ArrayList()
@@ -77,6 +105,19 @@ object PlanManager {
         var numOfAvailableMinutes = 0
         val eventDuration = differenceInMinutes(event.startTime, event.endTime)
         while(isTimeAvailable(currTime) && numOfAvailableMinutes < eventDuration) {
+            currTime = currTime.plusMinutes(1)
+            numOfAvailableMinutes += 1
+        }
+
+        return numOfAvailableMinutes >= eventDuration
+    }
+
+    @ExperimentalTime
+    private fun canEventBeEdited(upEvent : Event, oldEvent:Event): Boolean{
+        var currTime = upEvent.startTime
+        var numOfAvailableMinutes = 0
+        val eventDuration = differenceInMinutes(upEvent.startTime, upEvent.endTime)
+        while(isTimeAvailableExclude(currTime, oldEvent) && numOfAvailableMinutes < eventDuration) {
             currTime = currTime.plusMinutes(1)
             numOfAvailableMinutes += 1
         }
@@ -188,6 +229,12 @@ object PlanManager {
     @ExperimentalTime
     private fun isTimeAvailable(currTime: LocalDateTime): Boolean {
         return !mEvents.any{isBeforeOrEqual(it.startTime,currTime) && isAfter(it.endTime,currTime)}
+    }
+
+    @ExperimentalTime
+    private fun isTimeAvailableExclude(currTime: LocalDateTime, exclEvent: Event):Boolean{
+        val exclEvents = mEvents.filter{e -> e != exclEvent}
+        return !exclEvents.any{isBeforeOrEqual(it.startTime,currTime) && isAfter(it.endTime,currTime)}
     }
 
     fun isBeforeOrEqual(earlierDate: LocalDateTime, laterDate: LocalDateTime): Boolean {

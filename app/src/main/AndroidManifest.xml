@@ -18,7 +18,11 @@
             android:label="@string/title_activity_add_event"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".activities.PlanActivity"
+        android:name=".activities.PlanActivity"
+        android:label="@string/title_activity_plan"
+        android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name="farszownicy.caldirola.crud_activities.EditEventActivity"
             android:label="@string/title_activity_plan"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     <activity

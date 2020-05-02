@@ -7,6 +7,7 @@ import android.widget.TextView
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.*
 
 class DateTimeUtils {
@@ -26,6 +27,16 @@ class DateTimeUtils {
     fun setDatePicker(tv: TextView, context: Context)
     {
         val cal = Calendar.getInstance()
+
+        //USTAWIENIE DATY NIE-DEFAULTOWEJ - TO W EDYCJI TASKA/EVENTU
+        if(tv.text.toString() != "date"){
+            val splitted = tv.text.toString().split('.')
+            cal.set(Calendar.YEAR, Integer.parseInt(splitted[2]))
+
+            //INDEKSOWANIE MSC OD 0, TRZEBA ODJAC 1
+            cal.set(Calendar.MONTH, Integer.parseInt(splitted[1])-1)
+            cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(splitted[0]))
+        }
         val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
             cal.set(Calendar.YEAR, year)
             cal.set(Calendar.MONTH, monthOfYear)
@@ -53,9 +64,20 @@ class DateTimeUtils {
         tv.text = sdf.format(cal.time)
     }
 
+    fun setDate(tv :TextView, dt: LocalDateTime){
+        tv.text = dt.format(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT))
+    }
+
     fun setTimePicker(tv: TextView, context: Context)
     {
         val cal = Calendar.getInstance()
+
+        if(tv.text.toString() != "time"){
+            val splitted = tv.text.toString().split(':')
+            cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(splitted[0]))
+            cal.set(Calendar.MINUTE, Integer.parseInt(splitted[1]))
+        }
+
         val timeSetListener = TimePickerDialog.OnTimeSetListener { view, hour, minute ->
             cal.set(Calendar.HOUR_OF_DAY, hour)
             cal.set(Calendar.MINUTE, minute)
@@ -77,5 +99,9 @@ class DateTimeUtils {
         val cal = Calendar.getInstance()
         val sdf = SimpleDateFormat(Constants.TIME_FORMAT, Locale.FRANCE)
         tv.text = sdf.format(cal.time)
+    }
+
+    fun setTime(tv:TextView, dt:LocalDateTime){
+        tv.text = dt.format(DateTimeFormatter.ofPattern(Constants.TIME_FORMAT))
     }
 }

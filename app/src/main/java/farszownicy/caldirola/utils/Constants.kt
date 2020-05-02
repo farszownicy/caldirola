@@ -5,6 +5,7 @@ object Constants {
     const val ADD_TASK_KEY = "TASK"
     const val ADD_EVENT_CODE = 997
     const val ADD_TASK_CODE = 420
+    const val EDIT_EVENT_KEY = "EDIT_EVENT"
     const val SHARED_PREF_CALENDAR_FILE_NAME = "CALENDAR"
     const val SHARED_PREF_EVENTS_LIST_KEY = "EVENTS"
     const val SHARED_PREF_TASKS_LIST_KEY = "TASKS"
