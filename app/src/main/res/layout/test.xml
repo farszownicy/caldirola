@@ -10,7 +10,7 @@
         android:id="@+id/activity_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/theme_primary_dark"
+        android:background="@color/colorPrimaryDark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/agenda_calendar_view" />
@@ -19,12 +19,12 @@
         android:id="@+id/agenda_calendar_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        agendaCalendar:agendaCurrentDayTextColor="@color/theme_primary"
-        agendaCalendar:calendarColor="@color/theme_primary"
+        agendaCalendar:agendaCurrentDayTextColor="@color/colorPrimary"
+        agendaCalendar:calendarColor="@color/colorPrimary"
         agendaCalendar:calendarCurrentDayTextColor="@color/calendar_text_current_day"
-        agendaCalendar:calendarDayTextColor="@color/theme_text_icons"
-        agendaCalendar:calendarHeaderColor="@color/theme_primary_dark"
-        agendaCalendar:calendarPastDayTextColor="@color/theme_light_primary"
-        agendaCalendar:fabColor="@color/theme_accent" />
+        agendaCalendar:calendarDayTextColor="@color/colorWhite"
+        agendaCalendar:calendarHeaderColor="@color/colorPrimaryDark"
+        agendaCalendar:calendarPastDayTextColor="@color/colorPuprleL"
+        agendaCalendar:fabColor="@color/colorAccent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

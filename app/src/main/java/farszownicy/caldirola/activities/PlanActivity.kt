@@ -65,7 +65,7 @@ class PlanActivity : AppCompatActivity(), CalendarPickerController {
         //val readyEvents = calendarManager.events
         //val readyDays: List<DayItem> = calendarManager.days
         //val readyWeeks: List<WeekItem> = calendarManager.weeks
-        mAgendaCalendarView.init(eventList, minDate, maxDate, Locale.getDefault(), this)
+        mAgendaCalendarView.init(eventList, minDate, maxDate, Locale.UK, this)
         mAgendaCalendarView.addEventRenderer(DefaultEventRenderer())
     }
 
@@ -136,7 +136,7 @@ class PlanActivity : AppCompatActivity(), CalendarPickerController {
     override fun onScrollToDate(calendar: Calendar?) {
         if (supportActionBar != null) {
             supportActionBar!!.title =
-                calendar!!.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+                calendar!!.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.UK);
         }
     }
 
@@ -151,6 +151,5 @@ class PlanActivity : AppCompatActivity(), CalendarPickerController {
         intent.putExtras(bundle)
 
         startActivity(intent)
-        finish()
     }
 }

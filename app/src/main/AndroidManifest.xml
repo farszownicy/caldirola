@@ -15,7 +15,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="farszownicy.caldirola.crud_activities.AddTaskActivity"
-            android:label="@string/title_activity_add_event"
+            android:label="@string/title_activity_add_task"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.PlanActivity"
