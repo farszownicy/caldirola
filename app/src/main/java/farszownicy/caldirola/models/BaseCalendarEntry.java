@@ -1,19 +1,18 @@
 package farszownicy.caldirola.models;
 
-import android.util.EventLog;
-import android.util.Log;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Calendar;
 
 import farszownicy.caldirola.models.data_classes.Event;
+import farszownicy.caldirola.models.data_classes.Place;
+import farszownicy.caldirola.models.data_classes.TaskSlice;
 
 /**
  * Event model class containing the information to be displayed on the agenda view.
  */
-public class BaseCalendarEvent {
+public class BaseCalendarEntry {
 
     public static final String NO_EVENTS = "No events";
     /**
@@ -62,6 +61,7 @@ public class BaseCalendarEvent {
     private WeekItem mWeekReference;
 
     private Event eventReference;
+    private TaskSlice taskSliceReference;
 
     // region Constructor
 
@@ -77,7 +77,7 @@ public class BaseCalendarEvent {
      * @param allDay      Int that can be equal to 0 or 1.
      * @param duration    The duration of the event in RFC2445 format.
      */
-    public BaseCalendarEvent(long id, String title, String description, String location, long dateStart, long dateEnd, int allDay, String duration) {
+    public BaseCalendarEntry(long id, String title, String description, String location, long dateStart, long dateEnd, int allDay, String duration) {
         this.mId = id;
         this.mName = title;
         this.mDescription = description;
@@ -99,7 +99,7 @@ public class BaseCalendarEvent {
      * @param endTime The end time of the event.
      * @param allDay Indicates if the event lasts the whole day.
      */
-    public BaseCalendarEvent(String title, String description, String location,
+    public BaseCalendarEntry(String title, String description, String location,
                              LocalDateTime startTime, LocalDateTime endTime, boolean allDay) {
         this.mName = title;
         this.mDescription = description;
@@ -108,7 +108,7 @@ public class BaseCalendarEvent {
         this.mEndTime = endTime;
     }
 
-    public BaseCalendarEvent(BaseCalendarEvent calendarEvent) {
+    public BaseCalendarEntry(BaseCalendarEntry calendarEvent) {
         this.mId = calendarEvent.getId();
         this.mName = calendarEvent.getName();
         this.mDescription = calendarEvent.getDescription();
@@ -117,7 +117,7 @@ public class BaseCalendarEvent {
         this.mEndTime = calendarEvent.getEndTime();
     }
 
-    public BaseCalendarEvent(Event event){
+    public BaseCalendarEntry(Event event){
         eventReference = event;
         mName = event.getName();
         mDescription = event.getDescription();
@@ -127,13 +127,25 @@ public class BaseCalendarEvent {
             mLocation = "";
     }
 
+    public BaseCalendarEntry(TaskSlice slice){
+        taskSliceReference = slice;
+        mName = slice.getParent().getName();
+        mDescription = slice.getParent().getDescription();
+        StringBuilder sb = new StringBuilder();
+        for(Place pl : slice.getParent().getPlaces()) {
+            sb.append(pl.getName());
+            sb.append(',');
+        }
+        mLocation = sb.toString();
+    }
+
     /**
      * Constructor for placeholder events, used if there are no events during one dat
      *
      * @param day   The instance day of the event.
      * @param title The title of the event.
      */
-    public BaseCalendarEvent(Calendar day, String title) {
+    public BaseCalendarEntry(Calendar day, String title) {
         this.mPlaceHolder = true;
         this.mName = title;
         this.mLocation = "";
@@ -234,8 +246,16 @@ public class BaseCalendarEvent {
     }
 
 
-    public BaseCalendarEvent copy() {
-        return new BaseCalendarEvent(this);
+    public BaseCalendarEntry copy() {
+        return new BaseCalendarEntry(this);
+    }
+
+    public TaskSlice getTaskSliceReference(){
+        return taskSliceReference;
+    }
+
+    public Event getEventReference(){
+        return eventReference;
     }
 
     // endregion

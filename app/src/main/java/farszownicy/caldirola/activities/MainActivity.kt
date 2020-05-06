@@ -16,7 +16,6 @@ import farszownicy.caldirola.utils.memory.saveEventsToMemory
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_main.*
 import java.time.LocalDateTime
-import java.util.*
 import kotlin.time.ExperimentalTime
 
 class MainActivity : AppCompatActivity() {
@@ -42,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         plan_button.setOnClickListener{
-            val intent = Intent(this, PlanActivity::class.java)
+            val intent = Intent(this, CalendarActivity::class.java)
             startActivity(intent)
         }
 

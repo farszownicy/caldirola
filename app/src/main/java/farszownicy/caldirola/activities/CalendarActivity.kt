@@ -19,8 +19,7 @@ import farszownicy.caldirola.activities.AgendaActivity.Companion.MONTH_KEY
 import farszownicy.caldirola.activities.AgendaActivity.Companion.YEAR_KEY
 import farszownicy.caldirola.agendacalendar.AgendaCalendarView
 import farszownicy.caldirola.agendacalendar.CalendarPickerController
-import farszownicy.caldirola.agendacalendar.render.DefaultEventRenderer
-import farszownicy.caldirola.models.BaseCalendarEvent
+import farszownicy.caldirola.models.BaseCalendarEntry
 import farszownicy.caldirola.models.DayItem
 import farszownicy.caldirola.models.data_classes.Event
 import farszownicy.caldirola.models.data_classes.Place
@@ -32,7 +31,7 @@ import java.util.*
 import kotlin.time.ExperimentalTime
 
 
-class PlanActivity : AppCompatActivity(), CalendarPickerController {
+class CalendarActivity : AppCompatActivity(), CalendarPickerController {
     lateinit var mAgendaCalendarView: AgendaCalendarView
 
     companion object{
@@ -54,7 +53,8 @@ class PlanActivity : AppCompatActivity(), CalendarPickerController {
 
 //        val eventList: List<Event> = ArrayList()
         //mockList(eventList as MutableList<Event>)
-        val eventList = PlanManager.mEvents;
+        val events = PlanManager.mEvents;
+        val slices = PlanManager.mTaskSlices
         //val calendarManager = CalendarManager.getInstance(applicationContext)
         //calendarManager.buildCal(minDate, maxDate, Locale.getDefault())
         //Log.d(LOG_TAG, eventList.toString())
@@ -65,8 +65,8 @@ class PlanActivity : AppCompatActivity(), CalendarPickerController {
         //val readyEvents = calendarManager.events
         //val readyDays: List<DayItem> = calendarManager.days
         //val readyWeeks: List<WeekItem> = calendarManager.weeks
-        mAgendaCalendarView.init(eventList, minDate, maxDate, Locale.UK, this)
-        mAgendaCalendarView.addEventRenderer(DefaultEventRenderer())
+        mAgendaCalendarView.init(events, slices, minDate, maxDate, Locale.UK, this)
+//        mAgendaCalendarView.addEventRenderer(DefaultEventRenderer())
     }
 
     private fun mockList(eventList: MutableList<Event>) {
@@ -140,13 +140,13 @@ class PlanActivity : AppCompatActivity(), CalendarPickerController {
         }
     }
 
-    override fun onEventSelected(event: BaseCalendarEvent) {
-        Log.d(LOG_TAG, String.format("Selected event: %s", event))
+    override fun onEventSelected(entry: BaseCalendarEntry) {
+        Log.d(LOG_TAG, String.format("Selected event: %s", entry))
         val intent = Intent(this, AgendaActivity::class.java)
         val bundle = Bundle()
-        bundle.putInt(DAY_KEY, event.instanceDay.get(Calendar.DAY_OF_MONTH))
-        bundle.putInt(MONTH_KEY, event.instanceDay.get(Calendar.MONTH)+ 1)
-        bundle.putInt(YEAR_KEY, event.instanceDay.get(Calendar.YEAR))
+        bundle.putInt(DAY_KEY, entry.instanceDay.get(Calendar.DAY_OF_MONTH))
+        bundle.putInt(MONTH_KEY, entry.instanceDay.get(Calendar.MONTH)+ 1)
+        bundle.putInt(YEAR_KEY, entry.instanceDay.get(Calendar.YEAR))
 
         intent.putExtras(bundle)
 

@@ -4,7 +4,7 @@ import farszownicy.caldirola.R;
 import farszownicy.caldirola.agendacalendar.CalendarManager;
 import farszownicy.caldirola.agendacalendar.calendar.weekslist.WeekListView;
 import farszownicy.caldirola.agendacalendar.calendar.weekslist.WeeksAdapter;
-import farszownicy.caldirola.models.BaseCalendarEvent;
+import farszownicy.caldirola.models.BaseCalendarEntry;
 import farszownicy.caldirola.models.DayItem;
 import farszownicy.caldirola.models.WeekItem;
 import farszownicy.caldirola.utils.BusProvider;
@@ -150,7 +150,7 @@ public class CalendarView extends LinearLayout {
      *
      * @param calendarEvent The event for the selected position in the agenda listview.
      */
-    public void scrollToDate(final BaseCalendarEvent calendarEvent) {
+    public void scrollToDate(final BaseCalendarEntry calendarEvent) {
         mListViewWeeks.post(()->scrollToPosition(updateSelectedDay(calendarEvent.getInstanceDay(), calendarEvent.getDayReference())));
     }
 

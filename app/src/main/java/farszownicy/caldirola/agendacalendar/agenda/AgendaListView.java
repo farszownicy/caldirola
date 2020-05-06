@@ -9,7 +9,7 @@ import android.util.Log;
 import java.util.Calendar;
 import java.util.List;
 
-import farszownicy.caldirola.models.BaseCalendarEvent;
+import farszownicy.caldirola.models.BaseCalendarEntry;
 import farszownicy.caldirola.utils.DateHelper;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -37,7 +37,7 @@ public class AgendaListView extends StickyListHeadersListView {
     // region Public methods
 
     public void scrollToCurrentDate(Calendar today) {
-        List<BaseCalendarEvent> events = CalendarManager.getInstance().getEvents();
+        List<BaseCalendarEntry> events = CalendarManager.getInstance().getEvents();
 
         int toIndex = 0;
         for (int i = 0; i < events.size(); i++) {

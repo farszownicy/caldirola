@@ -1,6 +1,6 @@
 package farszownicy.caldirola.agendacalendar.agenda;
-import farszownicy.caldirola.agendacalendar.render.DefaultEventRenderer;
 import farszownicy.caldirola.agendacalendar.render.EventRenderer;
+import farszownicy.caldirola.agendacalendar.render.EntryRenderer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +11,8 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import farszownicy.caldirola.models.BaseCalendarEvent;
+import farszownicy.caldirola.agendacalendar.render.TaskRenderer;
+import farszownicy.caldirola.models.BaseCalendarEntry;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 /**
@@ -20,8 +21,8 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
  */
 public class AgendaAdapter extends BaseAdapter implements StickyListHeadersAdapter {
 
-    private List<BaseCalendarEvent> mEvents = new ArrayList<>();
-    private List<EventRenderer<?>> mRenderers = new ArrayList<>();
+    private List<BaseCalendarEntry> mEvents = new ArrayList<>();
+    private List<EntryRenderer<?>> mRenderers = new ArrayList<>();
     private int mCurrentDayColor;
 
     // region Constructor
@@ -34,7 +35,7 @@ public class AgendaAdapter extends BaseAdapter implements StickyListHeadersAdapt
 
     // region Public methods
 
-    public void updateEvents(List<BaseCalendarEvent> events) {
+    public void updateEvents(List<BaseCalendarEntry> events) {
         this.mEvents.clear();
         this.mEvents.addAll(events);
         notifyDataSetChanged();
@@ -69,7 +70,7 @@ public class AgendaAdapter extends BaseAdapter implements StickyListHeadersAdapt
     }
 
     @Override
-    public BaseCalendarEvent getItem(int position) {
+    public BaseCalendarEntry getItem(int position) {
         return mEvents.get(position);
     }
 
@@ -80,23 +81,29 @@ public class AgendaAdapter extends BaseAdapter implements StickyListHeadersAdapt
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        EventRenderer eventRenderer = new DefaultEventRenderer();
-        final BaseCalendarEvent event = getItem(position);
+        EntryRenderer entryRenderer = new EventRenderer();
+        final BaseCalendarEntry entry = getItem(position);
 
         // Search for the correct event renderer
-        for (EventRenderer renderer : mRenderers) {
-            if(event.getClass().isAssignableFrom(renderer.getRenderType())) {
-                eventRenderer = renderer;
-                break;
+        for (EntryRenderer renderer : mRenderers) {
+            if(entry.getClass().isAssignableFrom(renderer.getRenderType())) {
+                if(renderer instanceof TaskRenderer && entry.getTaskSliceReference() != null) {
+                    entryRenderer = renderer;
+                    break;
+                }
+                else if(renderer instanceof  EventRenderer && entry.getEventReference() != null){
+                    entryRenderer = renderer;
+                    break;
+                }
             }
         }
         convertView = LayoutInflater.from(parent.getContext())
-                .inflate(eventRenderer.getEventLayout(), parent, false);
-        eventRenderer.render(convertView, event);
+                .inflate(entryRenderer.getEventLayout(), parent, false);
+        entryRenderer.render(convertView, entry);
         return convertView;
     }
 
-    public void addEventRenderer(@NonNull final EventRenderer<?> renderer) {
+    public void addEventRenderer(@NonNull final EntryRenderer<?> renderer) {
         mRenderers.add(renderer);
     }
 

@@ -22,16 +22,18 @@ import farszownicy.caldirola.agendacalendar.agenda.AgendaAdapter;
 import farszownicy.caldirola.agendacalendar.agenda.AgendaView;
 import farszownicy.caldirola.agendacalendar.calendar.CalendarView;
 
-import farszownicy.caldirola.agendacalendar.render.DefaultEventRenderer;
 import farszownicy.caldirola.agendacalendar.render.EventRenderer;
+import farszownicy.caldirola.agendacalendar.render.EntryRenderer;
+import farszownicy.caldirola.agendacalendar.render.TaskRenderer;
 import farszownicy.caldirola.agendacalendar.widgets.FloatingActionButton;
 
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import farszownicy.caldirola.models.BaseCalendarEvent;
+import farszownicy.caldirola.models.BaseCalendarEntry;
 import farszownicy.caldirola.models.data_classes.Event;
+import farszownicy.caldirola.models.data_classes.TaskSlice;
 import farszownicy.caldirola.utils.BusProvider;
 import farszownicy.caldirola.utils.Events;
 import farszownicy.caldirola.utils.ListViewScrollTracker;
@@ -179,7 +181,7 @@ public class AgendaCalendarView extends FrameLayout implements StickyListHeaders
         Log.d(LOG_TAG, String.format("onStickyHeaderChanged, position = %d, headerId = %d", position, headerId));
 
         if (CalendarManager.getInstance().getEvents().size() > 0) {
-            BaseCalendarEvent event = CalendarManager.getInstance().getEvents().get(position);
+            BaseCalendarEntry event = CalendarManager.getInstance().getEvents().get(position);
             if (event != null) {
                 mCalendarView.scrollToDate(event);
                 mCalendarPickerController.onScrollToDate(event.getInstanceDay());
@@ -191,7 +193,7 @@ public class AgendaCalendarView extends FrameLayout implements StickyListHeaders
 
     // region Public methods
 
-    public void init(List<Event> eventList, Calendar minDate, Calendar maxDate, Locale locale,
+    public void init(List<Event> events, List<TaskSlice> slices, Calendar minDate, Calendar maxDate, Locale locale,
                      CalendarPickerController calendarPickerController) {
         mCalendarPickerController = calendarPickerController;
 
@@ -204,13 +206,14 @@ public class AgendaCalendarView extends FrameLayout implements StickyListHeaders
         AgendaAdapter agendaAdapter = new AgendaAdapter(mAgendaCurrentDayTextColor);
         mAgendaView.getAgendaListView().setAdapter(agendaAdapter);
         mAgendaView.getAgendaListView().setOnStickyHeaderChangedListener(this);
-        CalendarManager.getInstance().loadEvents(eventList);
+        CalendarManager.getInstance().loadEventsAndTasks(events, slices);
 
         // add default event renderer
-        addEventRenderer(new DefaultEventRenderer());
+        addEventRenderer(new EventRenderer());
+        addEventRenderer(new TaskRenderer());
     }
 
-    public void addEventRenderer(@NonNull final EventRenderer<?> renderer) {
+    public void addEventRenderer(@NonNull final EntryRenderer<?> renderer) {
         AgendaAdapter adapter = (AgendaAdapter) mAgendaView.getAgendaListView().getAdapter();
         adapter.addEventRenderer(renderer);
     }

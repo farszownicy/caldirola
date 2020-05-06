@@ -1,11 +1,12 @@
 package farszownicy.caldirola.agendacalendar;
 
 import farszownicy.caldirola.R;
-import farszownicy.caldirola.models.BaseCalendarEvent;
+import farszownicy.caldirola.models.BaseCalendarEntry;
 import farszownicy.caldirola.models.DayItem;
 import farszownicy.caldirola.models.MonthItem;
 import farszownicy.caldirola.models.WeekItem;
 import farszownicy.caldirola.models.data_classes.Event;
+import farszownicy.caldirola.models.data_classes.TaskSlice;
 import farszownicy.caldirola.utils.BusProvider;
 import farszownicy.caldirola.utils.DateHelper;
 import farszownicy.caldirola.utils.Events;
@@ -53,7 +54,11 @@ public class CalendarManager {
     /**
      * List of events instances
      */
-    private List<BaseCalendarEvent> mEvents = new ArrayList<>();
+    private List<BaseCalendarEntry> mEvents = new ArrayList<>();
+    /**
+     * List of task slices
+     */
+    private List<TaskSlice> mTaskSlices = new ArrayList<>();
     /**
      * Helper to build our list of weeks
      */
@@ -130,7 +135,7 @@ public class CalendarManager {
         return mDays;
     }
 
-    public List<BaseCalendarEvent> getEvents() {
+    public List<BaseCalendarEntry> getEvents() {
         return mEvents;
     }
 
@@ -209,15 +214,13 @@ public class CalendarManager {
         }
     }
 
-    public void loadEvents(List<Event> eventList) {
-        /*CalendarLoadTask calendarLoadTask = new CalendarLoadTask();
-        calendarLoadTask.execute();*/
+    public void loadEventsAndTasks(List<Event> eventList, List<TaskSlice> slices) {
         for (WeekItem weekItem : getWeeks()) {
             for (DayItem dayItem : weekItem.getDayItems()) {
-                boolean wasThereEventForDay = false;
+                boolean wasThereEntryForDay = false;
                 for (Event event : eventList) {
                     if (DateHelper.isBetweenInclusive(dayItem.getDate(), event.getStartTime(), event.getEndTime())) {
-                        BaseCalendarEvent copy = new BaseCalendarEvent(event);//event.copy();
+                        BaseCalendarEntry copy = new BaseCalendarEntry(event);//event.copy();
                         //Log.d("load events", "dddd");
                         Calendar dayInstance = Calendar.getInstance();
                         dayInstance.setTime(dayItem.getDate());
@@ -238,13 +241,36 @@ public class CalendarManager {
                         }
                         // add instances in chronological order
                         getEvents().add(copy);
-                        wasThereEventForDay = true;
+                        wasThereEntryForDay = true;
                     }
                 }
-                if (!wasThereEventForDay) {
+                for(TaskSlice slice : slices){
+                    if(DateHelper.isBetweenInclusive(dayItem.getDate(), slice.getStartTime(), slice.getEndTime())){
+                        BaseCalendarEntry copy = new BaseCalendarEntry(slice);
+                        Calendar dayInstance = Calendar.getInstance();
+                        dayInstance.setTime(dayItem.getDate());
+                        copy.setInstanceDay(dayInstance);
+                        copy.setDayReference(dayItem);
+                        copy.setWeekReference(weekItem);
+                        boolean isDayOfStart = DateHelper.sameDate(slice.getStartTime(), dayItem.getDate());
+                        boolean isDayOfEnd = DateHelper.sameDate(slice.getEndTime(), dayItem.getDate());
+                        if(isDayOfStart)
+                            copy.setStartTime(slice.getStartTime());
+                        else if(isDayOfEnd)
+                            copy.setEndTime(slice.getEndTime());
+                        else {
+                            LocalDateTime dayLDT = DateHelper.convertToLDT(dayItem.getDate());
+                            copy.setStartTime(dayLDT.withHour(0).withMinute(0));
+                            copy.setEndTime(dayLDT.withHour(23).withMinute(59));
+                        }
+                        getEvents().add(copy);
+                        wasThereEntryForDay = true;
+                    }
+                }
+                if (!wasThereEntryForDay) {
                     Calendar dayInstance = Calendar.getInstance();
                     dayInstance.setTime(dayItem.getDate());
-                    BaseCalendarEvent event = new BaseCalendarEvent(dayInstance, getContext().getResources().getString(R.string.agenda_event_no_events));
+                    BaseCalendarEntry event = new BaseCalendarEntry(dayInstance, getContext().getResources().getString(R.string.agenda_event_no_events));
                     event.setDayReference(dayItem);
                     event.setWeekReference(weekItem);
                     event.setInstanceDay(dayInstance);
@@ -252,9 +278,12 @@ public class CalendarManager {
                 }
             }
         }
-
         BusProvider.getInstance().send(new Events.EventsFetched());
         Log.d(LOG_TAG, "CalendarEventTask finished");
+    }
+
+    public void loadTaskSlices(List<TaskSlice> slices){
+
     }
 
     // endregion
