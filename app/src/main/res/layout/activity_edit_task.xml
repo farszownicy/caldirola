@@ -17,13 +17,13 @@
         tools:layout_alignParentTop="true" />
 
     <TextView
-        android:id="@+id/at_headline"
+        android:id="@+id/et_headline"
         android:layout_width="match_parent"
         android:layout_height="125dp"
         android:background="@drawable/header2"
         android:fontFamily="sans-serif-light"
         android:gravity="center"
-        android:text="@string/add_task_text"
+        android:text="@string/edit_task_text"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="@dimen/headline_font_size"
@@ -60,10 +60,10 @@
         android:background="@drawable/circletransparant" />
 
     <ScrollView
-        android:id="@+id/ae_scroll"
+        android:id="@+id/et_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/at_headline"
+        android:layout_below="@id/et_headline"
         android:layout_marginTop="10dp">
 
         <RelativeLayout
@@ -83,7 +83,7 @@
                 tools:layout_marginTop="20dp">
 
                 <LinearLayout
-                    android:id="@+id/at_layout"
+                    android:id="@+id/et_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/white"
@@ -95,7 +95,7 @@
                    >
 
                     <TextView
-                        android:id="@+id/name_text"
+                        android:id="@+id/et_name_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -105,7 +105,7 @@
                         tools:layout_marginRight="10dp" />
 
                     <EditText
-                        android:id="@+id/at_input_name"
+                        android:id="@+id/et_input_name"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -116,7 +116,7 @@
                         android:textSize="@dimen/ae_input_font_size" />
 
                     <TextView
-                        android:id="@+id/desc_text"
+                        android:id="@+id/et_desc_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/ae_side_margin"
@@ -126,7 +126,7 @@
                         android:textSize="18dp" />
 
                     <EditText
-                        android:id="@+id/at_input_description"
+                        android:id="@+id/et_input_description"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -138,7 +138,7 @@
                         tools:layout_marginRight="10dp" />
 
                     <TextView
-                        android:id="@+id/pior_text2"
+                        android:id="@+id/et_pior_text2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -149,7 +149,7 @@
                         android:textSize="18dp" />
 
                     <EditText
-                        android:id="@+id/at_input_time"
+                        android:id="@+id/et_input_time"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -161,7 +161,7 @@
                         android:textSize="@dimen/ae_input_font_size" />
 
                     <TextView
-                        android:id="@+id/pior_text3"
+                        android:id="@+id/et_pior_text3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -171,7 +171,7 @@
                         android:textSize="18dp" />
 
                     <TableRow
-                        android:id="@+id/at_since_table"
+                        android:id="@+id/et_since_table"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="fill_horizontal"
@@ -179,7 +179,7 @@
                         android:textAlignment="center">
 
                         <TextView
-                            android:id="@+id/at_deadline_date"
+                            android:id="@+id/et_deadline_date"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
@@ -192,7 +192,7 @@
                             android:textSize="@dimen/ae_input_datetime_size" />
 
                         <TextView
-                            android:id="@+id/at_deadline_time"
+                            android:id="@+id/et_deadline_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginRight="10dp"
@@ -206,7 +206,7 @@
                     </TableRow>
 
                     <TextView
-                        android:id="@+id/pior_text"
+                        android:id="@+id/et_pior_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -217,7 +217,7 @@
                         android:textSize="18dp" />
 
                     <EditText
-                        android:id="@+id/at_input_priority"
+                        android:id="@+id/et_input_priority"
                         android:layout_width="fill_parent"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="10dp"
@@ -227,7 +227,7 @@
                         android:textSize="@dimen/ae_input_font_size" />
 
                     <CheckBox
-                        android:id="@+id/at_divisible"
+                        android:id="@+id/et_divisible"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -238,7 +238,7 @@
                         android:textSize="@dimen/ae_input_font_size" />
 
                     <TextView
-                        android:id="@+id/pior_text_slice_size"
+                        android:id="@+id/et_pior_text_slice_size"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -253,7 +253,7 @@
                         android:layout_height="match_parent" >
 
                         <EditText
-                            android:id="@+id/at_input_slice_size_hr"
+                            android:id="@+id/et_input_slice_size_hr"
                             android:layout_width="60sp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
@@ -268,7 +268,7 @@
                             android:textSize="@dimen/ae_input_font_size" />
 
                         <EditText
-                            android:id="@+id/at_input_slice_size_min"
+                            android:id="@+id/et_input_slice_size_min"
                             android:layout_width="60sp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
@@ -284,7 +284,7 @@
                     </TableRow>
 
                     <Spinner
-                        android:id="@+id/at_location"
+                        android:id="@+id/et_location"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
                         android:layout_marginLeft="10dp"
@@ -306,13 +306,13 @@
                 android:elevation="10dp">
 
                 <Button
-                    android:id="@+id/at_add_button"
+                    android:id="@+id/et_edit_button"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="30dp"
                     android:background="@drawable/bg_ui"
                     android:fontFamily="sans-serif-light"
-                    android:text="@string/confirm_text"
+                    android:text="@string/conf_changes_text"
                     android:textAllCaps="false"
                     android:textColor="@color/colorWhite"
                     android:textSize="26dp" />

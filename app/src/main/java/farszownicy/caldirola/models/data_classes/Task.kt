@@ -12,6 +12,7 @@ class Task @ExperimentalTime constructor(id: String = "-1",
                                          var priority: Int = 0,
                                          var prerequisites: List<Task> = mutableListOf(),
                                          var divisible: Boolean = false,
+                                         var minSliceSize: Int = 0,
                                          var places: List<Place> = mutableListOf()//,
                                          //val timeSlices: MutableList<Pair<Calendar, Calendar>> = mutableListOf()
 ) : CalendarEntry(id, name, description) {

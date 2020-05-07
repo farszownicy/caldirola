@@ -82,6 +82,7 @@ fun loadTasksFromMemory(context: Context){
         dto.priority,
         mutableListOf(),
         dto.divisible,
+        dto.minSliceSize,
         dto.places
     ) }
 
