@@ -1,10 +1,12 @@
 package farszownicy.caldirola.agendacalendar;
 
+import farszownicy.caldirola.Logic.PlanManager;
 import farszownicy.caldirola.R;
 import farszownicy.caldirola.models.BaseCalendarEntry;
 import farszownicy.caldirola.models.DayItem;
 import farszownicy.caldirola.models.MonthItem;
 import farszownicy.caldirola.models.WeekItem;
+import farszownicy.caldirola.models.data_classes.AgendaDrawableEntry;
 import farszownicy.caldirola.models.data_classes.Event;
 import farszownicy.caldirola.models.data_classes.TaskSlice;
 import farszownicy.caldirola.utils.BusProvider;
@@ -54,11 +56,7 @@ public class CalendarManager {
     /**
      * List of events instances
      */
-    private List<BaseCalendarEntry> mEvents = new ArrayList<>();
-    /**
-     * List of task slices
-     */
-    private List<TaskSlice> mTaskSlices = new ArrayList<>();
+    private List<BaseCalendarEntry> mEntries = new ArrayList<>();
     /**
      * Helper to build our list of weeks
      */
@@ -135,8 +133,8 @@ public class CalendarManager {
         return mDays;
     }
 
-    public List<BaseCalendarEntry> getEvents() {
-        return mEvents;
+    public List<BaseCalendarEntry> getEntries() {
+        return mEntries;
     }
 
     public SimpleDateFormat getWeekdayFormatter() {
@@ -164,63 +162,75 @@ public class CalendarManager {
             throw new IllegalArgumentException("Locale is null.");
         }
 
-        setLocale(locale);
+        if((mMinCal == null || mMaxCal == null)
+            || (!DateHelper.sameDate(minDate, mMinCal)
+                || !DateHelper.sameDate(maxDate, mMaxCal))) {
+            setLocale(locale);
 
-        getDays().clear();
-        getWeeks().clear();
-        getMonths().clear();
-        getEvents().clear();
+            getDays().clear();
+            getWeeks().clear();
+            getMonths().clear();
+            getEntries().clear();
 
-        mMinCal = Calendar.getInstance(mLocale);
-        mMaxCal = Calendar.getInstance(mLocale);
-        mWeekCounter = Calendar.getInstance(mLocale);
+            mMinCal = Calendar.getInstance(mLocale);
+            mMaxCal = Calendar.getInstance(mLocale);
+            mWeekCounter = Calendar.getInstance(mLocale);
 
-        mMinCal.setTime(minDate.getTime());
-        mMaxCal.setTime(maxDate.getTime());
+            mMinCal.setTime(minDate.getTime());
+            mMaxCal.setTime(maxDate.getTime());
 
-        // maxDate is exclusive, here we bump back to the previous day, as maxDate if December 1st, 2020,
-        // we don't include that month in our list
-        mMaxCal.add(Calendar.MINUTE, -1);
+            // maxDate is exclusive, here we bump back to the previous day, as maxDate if December 1st, 2020,
+            // we don't include that month in our list
+            mMaxCal.add(Calendar.MINUTE, -1);
 
-        // Now iterate we iterate between mMinCal and mMaxCal so we build our list of weeks
-        mWeekCounter.setTime(mMinCal.getTime());
-        int maxMonth = mMaxCal.get(Calendar.MONTH);
-        int maxYear = mMaxCal.get(Calendar.YEAR);
-        // Build another month item and add it to our list, if this value change when we loop through the weeks
-        int tmpMonth = -1;
-        setToday(Calendar.getInstance(mLocale));
+            // Now iterate we iterate between mMinCal and mMaxCal so we build our list of weeks
+            mWeekCounter.setTime(mMinCal.getTime());
+            int maxMonth = mMaxCal.get(Calendar.MONTH);
+            int maxYear = mMaxCal.get(Calendar.YEAR);
+            // Build another month item and add it to our list, if this value change when we loop through the weeks
+            int tmpMonth = -1;
+            setToday(Calendar.getInstance(mLocale));
 
-        // Loop through the weeks
-        while ((mWeekCounter.get(Calendar.MONTH) <= maxMonth // Up to, including the month.
-                || mWeekCounter.get(Calendar.YEAR) < maxYear) // Up to the year.
-                && mWeekCounter.get(Calendar.YEAR) < maxYear + 1) { // But not > next yr.
-            Date date = mWeekCounter.getTime();
+            // Loop through the weeks
+            while ((mWeekCounter.get(Calendar.MONTH) <= maxMonth // Up to, including the month.
+                    || mWeekCounter.get(Calendar.YEAR) < maxYear) // Up to the year.
+                    && mWeekCounter.get(Calendar.YEAR) < maxYear + 1) { // But not > next yr.
+                Date date = mWeekCounter.getTime();
 
-            if (tmpMonth != mWeekCounter.get(Calendar.MONTH)) {
-                MonthItem monthItem = new MonthItem(mWeekCounter.get(Calendar.YEAR), mWeekCounter.get(Calendar.MONTH));
-                getMonths().add(monthItem);
+                if (tmpMonth != mWeekCounter.get(Calendar.MONTH)) {
+                    MonthItem monthItem = new MonthItem(mWeekCounter.get(Calendar.YEAR), mWeekCounter.get(Calendar.MONTH));
+                    getMonths().add(monthItem);
+                }
+
+                // Build our week list
+                WeekItem weekItem = new WeekItem(mWeekCounter.get(Calendar.WEEK_OF_YEAR), mWeekCounter.get(Calendar.YEAR), date, mMonthHalfNameFormat.format(date), mWeekCounter.get(Calendar.MONTH));
+                List<DayItem> dayItems = getDayCells(mWeekCounter); // gather days for the built week
+                weekItem.setDayItems(dayItems);
+                getWeeks().add(weekItem);
+                addWeekToLastMonth(weekItem);
+
+                Log.d(LOG_TAG, String.format("Adding week: %s", weekItem));
+                tmpMonth = mWeekCounter.get(Calendar.MONTH);
+                mWeekCounter.add(Calendar.WEEK_OF_YEAR, 1);
             }
-
-            // Build our week list
-            WeekItem weekItem = new WeekItem(mWeekCounter.get(Calendar.WEEK_OF_YEAR), mWeekCounter.get(Calendar.YEAR), date, mMonthHalfNameFormat.format(date), mWeekCounter.get(Calendar.MONTH));
-            List<DayItem> dayItems = getDayCells(mWeekCounter); // gather days for the built week
-            weekItem.setDayItems(dayItems);
-            getWeeks().add(weekItem);
-            addWeekToLastMonth(weekItem);
-
-            Log.d(LOG_TAG, String.format("Adding week: %s", weekItem));
-            tmpMonth = mWeekCounter.get(Calendar.MONTH);
-            mWeekCounter.add(Calendar.WEEK_OF_YEAR, 1);
         }
     }
 
-    public void loadEventsAndTasks(List<Event> eventList, List<TaskSlice> slices) {
+    public void loadEventsAndTasks() {
+        mEntries = new ArrayList<>();
+        List <AgendaDrawableEntry> entries = PlanManager.INSTANCE.getMAllInsertedEntries();
         for (WeekItem weekItem : getWeeks()) {
             for (DayItem dayItem : weekItem.getDayItems()) {
                 boolean wasThereEntryForDay = false;
-                for (Event event : eventList) {
-                    if (DateHelper.isBetweenInclusive(dayItem.getDate(), event.getStartTime(), event.getEndTime())) {
-                        BaseCalendarEntry copy = new BaseCalendarEntry(event);//event.copy();
+                for (AgendaDrawableEntry entry : entries) {
+                    if (DateHelper.isBetweenInclusive(dayItem.getDate(), entry.getStartTime(), entry.getEndTime())) {
+                        BaseCalendarEntry copy;
+                        if(entry instanceof Event) {
+                            copy = new BaseCalendarEntry((Event) entry);//event.copy();
+                        }
+                        else {
+                            copy = new BaseCalendarEntry((TaskSlice) entry);
+                        }
                         //Log.d("load events", "dddd");
                         Calendar dayInstance = Calendar.getInstance();
                         dayInstance.setTime(dayItem.getDate());
@@ -228,45 +238,45 @@ public class CalendarManager {
                         copy.setInstanceDay(dayInstance);
                         copy.setDayReference(dayItem);
                         copy.setWeekReference(weekItem);
-                        boolean isDayOfStart = DateHelper.sameDate(event.getStartTime(), dayItem.getDate());
-                        boolean isDayOfEnd = DateHelper.sameDate(event.getEndTime(), dayItem.getDate());
+                        boolean isDayOfStart = DateHelper.sameDate(entry.getStartTime(), dayItem.getDate());
+                        boolean isDayOfEnd = DateHelper.sameDate(entry.getEndTime(), dayItem.getDate());
                         if(isDayOfStart)
-                            copy.setStartTime(event.getStartTime());
+                            copy.setStartTime(entry.getStartTime());
                         else if(isDayOfEnd)
-                            copy.setEndTime(event.getEndTime());
+                            copy.setEndTime(entry.getEndTime());
                         else {
                             LocalDateTime dayLDT = DateHelper.convertToLDT(dayItem.getDate());
                             copy.setStartTime(dayLDT.withHour(0).withMinute(0));
                             copy.setEndTime(dayLDT.withHour(23).withMinute(59));
                         }
                         // add instances in chronological order
-                        getEvents().add(copy);
+                        getEntries().add(copy);
                         wasThereEntryForDay = true;
                     }
                 }
-                for(TaskSlice slice : slices){
-                    if(DateHelper.isBetweenInclusive(dayItem.getDate(), slice.getStartTime(), slice.getEndTime())){
-                        BaseCalendarEntry copy = new BaseCalendarEntry(slice);
-                        Calendar dayInstance = Calendar.getInstance();
-                        dayInstance.setTime(dayItem.getDate());
-                        copy.setInstanceDay(dayInstance);
-                        copy.setDayReference(dayItem);
-                        copy.setWeekReference(weekItem);
-                        boolean isDayOfStart = DateHelper.sameDate(slice.getStartTime(), dayItem.getDate());
-                        boolean isDayOfEnd = DateHelper.sameDate(slice.getEndTime(), dayItem.getDate());
-                        if(isDayOfStart)
-                            copy.setStartTime(slice.getStartTime());
-                        else if(isDayOfEnd)
-                            copy.setEndTime(slice.getEndTime());
-                        else {
-                            LocalDateTime dayLDT = DateHelper.convertToLDT(dayItem.getDate());
-                            copy.setStartTime(dayLDT.withHour(0).withMinute(0));
-                            copy.setEndTime(dayLDT.withHour(23).withMinute(59));
-                        }
-                        getEvents().add(copy);
-                        wasThereEntryForDay = true;
-                    }
-                }
+//                for(TaskSlice slice : slices){
+//                    if(DateHelper.isBetweenInclusive(dayItem.getDate(), slice.getStartTime(), slice.getEndTime())){
+//                        BaseCalendarEntry copy = new BaseCalendarEntry(slice);
+//                        Calendar dayInstance = Calendar.getInstance();
+//                        dayInstance.setTime(dayItem.getDate());
+//                        copy.setInstanceDay(dayInstance);
+//                        copy.setDayReference(dayItem);
+//                        copy.setWeekReference(weekItem);
+//                        boolean isDayOfStart = DateHelper.sameDate(slice.getStartTime(), dayItem.getDate());
+//                        boolean isDayOfEnd = DateHelper.sameDate(slice.getEndTime(), dayItem.getDate());
+//                        if(isDayOfStart)
+//                            copy.setStartTime(slice.getStartTime());
+//                        else if(isDayOfEnd)
+//                            copy.setEndTime(slice.getEndTime());
+//                        else {
+//                            LocalDateTime dayLDT = DateHelper.convertToLDT(dayItem.getDate());
+//                            copy.setStartTime(dayLDT.withHour(0).withMinute(0));
+//                            copy.setEndTime(dayLDT.withHour(23).withMinute(59));
+//                        }
+//                        getEvents().add(copy);
+//                        wasThereEntryForDay = true;
+//                    }
+//                }
                 if (!wasThereEntryForDay) {
                     Calendar dayInstance = Calendar.getInstance();
                     dayInstance.setTime(dayItem.getDate());
@@ -274,16 +284,12 @@ public class CalendarManager {
                     event.setDayReference(dayItem);
                     event.setWeekReference(weekItem);
                     event.setInstanceDay(dayInstance);
-                    getEvents().add(event);
+                    getEntries().add(event);
                 }
             }
         }
         BusProvider.getInstance().send(new Events.EventsFetched());
         Log.d(LOG_TAG, "CalendarEventTask finished");
-    }
-
-    public void loadTaskSlices(List<TaskSlice> slices){
-
     }
 
     // endregion
@@ -321,6 +327,43 @@ public class CalendarManager {
 
     private MonthItem getLastMonth() {
         return getMonths().get(getMonths().size() - 1);
+    }
+
+    public void update(AgendaDrawableEntry entry){
+        for(WeekItem w : mWeeks){
+            for(DayItem d : w.getDayItems()){
+                if(DateHelper.isBetweenInclusive(d.getDate(), entry.getStartTime(), entry.getEndTime())){
+                    BaseCalendarEntry copy;
+                    if(entry instanceof Event) {
+                        copy = new BaseCalendarEntry((Event) entry);//event.copy();
+                    }
+                    else {
+                        copy = new BaseCalendarEntry((TaskSlice) entry);
+                    }
+                    //Log.d("load events", "dddd");
+                    Calendar dayInstance = Calendar.getInstance();
+                    dayInstance.setTime(d.getDate());
+//                        dayInstance.add(Calendar.MONTH, 1);
+                    copy.setInstanceDay(dayInstance);
+                    copy.setDayReference(d);
+                    copy.setWeekReference(w);
+                    boolean isDayOfStart = DateHelper.sameDate(entry.getStartTime(), d.getDate());
+                    boolean isDayOfEnd = DateHelper.sameDate(entry.getEndTime(), d.getDate());
+                    if(isDayOfStart)
+                        copy.setStartTime(entry.getStartTime());
+                    else if(isDayOfEnd)
+                        copy.setEndTime(entry.getEndTime());
+                    else {
+                        LocalDateTime dayLDT = DateHelper.convertToLDT(d.getDate());
+                        copy.setStartTime(dayLDT.withHour(0).withMinute(0));
+                        copy.setEndTime(dayLDT.withHour(23).withMinute(59));
+                    }
+                    // add instances in chronological order
+                    getEntries().add(copy);
+                }
+            }
+            BusProvider.getInstance().send(new Events.EventsFetched());
+        }
     }
     // endregion
 }

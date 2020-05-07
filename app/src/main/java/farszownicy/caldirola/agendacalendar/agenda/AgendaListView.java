@@ -37,7 +37,7 @@ public class AgendaListView extends StickyListHeadersListView {
     // region Public methods
 
     public void scrollToCurrentDate(Calendar today) {
-        List<BaseCalendarEntry> events = CalendarManager.getInstance().getEvents();
+        List<BaseCalendarEntry> events = CalendarManager.getInstance().getEntries();
 
         int toIndex = 0;
         for (int i = 0; i < events.size(); i++) {

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.SyncStateContract.Helpers.update
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -13,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.activities.MainActivity
+import farszownicy.caldirola.agendacalendar.CalendarManager
 import farszownicy.caldirola.models.data_classes.Event
 import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.utils.Constants
@@ -137,6 +139,7 @@ class AddEventActivity : AppCompatActivity()
             eventIntent.putExtra(Constants.ADD_EVENT_KEY, eventAdded)
             setResult(Activity.RESULT_OK, eventIntent)
             PlanManager.memoryUpToDate = false
+            CalendarManager.getInstance().loadEventsAndTasks()
             finish()
         }
         else{

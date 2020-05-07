@@ -1,12 +1,5 @@
 package farszownicy.caldirola.activities
 
-//import com.github.tibolte.agendacalendarview.AgendaCalendarView
-//import com.github.tibolte.agendacalendarview.CalendarManager
-//import com.github.tibolte.agendacalendarview.CalendarPickerController
-//import com.github.tibolte.agendacalendarview.models.BaseCalendarEvent
-//import com.github.tibolte.agendacalendarview.models.CalendarEvent
-//import com.github.tibolte.agendacalendarview.models.DayItem
-
 
 import android.content.Intent
 import android.os.Bundle
@@ -25,7 +18,7 @@ import farszownicy.caldirola.models.data_classes.Event
 import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.utils.memory.saveEventsToMemory
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
-import kotlinx.android.synthetic.main.test.*
+import kotlinx.android.synthetic.main.calendar_view.*
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.time.ExperimentalTime
@@ -41,7 +34,7 @@ class CalendarActivity : AppCompatActivity(), CalendarPickerController {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.test)
+        setContentView(R.layout.calendar_view)
         setSupportActionBar(activity_toolbar)
         mAgendaCalendarView = findViewById(R.id.agenda_calendar_view)
         val minDate: Calendar = Calendar.getInstance()
@@ -53,8 +46,6 @@ class CalendarActivity : AppCompatActivity(), CalendarPickerController {
 
 //        val eventList: List<Event> = ArrayList()
         //mockList(eventList as MutableList<Event>)
-        val events = PlanManager.mEvents;
-        val slices = PlanManager.mTaskSlices
         //val calendarManager = CalendarManager.getInstance(applicationContext)
         //calendarManager.buildCal(minDate, maxDate, Locale.getDefault())
         //Log.d(LOG_TAG, eventList.toString())
@@ -65,7 +56,8 @@ class CalendarActivity : AppCompatActivity(), CalendarPickerController {
         //val readyEvents = calendarManager.events
         //val readyDays: List<DayItem> = calendarManager.days
         //val readyWeeks: List<WeekItem> = calendarManager.weeks
-        mAgendaCalendarView.init(events, slices, minDate, maxDate, Locale.UK, this)
+//        mAgendaCalendarView.init(events, slices, minDate, maxDate, Locale.UK, this)
+        mAgendaCalendarView.init(minDate, maxDate, Locale.UK, this)
 //        mAgendaCalendarView.addEventRenderer(DefaultEventRenderer())
     }
 
@@ -151,5 +143,10 @@ class CalendarActivity : AppCompatActivity(), CalendarPickerController {
         intent.putExtras(bundle)
 
         startActivity(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
     }
 }

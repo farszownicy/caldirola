@@ -228,4 +228,18 @@ object PlanManager {
     fun getTaskSlicesByDate(date : LocalDateTime): List<TaskSlice>{
         return mTaskSlices.filter { t -> DateHelper.isBetweenInclusive(date, t.startTime, t.endTime) }
     }
+
+    @ExperimentalTime
+    fun removeTask(parent: Task) {
+        val taskChildren: List<TaskSlice> = mTaskSlices.filter{t -> t.parent == parent};
+        mTaskSlices.removeAll (taskChildren)
+        mTasks.remove(parent)
+        mAllInsertedEntries.removeAll(taskChildren)
+    }
+
+    @ExperimentalTime
+    fun removeEvent(event:Event){
+        mEvents.remove(event)
+        mAllInsertedEntries.remove(event)
+    }
 }

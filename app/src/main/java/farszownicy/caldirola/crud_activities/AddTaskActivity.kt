@@ -15,6 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.activities.MainActivity
+import farszownicy.caldirola.agendacalendar.CalendarManager
 import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.models.data_classes.Task
 import farszownicy.caldirola.utils.Constants
@@ -148,6 +149,7 @@ class AddTaskActivity : AppCompatActivity(),
             taskIntent.putExtra(Constants.ADD_TASK_KEY, taskAdded)
             setResult(Activity.RESULT_OK, taskIntent)
             PlanManager.memoryUpToDate = false
+            CalendarManager.getInstance().loadEventsAndTasks()
             finish()
         }
         else{

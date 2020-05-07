@@ -28,12 +28,9 @@ import farszownicy.caldirola.agendacalendar.render.TaskRenderer;
 import farszownicy.caldirola.agendacalendar.widgets.FloatingActionButton;
 
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 import farszownicy.caldirola.models.BaseCalendarEntry;
-import farszownicy.caldirola.models.data_classes.Event;
-import farszownicy.caldirola.models.data_classes.TaskSlice;
 import farszownicy.caldirola.utils.BusProvider;
 import farszownicy.caldirola.utils.Events;
 import farszownicy.caldirola.utils.ListViewScrollTracker;
@@ -125,7 +122,7 @@ public class AgendaCalendarView extends FrameLayout implements StickyListHeaders
         mCalendarView.findViewById(R.id.list_week).setBackgroundColor(mCalendarBackgroundColor);
 
         mAgendaView.getAgendaListView().setOnItemClickListener((AdapterView<?> parent, View view, int position, long id)->{
-            mCalendarPickerController.onEventSelected(CalendarManager.getInstance().getEvents().get(position));
+            mCalendarPickerController.onEventSelected(CalendarManager.getInstance().getEntries().get(position));
         });
 
         BusProvider.getInstance().toObserverable()
@@ -180,8 +177,8 @@ public class AgendaCalendarView extends FrameLayout implements StickyListHeaders
     public void onStickyHeaderChanged(StickyListHeadersListView stickyListHeadersListView, View header, int position, long headerId) {
         Log.d(LOG_TAG, String.format("onStickyHeaderChanged, position = %d, headerId = %d", position, headerId));
 
-        if (CalendarManager.getInstance().getEvents().size() > 0) {
-            BaseCalendarEntry event = CalendarManager.getInstance().getEvents().get(position);
+        if (CalendarManager.getInstance().getEntries().size() > 0) {
+            BaseCalendarEntry event = CalendarManager.getInstance().getEntries().get(position);
             if (event != null) {
                 mCalendarView.scrollToDate(event);
                 mCalendarPickerController.onScrollToDate(event.getInstanceDay());
@@ -193,7 +190,7 @@ public class AgendaCalendarView extends FrameLayout implements StickyListHeaders
 
     // region Public methods
 
-    public void init(List<Event> events, List<TaskSlice> slices, Calendar minDate, Calendar maxDate, Locale locale,
+    public void init(Calendar minDate, Calendar maxDate, Locale locale,
                      CalendarPickerController calendarPickerController) {
         mCalendarPickerController = calendarPickerController;
 
@@ -206,14 +203,14 @@ public class AgendaCalendarView extends FrameLayout implements StickyListHeaders
         AgendaAdapter agendaAdapter = new AgendaAdapter(mAgendaCurrentDayTextColor);
         mAgendaView.getAgendaListView().setAdapter(agendaAdapter);
         mAgendaView.getAgendaListView().setOnStickyHeaderChangedListener(this);
-        CalendarManager.getInstance().loadEventsAndTasks(events, slices);
+        CalendarManager.getInstance().loadEventsAndTasks();
 
-        // add default event renderer
-        addEventRenderer(new EventRenderer());
-        addEventRenderer(new TaskRenderer());
+        // add default renderers
+        addEntryRenderer(new EventRenderer());
+        addEntryRenderer(new TaskRenderer());
     }
 
-    public void addEventRenderer(@NonNull final EntryRenderer<?> renderer) {
+    public void addEntryRenderer(@NonNull final EntryRenderer<?> renderer) {
         AgendaAdapter adapter = (AgendaAdapter) mAgendaView.getAgendaListView().getAdapter();
         adapter.addEventRenderer(renderer);
     }
