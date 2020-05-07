@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Caldirola</string>
-    <string name="title_activity_calendar">PlanActivity</string>
+    <string name="title_activity_calendar">CalendarActivity</string>
     <string name="title_activity_add_event">AddEventActivity</string>
+    <string name="title_activity_event_list">EventListActivity</string>
     <string name="title_activity_add_task">AddTaskActivity</string>
     <string name="title_activity_edit_event">EditEventActivity</string>
     <string name="title_activity_edit_task">EditTaskActivity</string>
@@ -113,6 +114,11 @@
     <string name="divisible_task_text">Divisible task</string>
     <string name="add_task_text">Add task</string>
 
+    <!-- Entry List -->
+    <string name="title_activity_entry_list">EntryListActivity</string>
+    <string name="entry_list_tab1_name">Events</string>
+    <string name="entry_list_tab2_name">Tasks</string>
+
     <!-- Calendar -->
     <string name="month_half_name_format">MMM</string>
     <string name="month_name_format">MMMM</string>
@@ -125,13 +131,6 @@
     <string name="agenda_event_all_day">All DAY</string>
     <string name="agenda_event_day_duration">d</string>
     <string name="agenda_event_no_events">No events</string>
-
-    <!-- Weather (day parts) -->
-    <string name="morning">Morning</string>
-    <string name="afternoon">Afternoon</string>
-    <string name="evening">Evening</string>
-    <!-- Weather (icon codes) -->
-    <!-- See: https://github.com/erikflowers/weather-icons/ -->
 
     <string name ="edit_task_text">Edit task</string>
 </resources>

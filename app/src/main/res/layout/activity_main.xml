@@ -259,6 +259,21 @@
         android:layout_height="match_parent"
         android:layout_below="@id/rel_add">
 
+        <Button
+            android:id="@+id/list_button"
+            android:layout_width="45dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="10dp"
+            android:layout_marginBottom="16dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ui"
+            android:clickable="false"
+            android:drawableTop="@drawable/agenda"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintBottom_toTopOf="@+id/rel_panel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
         <RelativeLayout
             android:id="@+id/rel_panel"
             android:layout_width="wrap_content"
