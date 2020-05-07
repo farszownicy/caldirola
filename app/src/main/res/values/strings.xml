@@ -101,6 +101,7 @@
     <string name="time_text">time</string>
     <string name="to_text">To</string>
     <string name="confirm_text">Confirm</string>
+    <string name="conf_changes_text">Confirm changes</string>
     <string name="task_name_text">Task name</string>
     <string name="task_description_text">Task description</string>
     <string name="deadline_text">Deadline</string>
@@ -108,4 +109,5 @@
     <string name="priority_text">Priority</string>
     <string name="divisible_task_text">Divisible task</string>
     <string name="add_task_text">Add task</string>
+    <string name ="edit_task_text">Edit task</string>
 </resources>

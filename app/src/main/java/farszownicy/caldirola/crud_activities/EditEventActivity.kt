@@ -31,7 +31,6 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
     }
 
     private val db = FirebaseFirestore.getInstance()
-    private val userDoc = db.collection("events").document("sKNWMetaOLJXTIkXeU0W")
     private val locations = db.collection("locations")
     private val places = ArrayList<String>()
     private val datetime_utils = DateTimeUtils()
@@ -52,7 +51,7 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
         ee_add_button.setOnClickListener {
             editEvent()
         }
-        //val eventID = intent.getIntExtra("ID", 0)
+        //val eventID = intent.getStringExtra("ID")
         val eventID = "4511bea6-01cc-4d6d-bf47-1641e37f3714"
         editedEvent = PlanManager.getEvent(eventID)
         editedIndex = eventID
@@ -88,11 +87,9 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
 
     private fun setDefSpinner()
     {
-        println(places.size)
         if(editedEvent!!.Location != null) {
             System.out.println("WYBOR LOKALIZACJI)" + editedEvent!!.Location!!.name)
             val curr = places.indexOfFirst { e -> e.equals(editedEvent!!.Location!!.name) }
-            System.out.println(" " + curr + " TO NR ")
             ee_location.setSelection(curr)
         }
     }

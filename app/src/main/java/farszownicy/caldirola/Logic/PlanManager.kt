@@ -37,6 +37,15 @@ object PlanManager {
     }
 
     @ExperimentalTime
+    public fun getTask(id: String): Task?{
+        var returnTask: Task? = null
+        mTasks.forEach{task ->
+            if(task.id.equals(id)) returnTask = task
+        }
+        return returnTask
+    }
+
+    @ExperimentalTime
     public fun updateEvent(event: Event, nName: String, nDesc: String, nST : LocalDateTime, nET : LocalDateTime, nLoc : Place?):Boolean{
 
         var newEvent: Event = Event()
@@ -56,6 +65,21 @@ object PlanManager {
             return true
         } else return false
     }
+
+    @ExperimentalTime
+    public fun updateTask(task: Task, nName: String, nDesc: String, nDDL : LocalDateTime, nLoc : List<Place>, nPriority: Int, nDivisible: Boolean, nMinSlice: Int):Boolean{
+        task!!.name = nName
+        task!!.description = nDesc
+        task!!.deadline = nDDL
+        task!!.places = nLoc
+        task!!.priority = nPriority
+        task!!.divisible = nDivisible
+        task!!.minSliceSize = nMinSlice
+        updateAllEntries()
+        return true
+    }
+
+    //(editedTask!!, name, description, deadline, locations, priority, divisible, minSlice)
 
     var mTaskSlices: ArrayList<TaskSlice> = ArrayList()
     var mAllInsertedEntries: ArrayList<AgendaDrawableEntry> = ArrayList()

@@ -19,7 +19,6 @@ import farszownicy.caldirola.data_classes.Place
 import farszownicy.caldirola.data_classes.Task
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
-import kotlinx.android.synthetic.main.activity_add_event.*
 import kotlinx.android.synthetic.main.activity_add_task.*
 import java.lang.Exception
 import java.sql.Time
