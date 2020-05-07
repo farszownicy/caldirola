@@ -5,14 +5,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.activities.entry_list.EntryListActivity
 import farszownicy.caldirola.crud_activities.AddEventActivity
 import farszownicy.caldirola.crud_activities.AddTaskActivity
-import farszownicy.caldirola.data_classes.User
+import farszownicy.caldirola.models.data_classes.User
 import farszownicy.caldirola.utils.memory.loadEventsFromMemory
 import farszownicy.caldirola.utils.memory.loadTasksFromMemory
+import farszownicy.caldirola.utils.memory.saveEventsToMemory
+import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_main.*
+import java.time.LocalDateTime
 import kotlin.time.ExperimentalTime
 
 class MainActivity : AppCompatActivity() {
@@ -32,16 +36,23 @@ class MainActivity : AppCompatActivity() {
         addButton.setOnClickListener {
             addUser()
         }
+
         fetch_button.setOnClickListener{
             fetchUserData()
         }
 
         plan_button.setOnClickListener{
-            val intent = Intent(this, PlanActivity::class.java)
+            val intent = Intent(this, CalendarActivity::class.java)
             startActivity(intent)
         }
+
         agenda_btn.setOnClickListener(){
             val intent = Intent(this, AgendaActivity::class.java)
+            val bundle = Bundle()
+            bundle.putInt(AgendaActivity.DAY_KEY, LocalDateTime.now().dayOfMonth)
+            bundle.putInt(AgendaActivity.MONTH_KEY, LocalDateTime.now().monthValue)
+            bundle.putInt(AgendaActivity.YEAR_KEY, LocalDateTime.now().year)
+            intent.putExtras(bundle)
             startActivity(intent)
         }
 
@@ -113,5 +124,15 @@ class MainActivity : AppCompatActivity() {
         db.collection("users").add(userData).addOnSuccessListener {
                 documentReference -> Log.d(TAG, "user added with ID: ${documentReference.id}")  }
             .addOnFailureListener{e -> Log.w(TAG, "Error adding user", e)}
+    }
+
+    @ExperimentalTime
+    override fun onStop() {
+        if(!PlanManager.memoryUpToDate){
+            saveEventsToMemory(this)
+            saveTasksToMemory(this)
+            PlanManager.memoryUpToDate = true
+        }
+        super.onStop()
     }
 }

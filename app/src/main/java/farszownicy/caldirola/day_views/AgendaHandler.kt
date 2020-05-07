@@ -3,8 +3,8 @@ package farszownicy.caldirola.day_views
 import TaskSliceView
 import android.content.Context
 import android.graphics.Rect
-import farszownicy.caldirola.data_classes.Event
-import farszownicy.caldirola.data_classes.TaskSlice
+import farszownicy.caldirola.models.data_classes.Event
+import farszownicy.caldirola.models.data_classes.TaskSlice
 import kotlin.time.ExperimentalTime
 
 //Tworzy i zwraca widoki eventów i godzin

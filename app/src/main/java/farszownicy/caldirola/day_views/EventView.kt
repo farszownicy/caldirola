@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import farszownicy.caldirola.R
-import farszownicy.caldirola.data_classes.Event
+import farszownicy.caldirola.models.data_classes.Event
 import kotlinx.android.synthetic.main.event_entry.view.*
 
 //Widok eventu
@@ -17,7 +17,7 @@ class EventView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         set(event){
             field = event
             event_name_tv.text = event?.name
-            location_tv.text = event?.location?.name
+            location_tv.text = event?.Location?.name
         }
     var mEventClickListener: OnEventClickListener? = null
     var mEventLongClickListener: OnEventLongClickListener? = null

@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">Caldirola</string>
-    <string name="title_activity_plan">PlanActivity</string>
+    <string name="title_activity_calendar">CalendarActivity</string>
     <string name="title_activity_add_event">AddEventActivity</string>
     <string name="title_activity_event_list">EventListActivity</string>
+    <string name="title_activity_add_task">AddTaskActivity</string>
+    <string name="title_activity_edit_event">EditEventActivity</string>
+    <string name="title_activity_edit_task">EditTaskActivity</string>
     <string name="choose_location_prompt">Wybierz lokalizację</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
@@ -77,7 +80,7 @@
         "to the component’s resting state. They ensure that elevation changes are consistent "
         "across actions and component types. For example, all components that lift on press have "
         "the same elevation change relative to their resting elevation.\n"
-        "Once the input event is completed or cancelled, the component will return to its resting "
+        "Once the input entry is completed or cancelled, the component will return to its resting "
         "elevation.\n\n"
 
         "Avoiding elevation interference.\n\n"
@@ -102,6 +105,7 @@
     <string name="time_text">time</string>
     <string name="to_text">To</string>
     <string name="confirm_text">Confirm</string>
+    <string name="conf_changes_text">Confirm changes</string>
     <string name="task_name_text">Task name</string>
     <string name="task_description_text">Task description</string>
     <string name="deadline_text">Deadline</string>
@@ -109,8 +113,24 @@
     <string name="priority_text">Priority</string>
     <string name="divisible_task_text">Divisible task</string>
     <string name="add_task_text">Add task</string>
-    <string name="event_list_headline">List of events and tasks</string>
+
+    <!-- Entry List -->
     <string name="title_activity_entry_list">EntryListActivity</string>
     <string name="entry_list_tab1_name">Events</string>
     <string name="entry_list_tab2_name">Tasks</string>
+
+    <!-- Calendar -->
+    <string name="month_half_name_format">MMM</string>
+    <string name="month_name_format">MMMM</string>
+    <string name="day_name_format">EEEEE</string>
+
+    <!-- Agenda -->
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="agenda_event_hour_format">kk:mm</string>
+    <string name="agenda_event_all_day">All DAY</string>
+    <string name="agenda_event_day_duration">d</string>
+    <string name="agenda_event_no_events">No events</string>
+
+    <string name ="edit_task_text">Edit task</string>
 </resources>

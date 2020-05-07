@@ -29,11 +29,11 @@ class EventListAdapter() : RecyclerView.Adapter<EventListAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentItem = PlanManager.mEvents[position]
         holder.titleText.text = currentItem.name
-        if(currentItem.location != null){
-            holder.locationText.text = currentItem.location!!.name
+        if(currentItem.Location != null){
+            holder.LocationText.text = currentItem.Location!!.name
         } else {
-            holder.locationText.visibility = View.GONE
-            holder.locationIcon.visibility = View.GONE
+            holder.LocationText.visibility = View.GONE
+            holder.LocationIcon.visibility = View.GONE
         }
         holder.descText.text = currentItem.description
         val df = DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT)
@@ -56,8 +56,8 @@ class EventListAdapter() : RecyclerView.Adapter<EventListAdapter.ViewHolder>() {
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleText: TextView = itemView.findViewById(R.id.el_card_title)
         val descText: TextView = itemView.findViewById(R.id.el_description)
-        val locationText: TextView = itemView.findViewById(R.id.el_location_text)
+        val LocationText: TextView = itemView.findViewById(R.id.el_location_text)
         val dateText: TextView = itemView.findViewById(R.id.el_date)
-        var locationIcon: ImageView = itemView.findViewById(R.id.el_location_icon)
+        var LocationIcon: ImageView = itemView.findViewById(R.id.el_location_icon)
     }
 }

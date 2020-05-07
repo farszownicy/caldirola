@@ -1,7 +1,6 @@
-package farszownicy.caldirola.data_classes
+package farszownicy.caldirola.models.data_classes
 
 import java.time.LocalDateTime
-import java.util.*
 
 abstract class AgendaDrawableEntry(
     var startTime: LocalDateTime,

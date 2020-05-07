@@ -2,9 +2,9 @@ package farszownicy.caldirola.utils.memory
 
 import android.content.Context
 import farszownicy.caldirola.Logic.PlanManager
-import farszownicy.caldirola.data_classes.Event
-import farszownicy.caldirola.data_classes.Task
-import farszownicy.caldirola.data_classes.TaskSlice
+import farszownicy.caldirola.models.data_classes.Event
+import farszownicy.caldirola.models.data_classes.Task
+import farszownicy.caldirola.models.data_classes.TaskSlice
 import farszownicy.caldirola.dto.EventDto
 import farszownicy.caldirola.dto.TaskDto
 import farszownicy.caldirola.dto.TaskSliceDto
@@ -82,6 +82,7 @@ fun loadTasksFromMemory(context: Context){
         dto.priority,
         mutableListOf(),
         dto.divisible,
+        dto.minSliceSize,
         dto.places
     ) }
 

@@ -1,8 +1,7 @@
 package farszownicy.caldirola.dto
 
-import farszownicy.caldirola.data_classes.TaskSlice
+import farszownicy.caldirola.models.data_classes.TaskSlice
 import kotlinx.serialization.Serializable
-import java.time.LocalDateTime
 
 @Serializable
 data class TaskSliceDto (val parent: String,

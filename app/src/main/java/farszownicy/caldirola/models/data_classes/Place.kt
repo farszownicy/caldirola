@@ -1,4 +1,4 @@
-package farszownicy.caldirola.data_classes
+package farszownicy.caldirola.models.data_classes
 
 import kotlinx.serialization.Serializable
 

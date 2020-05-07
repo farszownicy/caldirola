@@ -17,8 +17,7 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add"
-        tools:background="@color/colorPuprleL" />
+        android:src="@mipmap/round_add_white_48"/>
 
     <ScrollView
         android:layout_width="match_parent"

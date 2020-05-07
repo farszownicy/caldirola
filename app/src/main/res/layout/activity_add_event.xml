@@ -94,7 +94,7 @@
         android:background="@drawable/header2"
         android:fontFamily="sans-serif-light"
         android:gravity="center"
-        android:text="Add event"
+        android:text="Add entry"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="36sp" />

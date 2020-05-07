@@ -18,20 +18,30 @@
             android:label="@string/title_activity_add_event"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".crud_activities.AddTaskActivity"
-            android:label="@string/title_activity_add_event"
+            android:name="farszownicy.caldirola.crud_activities.AddTaskActivity"
+            android:label="@string/title_activity_add_task"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.PlanActivity"
-            android:label="@string/title_activity_plan"
+            android:name=".activities.CalendarActivity"
+            android:label="@string/title_activity_calendar"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name="farszownicy.caldirola.crud_activities.EditEventActivity"
+            android:label="@string/title_activity_edit_event"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity
+            android:name="farszownicy.caldirola.crud_activities.EditTaskActivity"
+            android:label="@string/title_activity_edit_task"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+    <activity
             android:name=".activities.AgendaActivity"
-            android:label="@string/title_activity_agenda" />
+            android:label="@string/title_activity_agenda"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

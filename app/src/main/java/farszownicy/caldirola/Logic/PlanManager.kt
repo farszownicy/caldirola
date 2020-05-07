@@ -1,10 +1,11 @@
 package farszownicy.caldirola.Logic
 
 import android.util.Log
-import farszownicy.caldirola.data_classes.AgendaDrawableEntry
-import farszownicy.caldirola.data_classes.Event
-import farszownicy.caldirola.data_classes.Task
-import farszownicy.caldirola.data_classes.TaskSlice
+
+import farszownicy.caldirola.utils.DateHelper
+import androidx.core.util.rangeTo
+import farszownicy.caldirola.models.*
+import farszownicy.caldirola.models.data_classes.*
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.time.Duration
@@ -13,6 +14,7 @@ import kotlin.time.ExperimentalTime
 object PlanManager {
 
     init{ }
+    var memoryUpToDate = true
     @ExperimentalTime
     var mEvents: ArrayList<Event> = ArrayList()
         set(events){
@@ -28,6 +30,58 @@ object PlanManager {
             field = tasks
             distributeTasks()
         }
+
+    @ExperimentalTime
+    public fun getEvent(id: String): Event?{
+        var returnEvent: Event? = null
+        mEvents.forEach{event ->
+            if(event.id.equals(id)) returnEvent = event
+        }
+        return returnEvent
+    }
+
+    @ExperimentalTime
+    public fun getTask(id: String): Task?{
+        var returnTask: Task? = null
+        mTasks.forEach{task ->
+            if(task.id.equals(id)) returnTask = task
+        }
+        return returnTask
+    }
+
+    @ExperimentalTime
+    public fun updateEvent(event: Event, nName: String, nDesc: String, nST : LocalDateTime, nET : LocalDateTime, nLoc : Place?):Boolean{
+
+        var newEvent: Event = Event()
+        newEvent!!.name = nName
+        newEvent!!.description = nDesc
+        newEvent!!.startTime = nST
+        newEvent!!.endTime = nET
+        newEvent!!.Location = nLoc
+        if(canEventBeEdited(newEvent!!, event!!))
+        {
+            event!!.Location = nLoc
+            event!!.name = nName
+            event!!.description = nDesc
+            event!!.endTime = nET
+            event!!.startTime = nST
+            updateAllEntries()
+            return true
+        } else return false
+    }
+
+    @ExperimentalTime
+    public fun updateTask(task: Task, nName: String, nDesc: String, nDDL : LocalDateTime, nLoc : List<Place>, nPriority: Int, nDivisible: Boolean, nMinSlice: Int):Boolean{
+        task!!.name = nName
+        task!!.description = nDesc
+        task!!.deadline = nDDL
+        task!!.places = nLoc
+        task!!.priority = nPriority
+        task!!.divisible = nDivisible
+        task!!.minSliceSize = nMinSlice
+        updateAllEntries()
+        return true
+    }
 
     var mTaskSlices: ArrayList<TaskSlice> = ArrayList()
     var mAllInsertedEntries: ArrayList<AgendaDrawableEntry> = ArrayList()
@@ -61,17 +115,10 @@ object PlanManager {
     }
 
     @ExperimentalTime
-    fun removeTask(task: Task): Boolean{
-        mTaskSlices.removeAll {
-            it.parent == task
-        }
-        return mTasks.remove(task)
-    }
-
-    @ExperimentalTime
     public fun addEvent(event: Event): Boolean{
         if (canEventBeInserted(event)) {
             mEvents.add(event)
+            mEvents.sortBy{it.startTime}
             mAllInsertedEntries.add(event)
             mAllInsertedEntries.sortBy{it.startTime}
             return true
@@ -93,8 +140,21 @@ object PlanManager {
     }
 
     @ExperimentalTime
+    private fun canEventBeEdited(upEvent : Event, oldEvent:Event): Boolean{
+        var currTime = upEvent.startTime
+        var numOfAvailableMinutes = 0
+        val eventDuration = differenceInMinutes(upEvent.startTime, upEvent.endTime)
+        while(isTimeAvailableExclude(currTime, oldEvent) && numOfAvailableMinutes < eventDuration) {
+            currTime = currTime.plusMinutes(1)
+            numOfAvailableMinutes += 1
+        }
+
+        return numOfAvailableMinutes >= eventDuration
+    }
+
+    @ExperimentalTime
     private fun insertDivisibleTask(task: Task): Boolean {
-        var currTime = LocalDateTime.now().withHour(0).withMinute(0)
+        var currTime = LocalDateTime.now().withHour(9).withMinute(0)
         var totalInsertedDuration = 0
         var sliceDuration: Int
         val insertedTaskSlices:  ArrayList<TaskSlice> = ArrayList()
@@ -166,7 +226,7 @@ object PlanManager {
 
     @ExperimentalTime
     private fun findNextEmptySlotLasting(minutes: Duration, deadline: LocalDateTime): LocalDateTime? {
-        var currTime = LocalDateTime.now().withHour(0).withMinute(0)
+        var currTime = LocalDateTime.now().withHour(9).withMinute(0)
         var slotStartTime:LocalDateTime
         var slotEndTime:LocalDateTime
 
@@ -198,6 +258,12 @@ object PlanManager {
         return !mEvents.any{isBeforeOrEqual(it.startTime,currTime) && isAfter(it.endTime,currTime)}
     }
 
+    @ExperimentalTime
+    private fun isTimeAvailableExclude(currTime: LocalDateTime, exclEvent: Event):Boolean{
+        val exclEvents = mEvents.filter{e -> e != exclEvent}
+        return !exclEvents.any{isBeforeOrEqual(it.startTime,currTime) && isAfter(it.endTime,currTime)}
+    }
+
     fun isBeforeOrEqual(earlierDate: LocalDateTime, laterDate: LocalDateTime): Boolean {
         return differenceInMinutes(earlierDate, laterDate) >= 0
     }
@@ -222,5 +288,29 @@ object PlanManager {
         return ChronoUnit.MINUTES.between(
             earlierDate.truncatedTo(ChronoUnit.MINUTES),
             laterDate.truncatedTo(ChronoUnit.MINUTES))
+    }
+
+    @ExperimentalTime
+    fun getEventsByDate(date : LocalDateTime): List<Event>{
+        return mEvents.filter { e -> DateHelper.isBetweenInclusive(date, e.startTime, e.endTime) }
+    }
+
+    @ExperimentalTime
+    fun getTaskSlicesByDate(date : LocalDateTime): List<TaskSlice>{
+        return mTaskSlices.filter { t -> DateHelper.isBetweenInclusive(date, t.startTime, t.endTime) }
+    }
+
+    @ExperimentalTime
+    fun removeTask(parent: Task) {
+        val taskChildren: List<TaskSlice> = mTaskSlices.filter{t -> t.parent == parent};
+        mTaskSlices.removeAll (taskChildren)
+        mTasks.remove(parent)
+        mAllInsertedEntries.removeAll(taskChildren)
+    }
+
+    @ExperimentalTime
+    fun removeEvent(event:Event){
+        mEvents.remove(event)
+        mAllInsertedEntries.remove(event)
     }
 }
