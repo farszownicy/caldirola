@@ -147,7 +147,6 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     {
         println(places.size)
         if(!editedTask!!.places.isEmpty()) {
-            System.out.println("WYBOR LOKALIZACJI)" + editedTask!!.places.first().name)
             val curr = places.indexOfFirst { e -> e.equals(editedTask!!.places.first().name) }
             et_location.setSelection(curr)
         }
@@ -175,8 +174,9 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         val minSlice = getSliceTimeInMinutes()
         val divisible = et_divisible.isChecked
 
+        //TODO Ja bym zrobil tak, tez w samym dodawaniu, zeby task sie dodal nawet jesli sie go nie da aktualnie wcisnac, tak samo z edycja
         val taskUpdated = PlanManager.updateTask(editedTask!!, name, description, deadline, locations, priority, divisible, minSlice)
-        val taskIntent = Intent()
+        //val taskIntent = Intent()
     }
 
 }

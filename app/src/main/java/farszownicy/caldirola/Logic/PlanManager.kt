@@ -79,8 +79,6 @@ object PlanManager {
         return true
     }
 
-    //(editedTask!!, name, description, deadline, locations, priority, divisible, minSlice)
-
     var mTaskSlices: ArrayList<TaskSlice> = ArrayList()
     var mAllInsertedEntries: ArrayList<AgendaDrawableEntry> = ArrayList()
 
