@@ -68,7 +68,9 @@ class AgendaActivity : AppCompatActivity() {
                     Toast.makeText(this@AgendaActivity,
                         "onEventClick: ${data!!.name}, event start: ${data.startTime}, event end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}",
                         Toast.LENGTH_SHORT).show()
-                    Log.e("TAG", "onEventClick: ${data!!.name}, event start: ${data.startTime}, event end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
+                    val intent = Intent(this@AgendaActivity, EditEventActivity::class.java)
+                    intent.putExtra("ID", data.id)
+                    startActivityForResult(intent, Constants.ADD_EVENT_CODE)
                 }
             })
         (agenda.mHandler)!!.setOnEventLongClickListener(
