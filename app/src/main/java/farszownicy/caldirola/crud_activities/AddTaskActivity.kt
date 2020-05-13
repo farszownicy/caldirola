@@ -146,7 +146,7 @@ class AddTaskActivity : AppCompatActivity(),
         val deadline = calendarUtils.getDTFromTV(at_deadline_date, at_deadline_time)
         val selected_location = Place(at_location.selectedItem as String)
         val divisible = at_divisible.isChecked
-        val priority = at_input_priority.text.toString()
+        var priority = at_input_priority.text.toString()
         val minSlice = getSliceTimeInMinutes()
         val duration: Int
         val time: LocalTime
@@ -157,7 +157,7 @@ class AddTaskActivity : AppCompatActivity(),
             Toast.makeText(this, "Podano czas trwania w niepoprawnym formacie. Wymagany format: hh:mm", Toast.LENGTH_SHORT).show()
             return
         }
-        duration = time.hour * 60 + time.minute
+        duration =  time.hour * 60 + time.minute
 
         if(name.isEmpty() || description.isEmpty() || duration<= 0)
             return
@@ -171,8 +171,11 @@ class AddTaskActivity : AppCompatActivity(),
             SLICE_KEY to minSlice,
             DURATION_KEY to duration
         )
+        if(priority == "")
+            priority = "-1"
         val task = Task(UUID.randomUUID().toString(), name, description,
-            deadline, duration.minutes, priority= priority.toInt(),divisible=divisible, places = listOf(selected_location)
+            deadline, duration.minutes, priority= priority.toInt(),divisible=divisible,
+            minSliceSize =  minSlice, places = listOf(selected_location)
         )
         val taskIntent = Intent()
 
@@ -184,7 +187,7 @@ class AddTaskActivity : AppCompatActivity(),
             taskIntent.putExtra(Constants.ADD_TASK_KEY, taskAdded)
             setResult(Activity.RESULT_OK, taskIntent)
             PlanManager.memoryUpToDate = false
-            CalendarManager.getInstance().loadEventsAndTasks()
+            CalendarManager.getInstance(applicationContext).loadEventsAndTasks()
             finish()
         }
         else{

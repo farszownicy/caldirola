@@ -154,7 +154,7 @@ object PlanManager {
 
     @ExperimentalTime
     private fun insertDivisibleTask(task: Task): Boolean {
-        var currTime = LocalDateTime.now().withHour(9).withMinute(0)
+        var currTime = LocalDateTime.now()//.withHour(9).withMinute(0)
         var totalInsertedDuration = 0
         var sliceDuration: Int
         val insertedTaskSlices:  ArrayList<TaskSlice> = ArrayList()
@@ -176,15 +176,14 @@ object PlanManager {
                 sliceDuration += 1
             }
 
-            if(sliceDuration > 0) {
+            if(sliceDuration >= task.minSliceSize) {
                 val slotEndTime = slotStartTime.plusMinutes(sliceDuration.toLong())
-
                 val slice = TaskSlice(task, slotStartTime, slotEndTime)
                 insertedTaskSlices.add(slice)
+                totalInsertedDuration += sliceDuration
 //            mTaskSlices.add(slice)
 //            mAllInsertedEntries.add(slice)
 //            mAllInsertedEntries.sortBy{it.startTime}
-                totalInsertedDuration += sliceDuration
             }
         }
         var result = true
