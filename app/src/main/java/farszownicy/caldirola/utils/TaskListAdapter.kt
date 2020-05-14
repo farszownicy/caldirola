@@ -1,18 +1,14 @@
 package farszownicy.caldirola.utils
 
-import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import kotlinx.android.synthetic.main.task_list_card.view.*
-import org.w3c.dom.Text
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.time.ExperimentalTime
@@ -23,7 +19,7 @@ class TaskListAdapter() : RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
 
     @ExperimentalTime
     override fun getItemCount(): Int = if (showPastTasks) PlanManager.mTasks.size
-                                        else PlanManager.getFutureTasks().size
+                                        else PlanManager.getFutureAndCurrentTasks().size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).
@@ -34,7 +30,7 @@ class TaskListAdapter() : RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
     @ExperimentalTime
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentItem = if (showPastTasks) PlanManager.mTasks[position]
-                                else PlanManager.getFutureTasks()[position]
+                                else PlanManager.getFutureAndCurrentTasks()[position]
         holder.titleText.text = currentItem.name
         holder.descText.text = currentItem.description
         if(currentItem.places.isNotEmpty()){

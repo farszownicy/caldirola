@@ -8,6 +8,8 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
+import kotlin.time.minutes
+import kotlin.time.toDuration
 
 object PlanManager {
 
@@ -29,7 +31,7 @@ object PlanManager {
         set(tasks){
             tasks.sortBy{it.deadline}
             field = tasks
-            distributeTasks()
+            distributeTasks(tasks)
         }
 
     @ExperimentalTime
@@ -94,12 +96,21 @@ object PlanManager {
     }
 
     @ExperimentalTime
-    private fun distributeTasks() {
-        for(task in mTasks) {
-            if (!task.divisible)
+    private fun distributeTasks(argTasks: List<Task>) {
+        val tasks = argTasks.sortedBy { it.deadline }
+        Log.d("rearrange", "${tasks.size}")
+        for(task in tasks) {
+            if (!task.divisible) {
                 insertNonDivisibleTask(task)
-            else
+            }
+            else {
+                val originalDuration = task.duration
+                val completedMinutes =
+                    getSlicesOfTask(task).map { ts-> differenceInMinutes(ts.startTime, ts.endTime) }.sum().minutes
+                task.duration = originalDuration.minus(completedMinutes)
                 insertDivisibleTask(task)
+                task.duration = originalDuration
+            }
         }
     }
 
@@ -112,7 +123,7 @@ object PlanManager {
                 insertDivisibleTask(task)
         task.doable = inserted
         mTasks.add(task)
-        mTasks.sortBy { it.deadline }
+        mTasks.sortBy {it.deadline}
         return inserted
     }
 
@@ -224,7 +235,7 @@ object PlanManager {
 
     @ExperimentalTime
     private fun findNextEmptySlotLasting(minutes: Duration, deadline: LocalDateTime): LocalDateTime? {
-        var currTime = LocalDateTime.now().withHour(9).withMinute(0)
+        var currTime = LocalDateTime.now()
         var slotStartTime:LocalDateTime
         var slotEndTime:LocalDateTime
 
@@ -298,9 +309,13 @@ object PlanManager {
         return mTaskSlices.filter { t -> DateHelper.isBetweenInclusive(date, t.startTime, t.endTime) }
     }
 
+    fun getSlicesOfTask(task: Task): List<TaskSlice> {
+        return mTaskSlices.filter { t -> t.parent == task}
+    }
+
     @ExperimentalTime
     fun removeTask(parent: Task) {
-        val taskChildren: List<TaskSlice> = mTaskSlices.filter{t -> t.parent == parent};
+        val taskChildren: List<TaskSlice> = getSlicesOfTask(parent)
         mTaskSlices.removeAll (taskChildren)
         mTasks.remove(parent)
         mAllInsertedEntries.removeAll(taskChildren)
@@ -318,7 +333,22 @@ object PlanManager {
     }
 
     @ExperimentalTime
-    fun getFutureTasks(): List<Task> {
+    fun getFutureAndCurrentTasks(): List<Task> {
         return mTasks.filter { t -> t.deadline > LocalDateTime.now() }
+    }
+
+    private fun getFutureSlices(): List<TaskSlice> {
+        return mTaskSlices.filter { ts -> ts.startTime > LocalDateTime.now() }
+    }
+
+    @ExperimentalTime
+    fun rearrangeTasks() {
+        //val futureTasks = getFutureTasks()
+        val futureSlices = getFutureSlices()
+
+        mAllInsertedEntries.removeAll(futureSlices)
+        mTaskSlices.removeAll(futureSlices)
+
+        distributeTasks(futureSlices.map { ts-> ts.parent })
     }
 }

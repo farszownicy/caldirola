@@ -1,24 +1,35 @@
 package farszownicy.caldirola.activities
 
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.activities.AgendaActivity.Companion.DAY_KEY
 import farszownicy.caldirola.activities.AgendaActivity.Companion.MONTH_KEY
 import farszownicy.caldirola.activities.AgendaActivity.Companion.YEAR_KEY
 import farszownicy.caldirola.agendacalendar.AgendaCalendarView
+import farszownicy.caldirola.agendacalendar.CalendarManager
 import farszownicy.caldirola.agendacalendar.CalendarPickerController
+import farszownicy.caldirola.crud_activities.AddEventActivity
+import farszownicy.caldirola.crud_activities.AddTaskActivity
 import farszownicy.caldirola.models.BaseCalendarEntry
 import farszownicy.caldirola.models.DayItem
 import farszownicy.caldirola.models.data_classes.Event
 import farszownicy.caldirola.models.data_classes.Place
+import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.memory.saveEventsToMemory
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
+import kotlinx.android.synthetic.main.activity_agenda.*
 import kotlinx.android.synthetic.main.calendar_view.*
+import kotlinx.android.synthetic.main.view_agendacalendar.*
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.time.ExperimentalTime
@@ -27,9 +38,10 @@ import kotlin.time.ExperimentalTime
 class CalendarActivity : AppCompatActivity(), CalendarPickerController {
     lateinit var mAgendaCalendarView: AgendaCalendarView
 
-    companion object{
+    companion object {
         const val LOG_TAG = "DEBUG"
     }
+
     @ExperimentalTime
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -43,38 +55,40 @@ class CalendarActivity : AppCompatActivity(), CalendarPickerController {
         minDate.add(Calendar.MONTH, -2)
         minDate.set(Calendar.DAY_OF_MONTH, 1)
         maxDate.add(Calendar.YEAR, 1)
-
-//        val eventList: List<Event> = ArrayList()
-        //mockList(eventList as MutableList<Event>)
-        //val calendarManager = CalendarManager.getInstance(applicationContext)
-        //calendarManager.buildCal(minDate, maxDate, Locale.getDefault())
-        //Log.d(LOG_TAG, eventList.toString())
-        //calendarManager.loadEvents(eventList)
-        ////////
-
-        ////////
-        //val readyEvents = calendarManager.events
-        //val readyDays: List<DayItem> = calendarManager.days
-        //val readyWeeks: List<WeekItem> = calendarManager.weeks
-//        mAgendaCalendarView.init(events, slices, minDate, maxDate, Locale.UK, this)
         mAgendaCalendarView.init(minDate, maxDate, Locale.UK, this)
+        calAddButton.setOnClickListener {
+            AddDialog()
+        }
+        rearrangeButton.setOnClickListener { v: View? ->
+            PlanManager.rearrangeTasks()
+            saveTasksToMemory(this)
+            CalendarManager.getInstance().loadEventsAndTasks()
+        }
 //        mAgendaCalendarView.addEventRenderer(DefaultEventRenderer())
     }
 
     private fun mockList(eventList: MutableList<Event>) {
         val timeStart1 = LocalDateTime.now().withHour(2).withMinute(0)
         val timeEnd1 = timeStart1.withHour(3).withMinute(30)
-        val event1 = Event("id1","Hurtownie Danych", "laby", timeStart1, timeEnd1, Place("Uczelnia"))
+        val event1 =
+            Event("id1", "Hurtownie Danych", "laby", timeStart1, timeEnd1, Place("Uczelnia"))
         eventList.add(event1)
 
         val timeStart2 = LocalDateTime.now().withHour(18).withMinute(0)
         val timeEnd2 = LocalDateTime.now().withHour(20).withMinute(0)
-        val event2 = Event("id2","Zlot fanów farszu", "cos tam", timeStart2, timeEnd2, Place("stołówka SKS"))
+        val event2 = Event(
+            "id2",
+            "Zlot fanów farszu",
+            "cos tam",
+            timeStart2,
+            timeEnd2,
+            Place("stołówka SKS")
+        )
         eventList.add(event2)
 
         val timeStart3 = LocalDateTime.now().withHour(14).withMinute(0)
         val timeEnd3 = LocalDateTime.now().withDayOfMonth(5).withHour(15).withMinute(15)
-        val event3 = Event("id3","Wyjazd do Iraku", "aaa",  timeStart3, timeEnd3, Place("Irak"))
+        val event3 = Event("id3", "Wyjazd do Iraku", "aaa", timeStart3, timeEnd3, Place("Irak"))
 
         eventList.add(event3)
 //        val timeStart1 = LocalDateTime.now().
@@ -117,7 +131,7 @@ class CalendarActivity : AppCompatActivity(), CalendarPickerController {
 
     @ExperimentalTime
     override fun onStop() {
-        if(!PlanManager.memoryUpToDate){
+        if (!PlanManager.memoryUpToDate) {
             saveEventsToMemory(this)
             saveTasksToMemory(this)
             PlanManager.memoryUpToDate = true
@@ -137,7 +151,7 @@ class CalendarActivity : AppCompatActivity(), CalendarPickerController {
         val intent = Intent(this, AgendaActivity::class.java)
         val bundle = Bundle()
         bundle.putInt(DAY_KEY, entry.instanceDay.get(Calendar.DAY_OF_MONTH))
-        bundle.putInt(MONTH_KEY, entry.instanceDay.get(Calendar.MONTH)+ 1)
+        bundle.putInt(MONTH_KEY, entry.instanceDay.get(Calendar.MONTH) + 1)
         bundle.putInt(YEAR_KEY, entry.instanceDay.get(Calendar.YEAR))
 
         intent.putExtras(bundle)
@@ -147,6 +161,25 @@ class CalendarActivity : AppCompatActivity(), CalendarPickerController {
 
     override fun onResume() {
         super.onResume()
-
     }
+
+    @ExperimentalTime
+    fun AddDialog() {
+        AlertDialog.Builder(this).setTitle("CHOOSE ENTRY TYPE")
+            .setPositiveButton("EVENT") { dialog, id -> StartAEActivity() }
+            .setNegativeButton("TASK") { dialog, id -> StartATActivity() }
+            .create().show()
+    }
+
+    fun StartAEActivity() {
+        val intent = Intent(this, AddEventActivity::class.java)
+        startActivityForResult(intent, Constants.ADD_EVENT_CODE)
+    }
+
+    @ExperimentalTime
+    fun StartATActivity() {
+        val intent = Intent(this, AddTaskActivity::class.java)
+        startActivityForResult(intent, Constants.ADD_TASK_CODE)
+    }
+
 }
