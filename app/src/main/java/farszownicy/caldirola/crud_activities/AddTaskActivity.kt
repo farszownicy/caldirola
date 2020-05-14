@@ -20,6 +20,7 @@ import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.models.data_classes.Task
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
+import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_add_task.*
 import java.lang.Exception
 import java.sql.Time
@@ -180,19 +181,23 @@ class AddTaskActivity : AppCompatActivity(),
         val taskIntent = Intent()
 
         val taskAdded = PlanManager.addTask(task)
+        db.collection("tasks").add(task_data).addOnSuccessListener { documentReference ->
+            Log.d(TAG, "Task added with ID: ${documentReference.id}")
+        }.addOnFailureListener { e -> Log.w(TAG, "Error adding task", e) }
+        saveTasksToMemory(this)
+        PlanManager.memoryUpToDate = true
         if(taskAdded) {
-            db.collection("tasks").add(task_data).addOnSuccessListener { documentReference ->
-                Log.d(TAG, "Task added with ID: ${documentReference.id}")
-            }.addOnFailureListener { e -> Log.w(TAG, "Error adding task", e) }
             taskIntent.putExtra(Constants.ADD_TASK_KEY, taskAdded)
             setResult(Activity.RESULT_OK, taskIntent)
             PlanManager.memoryUpToDate = false
             CalendarManager.getInstance(applicationContext).loadEventsAndTasks()
-            finish()
         }
         else{
-            Toast.makeText(this, "Taska ${task.name} nie da sie wcisnac do kalendarza.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                "Task ${task.name} cannot be completed before deadline. It has been added to your TO-DO List",
+                Toast.LENGTH_LONG).show()
         }
+        finish()
     }
 
     //SPINNER METHODS

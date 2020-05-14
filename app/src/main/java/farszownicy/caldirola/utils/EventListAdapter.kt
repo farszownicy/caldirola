@@ -1,7 +1,5 @@
 package farszownicy.caldirola.utils
 
-import android.content.res.Resources
-import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,15 +8,17 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
-import java.lang.String
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.time.ExperimentalTime
 
 
 class EventListAdapter() : RecyclerView.Adapter<EventListAdapter.ViewHolder>() {
+    var showPastEvents = false;
 
     @ExperimentalTime
-    override fun getItemCount(): Int = PlanManager.mEvents.size
+    override fun getItemCount(): Int = if (showPastEvents) PlanManager.mEvents.size
+                                        else PlanManager.getFutureEvents().size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.event_list_card, parent, false)
@@ -27,7 +27,8 @@ class EventListAdapter() : RecyclerView.Adapter<EventListAdapter.ViewHolder>() {
 
     @ExperimentalTime
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val currentItem = PlanManager.mEvents[position]
+        val currentItem = if (showPastEvents) PlanManager.mEvents[position]
+                                else PlanManager.getFutureEvents()[position]
         holder.titleText.text = currentItem.name
         if(currentItem.Location != null){
             holder.LocationText.text = currentItem.Location!!.name
@@ -36,10 +37,14 @@ class EventListAdapter() : RecyclerView.Adapter<EventListAdapter.ViewHolder>() {
             holder.LocationIcon.visibility = View.GONE
         }
         holder.descText.text = currentItem.description
-        val df = DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT)
+        val df = DateTimeFormatter.ofPattern(Constants.SHORT_DATETIME_FORMAT)
         //Zamienić potem na string.xml
         holder.dateText.text = "${df.format(currentItem.startTime)} - ${df.format(currentItem.endTime)}"
 
+        if(currentItem.endTime < LocalDateTime.now())
+            holder.itemView.alpha = 0.7f
+        else
+            holder.itemView.alpha = 1f
 
         holder.itemView.setOnClickListener {
             //val intent = Intent(holder.itemView.context, Activity::class.java)

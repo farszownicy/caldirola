@@ -9,12 +9,15 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:backgroundTintMode="add"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
             android:fontFamily="sans-serif-light"
             android:gravity="center"
             android:minHeight="?actionBarSize"

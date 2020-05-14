@@ -3,6 +3,7 @@
     <color name="colorPrimary">#983CFF</color>
     <color name="colorPrimaryDark">#44006D</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="colorAccentBleak">#9ED81B60</color>
     <color name="black">#000000</color>
     <color name="yellow">#FFEB3B</color>
     <color name="event_color">#64b5f6</color>
@@ -25,7 +26,7 @@
     <color name="calendar_text_current_day">#D81B60</color>
     <color name="calendar_text_selected">#FFFFFF</color>
     <color name="calendar_text_default">#9C9CA0</color>
-    <color name="calendar_text_first_day_of_month">#FD9635</color>
+<!--    <color name="calendar_text_first_day_of_month">#FD9635</color>-->
     <color name="calendar_month_transparent_background">#CCFFFFFF</color>
     <color name="calendar_month_background">#CCFFFFFF</color>
     <color name="calendar_divider_color">#F3F3F3</color>

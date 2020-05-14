@@ -7,7 +7,6 @@ import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import farszownicy.caldirola.R
-import farszownicy.caldirola.activities.entry_list.SectionsPagerAdapter
 import farszownicy.caldirola.utils.memory.saveEventsToMemory
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlin.time.ExperimentalTime
