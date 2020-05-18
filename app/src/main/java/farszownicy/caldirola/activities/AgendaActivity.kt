@@ -141,7 +141,7 @@ class AgendaActivity : AppCompatActivity() {
         val intent = Intent(this, AddEventActivity::class.java)
         startActivityForResult(intent, Constants.ADD_EVENT_CODE)
     }
-    //TODO: ZMIENIC NA ADD EVENT, ADD TASK
+
     @ExperimentalTime
     fun StartATActivity() {
         val intent = Intent(this, AddTaskActivity::class.java)

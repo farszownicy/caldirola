@@ -176,7 +176,7 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="fill_horizontal"
                         android:gravity="fill_vertical"
-                        android:textAlignment="center">
+                       >
 
                         <TextView
                             android:id="@+id/et_deadline_date"
