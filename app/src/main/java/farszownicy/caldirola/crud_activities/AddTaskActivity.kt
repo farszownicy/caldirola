@@ -20,6 +20,7 @@ import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.models.data_classes.Task
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
+import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_add_task.*
 import java.lang.Exception
 import java.sql.Time
@@ -146,7 +147,7 @@ class AddTaskActivity : AppCompatActivity(),
         val deadline = calendarUtils.getDTFromTV(at_deadline_date, at_deadline_time)
         val selected_location = Place(at_location.selectedItem as String)
         val divisible = at_divisible.isChecked
-        val priority = at_input_priority.text.toString()
+        var priority = at_input_priority.text.toString()
         val minSlice = getSliceTimeInMinutes()
         val duration: Int
         val time: LocalTime
@@ -157,7 +158,7 @@ class AddTaskActivity : AppCompatActivity(),
             Toast.makeText(this, "Podano czas trwania w niepoprawnym formacie. Wymagany format: hh:mm", Toast.LENGTH_SHORT).show()
             return
         }
-        duration = time.hour * 60 + time.minute
+        duration =  time.hour * 60 + time.minute
 
         if(name.isEmpty() || description.isEmpty() || duration<= 0)
             return
@@ -171,25 +172,32 @@ class AddTaskActivity : AppCompatActivity(),
             SLICE_KEY to minSlice,
             DURATION_KEY to duration
         )
+        if(priority == "")
+            priority = "-1"
         val task = Task(UUID.randomUUID().toString(), name, description,
-            deadline, duration.minutes, priority= priority.toInt(),divisible=divisible, places = listOf(selected_location)
+            deadline, duration.minutes, priority= priority.toInt(),divisible=divisible,
+            minSliceSize =  minSlice, places = listOf(selected_location)
         )
         val taskIntent = Intent()
 
         val taskAdded = PlanManager.addTask(task)
+        db.collection("tasks").add(task_data).addOnSuccessListener { documentReference ->
+            Log.d(TAG, "Task added with ID: ${documentReference.id}")
+        }.addOnFailureListener { e -> Log.w(TAG, "Error adding task", e) }
+        saveTasksToMemory(this)
+        PlanManager.memoryUpToDate = true
         if(taskAdded) {
-            db.collection("tasks").add(task_data).addOnSuccessListener { documentReference ->
-                Log.d(TAG, "Task added with ID: ${documentReference.id}")
-            }.addOnFailureListener { e -> Log.w(TAG, "Error adding task", e) }
             taskIntent.putExtra(Constants.ADD_TASK_KEY, taskAdded)
             setResult(Activity.RESULT_OK, taskIntent)
             PlanManager.memoryUpToDate = false
-            CalendarManager.getInstance().loadEventsAndTasks()
-            finish()
+            CalendarManager.getInstance(applicationContext).loadEventsAndTasks()
         }
         else{
-            Toast.makeText(this, "Taska ${task.name} nie da sie wcisnac do kalendarza.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                "Task ${task.name} cannot be completed before deadline. It has been added to your TO-DO List",
+                Toast.LENGTH_LONG).show()
         }
+        finish()
     }
 
     //SPINNER METHODS

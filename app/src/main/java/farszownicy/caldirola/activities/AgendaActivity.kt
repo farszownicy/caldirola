@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -26,7 +27,11 @@ import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_agenda.*
 import kotlinx.android.synthetic.main.activity_agenda.view.*
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.math.abs
 import kotlin.time.ExperimentalTime
+
 
 class AgendaActivity : AppCompatActivity() {
     lateinit var minuteUpdateReceiver: BroadcastReceiver
@@ -34,12 +39,15 @@ class AgendaActivity : AppCompatActivity() {
     var day: Int = 0
     var month: Int = 0
     var year: Int = 0
+    var x1 : Float = 0F
+    var x2 : Float = 0F
 
     companion object{
         const val LOG_TAG = "DEBUG"
         const val DAY_KEY = "DAY"
         const val MONTH_KEY = "MONTH"
         const val YEAR_KEY = "YEAR"
+        const val MIN_SWIPE_DISTANCE = 100
     }
 
     @ExperimentalTime
@@ -55,20 +63,21 @@ class AgendaActivity : AppCompatActivity() {
 
         agenda.setDay(day, month, year)
         agenda.setLimitTime(0, 24)
-        setOnClickListeners()
-        agenda.drawEvents()
-        agenda.drawTasks()
+        updateDisplayedDay()
+        setListeners()
     }
 
     @ExperimentalTime
-    private fun setOnClickListeners() {
+    private fun setListeners() {
         (agenda.mHandler)!!.setOnEventClickListener(
             object : EventView.OnEventClickListener {
                 override fun onEventClick(view: EventView?, data: Event?) {
                     Toast.makeText(this@AgendaActivity,
                         "onEventClick: ${data!!.name}, event start: ${data.startTime}, event end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}",
                         Toast.LENGTH_SHORT).show()
-                    Log.e("TAG", "onEventClick: ${data!!.name}, event start: ${data.startTime}, event end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
+                    val intent = Intent(this@AgendaActivity, EditEventActivity::class.java)
+                    intent.putExtra("ID", data.id)
+                    startActivityForResult(intent, Constants.ADD_EVENT_CODE)
                 }
             })
         (agenda.mHandler)!!.setOnEventLongClickListener(
@@ -106,9 +115,49 @@ class AgendaActivity : AppCompatActivity() {
                 }
             })
 
+        next_day_btn.setOnClickListener{
+            agenda.moveDay(1)
+            updateDisplayedDay()
+        }
+        prev_day_btn.setOnClickListener{
+            agenda.moveDay(-1)
+            updateDisplayedDay()
+        }
+
         addButton.setOnClickListener {
             AddDialog()
         }
+
+        agenda_scroll_view.setOnTouchListener { v, event ->
+            when (event!!.action) {
+                MotionEvent.ACTION_DOWN -> x1 = event.x
+                MotionEvent.ACTION_UP -> {
+                    x2 = event.x
+                    val deltaX: Float = x2 - x1
+                    if (deltaX > MIN_SWIPE_DISTANCE) {
+                        agenda.moveDay(-1)
+                        updateDisplayedDay()
+                    }
+                    else if(deltaX < - MIN_SWIPE_DISTANCE){
+                        agenda.moveDay(1)
+                        updateDisplayedDay()
+                    }
+                }
+            }
+            false
+        }
+    }
+
+    @ExperimentalTime
+    private fun updateDisplayedDay() {
+        val formatDayOfMonth =
+            DateTimeFormatter.ofPattern(Constants.DAY_OF_MONTH_FORMAT, Locale.UK);
+        val formatDayOfWeek =
+            DateTimeFormatter.ofPattern(Constants.DAY_OF_WEEK_FORMAT, Locale.UK)
+
+        day_of_month_tv.text = agenda.mDay.format(formatDayOfMonth)
+        day_of_week_tv.text = agenda.mDay.format(formatDayOfWeek)
+        agenda.refreshEntries()
     }
 
     @ExperimentalTime

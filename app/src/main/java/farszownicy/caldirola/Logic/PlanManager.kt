@@ -3,17 +3,20 @@ package farszownicy.caldirola.Logic
 import android.util.Log
 
 import farszownicy.caldirola.utils.DateHelper
-import androidx.core.util.rangeTo
-import farszownicy.caldirola.models.*
 import farszownicy.caldirola.models.data_classes.*
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
+import kotlin.time.minutes
+import kotlin.time.toDuration
 
 object PlanManager {
 
     init{ }
+    var mTaskSlices: ArrayList<TaskSlice> = ArrayList()
+    var mAllInsertedEntries: ArrayList<AgendaDrawableEntry> = ArrayList()
+
     var memoryUpToDate = true
     @ExperimentalTime
     var mEvents: ArrayList<Event> = ArrayList()
@@ -28,7 +31,7 @@ object PlanManager {
         set(tasks){
             tasks.sortBy{it.deadline}
             field = tasks
-            distributeTasks()
+            distributeTasks(tasks)
         }
 
     @ExperimentalTime
@@ -53,18 +56,18 @@ object PlanManager {
     public fun updateEvent(event: Event, nName: String, nDesc: String, nST : LocalDateTime, nET : LocalDateTime, nLoc : Place?):Boolean{
 
         var newEvent: Event = Event()
-        newEvent!!.name = nName
-        newEvent!!.description = nDesc
-        newEvent!!.startTime = nST
-        newEvent!!.endTime = nET
-        newEvent!!.Location = nLoc
-        if(canEventBeEdited(newEvent!!, event!!))
+        newEvent.name = nName
+        newEvent.description = nDesc
+        newEvent.startTime = nST
+        newEvent.endTime = nET
+        newEvent.Location = nLoc
+        if(canEventBeEdited(newEvent, event))
         {
-            event!!.Location = nLoc
-            event!!.name = nName
-            event!!.description = nDesc
-            event!!.endTime = nET
-            event!!.startTime = nST
+            event.Location = nLoc
+            event.name = nName
+            event.description = nDesc
+            event.endTime = nET
+            event.startTime = nST
             updateAllEntries()
             return true
         } else return false
@@ -72,19 +75,17 @@ object PlanManager {
 
     @ExperimentalTime
     public fun updateTask(task: Task, nName: String, nDesc: String, nDDL : LocalDateTime, nLoc : List<Place>, nPriority: Int, nDivisible: Boolean, nMinSlice: Int):Boolean{
-        task!!.name = nName
-        task!!.description = nDesc
-        task!!.deadline = nDDL
-        task!!.places = nLoc
-        task!!.priority = nPriority
-        task!!.divisible = nDivisible
-        task!!.minSliceSize = nMinSlice
+        task.name = nName
+        task.description = nDesc
+        task.deadline = nDDL
+        task.places = nLoc
+        task.priority = nPriority
+        task.divisible = nDivisible
+        task.minSliceSize = nMinSlice
         updateAllEntries()
         return true
     }
 
-    var mTaskSlices: ArrayList<TaskSlice> = ArrayList()
-    var mAllInsertedEntries: ArrayList<AgendaDrawableEntry> = ArrayList()
 
     @ExperimentalTime
     private fun updateAllEntries() {
@@ -95,23 +96,35 @@ object PlanManager {
     }
 
     @ExperimentalTime
-    private fun distributeTasks() {
-        for(task in mTasks) {
-            if (!task.divisible)
+    private fun distributeTasks(argTasks: List<Task>) {
+        val tasks = argTasks.sortedBy { it.deadline }
+        Log.d("rearrange", "${tasks.size}")
+        for(task in tasks) {
+            if (!task.divisible) {
                 insertNonDivisibleTask(task)
-            else
+            }
+            else {
+                val originalDuration = task.duration
+                val completedMinutes =
+                    getSlicesOfTask(task).map { ts-> differenceInMinutes(ts.startTime, ts.endTime) }.sum().minutes
+                task.duration = originalDuration.minus(completedMinutes)
                 insertDivisibleTask(task)
+                task.duration = originalDuration
+            }
         }
     }
 
     @ExperimentalTime
     public fun addTask(task: Task): Boolean{
+        val inserted =
+            if (!task.divisible)
+                insertNonDivisibleTask(task)
+            else
+                insertDivisibleTask(task)
+        task.doable = inserted
         mTasks.add(task)
-        mTasks.sortBy { it.deadline }
-        return if (!task.divisible)
-            insertNonDivisibleTask(task)
-        else
-            insertDivisibleTask(task)
+        mTasks.sortBy {it.deadline}
+        return inserted
     }
 
     @ExperimentalTime
@@ -154,7 +167,7 @@ object PlanManager {
 
     @ExperimentalTime
     private fun insertDivisibleTask(task: Task): Boolean {
-        var currTime = LocalDateTime.now().withHour(9).withMinute(0)
+        var currTime = LocalDateTime.now()//.withHour(9).withMinute(0)
         var totalInsertedDuration = 0
         var sliceDuration: Int
         val insertedTaskSlices:  ArrayList<TaskSlice> = ArrayList()
@@ -176,30 +189,26 @@ object PlanManager {
                 sliceDuration += 1
             }
 
-            if(sliceDuration > 0) {
+            if(sliceDuration >= task.minSliceSize) {
                 val slotEndTime = slotStartTime.plusMinutes(sliceDuration.toLong())
-
                 val slice = TaskSlice(task, slotStartTime, slotEndTime)
                 insertedTaskSlices.add(slice)
-//            mTaskSlices.add(slice)
-//            mAllInsertedEntries.add(slice)
-//            mAllInsertedEntries.sortBy{it.startTime}
                 totalInsertedDuration += sliceDuration
             }
         }
-        var result = true
+        var inserted = true
         if(totalInsertedDuration < task.duration.inMinutes) {
             //abortTask(task)
             Log.d("LOG", "Nie udalo sie wcisnac calego taska ${task.name}.")
-            result = false
+            inserted = false
             //Toast.makeText(this.context, "Podzielnego zadania ${task.name} nie da sie wcisnac do kalendarza.", Toast.LENGTH_SHORT).show()
         }
-        //else{
-        mTaskSlices.addAll(insertedTaskSlices)
-        mAllInsertedEntries.addAll(insertedTaskSlices)
-        mAllInsertedEntries.sortBy{it.startTime}
-        return result
-        //}
+        else{
+            mTaskSlices.addAll(insertedTaskSlices)
+            mAllInsertedEntries.addAll(insertedTaskSlices)
+            mAllInsertedEntries.sortBy{it.startTime}
+        }
+        return inserted
     }
 
     @ExperimentalTime
@@ -226,7 +235,7 @@ object PlanManager {
 
     @ExperimentalTime
     private fun findNextEmptySlotLasting(minutes: Duration, deadline: LocalDateTime): LocalDateTime? {
-        var currTime = LocalDateTime.now().withHour(9).withMinute(0)
+        var currTime = LocalDateTime.now()
         var slotStartTime:LocalDateTime
         var slotEndTime:LocalDateTime
 
@@ -300,9 +309,13 @@ object PlanManager {
         return mTaskSlices.filter { t -> DateHelper.isBetweenInclusive(date, t.startTime, t.endTime) }
     }
 
+    fun getSlicesOfTask(task: Task): List<TaskSlice> {
+        return mTaskSlices.filter { t -> t.parent == task}
+    }
+
     @ExperimentalTime
     fun removeTask(parent: Task) {
-        val taskChildren: List<TaskSlice> = mTaskSlices.filter{t -> t.parent == parent};
+        val taskChildren: List<TaskSlice> = getSlicesOfTask(parent)
         mTaskSlices.removeAll (taskChildren)
         mTasks.remove(parent)
         mAllInsertedEntries.removeAll(taskChildren)
@@ -312,5 +325,30 @@ object PlanManager {
     fun removeEvent(event:Event){
         mEvents.remove(event)
         mAllInsertedEntries.remove(event)
+    }
+
+    @ExperimentalTime
+    fun getFutureEvents(): List<Event> {
+        return mEvents.filter { e -> e.endTime > LocalDateTime.now() }
+    }
+
+    @ExperimentalTime
+    fun getFutureAndCurrentTasks(): List<Task> {
+        return mTasks.filter { t -> t.deadline > LocalDateTime.now() }
+    }
+
+    private fun getFutureSlices(): List<TaskSlice> {
+        return mTaskSlices.filter { ts -> ts.startTime > LocalDateTime.now() }
+    }
+
+    @ExperimentalTime
+    fun rearrangeTasks() {
+        //val futureTasks = getFutureTasks()
+        val futureSlices = getFutureSlices()
+
+        mAllInsertedEntries.removeAll(futureSlices)
+        mTaskSlices.removeAll(futureSlices)
+
+        distributeTasks(futureSlices.map { ts-> ts.parent })
     }
 }

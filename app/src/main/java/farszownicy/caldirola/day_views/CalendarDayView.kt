@@ -35,7 +35,7 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
     private var mStartHour = 0
     private var mEndHour = 24
 
-    private lateinit var mDay:LocalDateTime
+    lateinit var mDay:LocalDateTime
     lateinit var mEvents: List<Event>
     lateinit var mTaskSlices: List<TaskSlice>
 
@@ -173,6 +173,13 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     @ExperimentalTime
     fun updateTasks(){
+        mTaskSlices = PlanManager.getTaskSlicesByDate(mDay)
+    }
+
+    @ExperimentalTime
+    fun moveDay(numOfDaysForward: Long) {
+        mDay = mDay.plusDays(numOfDaysForward)
+        mEvents = PlanManager.getEventsByDate(mDay)
         mTaskSlices = PlanManager.getTaskSlicesByDate(mDay)
     }
 

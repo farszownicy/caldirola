@@ -10,7 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="farszownicy.caldirola.crud_activities.AddEventActivity"
+            android:name=".activities.entry_list.EntryListActivity"
+            android:label="@string/title_activity_entry_list"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".crud_activities.AddEventActivity"
             android:label="@string/title_activity_add_event"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

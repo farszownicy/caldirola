@@ -2,6 +2,7 @@ package farszownicy.caldirola.agendacalendar;
 
 import farszownicy.caldirola.Logic.PlanManager;
 import farszownicy.caldirola.R;
+import farszownicy.caldirola.activities.CalendarActivity;
 import farszownicy.caldirola.models.BaseCalendarEntry;
 import farszownicy.caldirola.models.DayItem;
 import farszownicy.caldirola.models.MonthItem;
@@ -84,6 +85,8 @@ public class CalendarManager {
     }
 
     public static CalendarManager getInstance() {
+        if(mInstance == null)
+            mInstance = new CalendarManager(null);
         return mInstance;
     }
 

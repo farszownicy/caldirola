@@ -14,8 +14,11 @@ import android.view.animation.RotateAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import farszownicy.caldirola.R;
 import farszownicy.caldirola.agendacalendar.agenda.AgendaAdapter;
@@ -25,7 +28,7 @@ import farszownicy.caldirola.agendacalendar.calendar.CalendarView;
 import farszownicy.caldirola.agendacalendar.render.EventRenderer;
 import farszownicy.caldirola.agendacalendar.render.EntryRenderer;
 import farszownicy.caldirola.agendacalendar.render.TaskRenderer;
-import farszownicy.caldirola.agendacalendar.widgets.FloatingActionButton;
+import farszownicy.caldirola.agendacalendar.widgets.CurrDayFab;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -45,7 +48,7 @@ public class AgendaCalendarView extends FrameLayout implements StickyListHeaders
 
     private CalendarView mCalendarView;
     private AgendaView mAgendaView;
-    private FloatingActionButton mFloatingActionButton;
+    private CurrDayFab mCurrDayFab;
 
     private int mAgendaCurrentDayTextColor, mCalendarHeaderColor, mCalendarBackgroundColor, mCalendarDayTextColor, mCalendarPastDayTextColor, mCalendarCurrentDayColor, mFabColor;
     private CalendarPickerController mCalendarPickerController;
@@ -64,7 +67,7 @@ public class AgendaCalendarView extends FrameLayout implements StickyListHeaders
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
             int scrollY = mAgendaListViewScrollTracker.calculateScrollY(firstVisibleItem, visibleItemCount);
             if (scrollY != 0) {
-                mFloatingActionButton.show();
+                mCurrDayFab.show();
             }
             Log.d(LOG_TAG, String.format("Agenda listView scrollY: %d", scrollY));
             int toAngle = scrollY / 100;
@@ -73,10 +76,10 @@ public class AgendaCalendarView extends FrameLayout implements StickyListHeaders
             } else if (toAngle < -mMaxAngle) {
                 toAngle = -mMaxAngle;
             }
-            RotateAnimation rotate = new RotateAnimation(mCurrentAngle, toAngle, mFloatingActionButton.getWidth() / 2, mFloatingActionButton.getHeight() / 2);
+            RotateAnimation rotate = new RotateAnimation(mCurrentAngle, toAngle, mCurrDayFab.getWidth() / 2, mCurrDayFab.getHeight() / 2);
             rotate.setFillAfter(true);
             mCurrentAngle = toAngle;
-            mFloatingActionButton.startAnimation(rotate);
+            mCurrDayFab.startAnimation(rotate);
         }
     };
 
@@ -114,9 +117,10 @@ public class AgendaCalendarView extends FrameLayout implements StickyListHeaders
         super.onFinishInflate();
         mCalendarView = (CalendarView) findViewById(R.id.calendar_view);
         mAgendaView = (AgendaView) findViewById(R.id.agenda_view);
-        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.floating_action_button);
+        mCurrDayFab = (CurrDayFab) findViewById(R.id.floating_action_button);
+
         ColorStateList csl = new ColorStateList(new int[][]{new int[0]}, new int[]{mFabColor});
-        mFloatingActionButton.setBackgroundTintList(csl);
+        mCurrDayFab.setBackgroundTintList(csl);
 
         mCalendarView.findViewById(R.id.cal_day_names).setBackgroundColor(mCalendarHeaderColor);
         mCalendarView.findViewById(R.id.list_week).setBackgroundColor(mCalendarBackgroundColor);
@@ -143,13 +147,13 @@ public class AgendaCalendarView extends FrameLayout implements StickyListHeaders
                                 // Just after setting the alpha from this view to 1, we hide the fab.
                                 // It will reappear as soon as the user is scrolling the Agenda view.
                                 new Handler().postDelayed(() -> {
-                                    mFloatingActionButton.hide();
+                                    mCurrDayFab.hide();
                                     mAgendaListViewScrollTracker = new ListViewScrollTracker(mAgendaView.getAgendaListView());
                                     mAgendaView.getAgendaListView().setOnScrollListener(mAgendaScrollListener);
-                                    mFloatingActionButton.setOnClickListener((v) -> {
+                                    mCurrDayFab.setOnClickListener((v) -> {
                                         mAgendaView.translateList(0);
                                         mAgendaView.getAgendaListView().scrollToCurrentDate(CalendarManager.getInstance().getToday());
-                                        new Handler().postDelayed(() -> mFloatingActionButton.hide(), fabAnimationDelay);
+                                        new Handler().postDelayed(() -> mCurrDayFab.hide(), fabAnimationDelay);
                                     });
                                 }, fabAnimationDelay);
                             }

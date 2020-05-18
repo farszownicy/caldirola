@@ -1,12 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="farszownicy.caldirola.activities.AgendaActivity"
-    >
+    android:background="@color/colorAccent"
+    tools:context="farszownicy.caldirola.activities.AgendaActivity">
+
+    <TextView
+        android:id="@+id/day_of_month_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="16 May"
+        android:textColor="@color/colorWhite"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/day_of_week_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tuesday"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/day_of_month_tv" />
+
+    <Button
+        android:id="@+id/next_day_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@mipmap/round_navigate_next_white_48"
+        app:layout_constraintBottom_toTopOf="@+id/agenda_scroll_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/prev_day_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@mipmap/round_navigate_prev_white_48"
+        app:layout_constraintBottom_toTopOf="@+id/agenda_scroll_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addButton"
@@ -15,18 +54,20 @@
         android:layout_margin="@dimen/fab_margin"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:src="@mipmap/round_add_white_48"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:src="@mipmap/round_add_white_48"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ScrollView
+        android:id="@+id/agenda_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:background="#FFFFFF"
         android:clipToPadding="false"
         android:paddingTop="@dimen/day_height"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp">
+        app:layout_constraintTop_toBottomOf="@+id/day_of_week_tv"
+        tools:layout_editor_absoluteX="0dp">
 
         <farszownicy.caldirola.day_views.CalendarDayView
             android:id="@+id/agenda"
@@ -34,10 +75,11 @@
             android:layout_height="wrap_content"
             app:dayHeight="@dimen/day_height"
             app:eventMarginLeft="0dp">
+
             <farszownicy.caldirola.day_views.CurrentTimeLineView
                 android:id="@+id/curr_time_line"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
         </farszownicy.caldirola.day_views.CalendarDayView>
     </ScrollView>
 

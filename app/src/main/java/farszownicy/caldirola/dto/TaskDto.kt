@@ -16,11 +16,12 @@ data class TaskDto constructor(
     var prerequisites: List<String> = mutableListOf(), //Ids
     var divisible: Boolean = false,
     var minSliceSize: Int = 0,
-    var places: List<Place> = mutableListOf()
+    var places: List<Place> = mutableListOf(),
+    var doable: Boolean
 ){
     @ExperimentalTime
     constructor(task: Task) : this(task.id, task.name, task.description, task.deadline.toString(),
         task.duration.inMinutes.toInt(), task.priority, task.prerequisites.map { t -> t.id },
-        task.divisible, task.minSliceSize, task.places){
+        task.divisible, task.minSliceSize, task.places, task.doable){
     }
 }

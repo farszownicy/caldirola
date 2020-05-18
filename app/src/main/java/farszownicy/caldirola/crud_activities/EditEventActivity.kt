@@ -51,8 +51,8 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
         ee_add_button.setOnClickListener {
             editEvent()
         }
-        //val eventID = intent.getStringExtra("ID")
-        val eventID = "4511bea6-01cc-4d6d-bf47-1641e37f3714"
+        val eventID = intent.getStringExtra("ID")
+        //val eventID = "4511bea6-01cc-4d6d-bf47-1641e37f3714"
         editedEvent = PlanManager.getEvent(eventID)
         editedIndex = eventID
         fillBoxes()
