@@ -74,7 +74,7 @@ object PlanManager {
     }
 
     @ExperimentalTime
-    public fun updateTask(task: Task, nName: String, nDesc: String, nDDL : LocalDateTime, nLoc : List<Place>, nPriority: Int, nDivisible: Boolean, nMinSlice: Int):Boolean{
+    public fun updateTask(task: Task, nName: String, nDesc: String, nDDL : LocalDateTime, nLoc : List<Place>, nPriority: String, nDivisible: Boolean, nMinSlice: Int):Boolean{
         task.name = nName
         task.description = nDesc
         task.deadline = nDDL

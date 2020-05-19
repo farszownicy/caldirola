@@ -216,15 +216,12 @@
                         android:textColor="@color/colorPurple"
                         android:textSize="18dp" />
 
-                    <EditText
-                        android:id="@+id/at_input_priority"
-                        android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
+                    <Spinner
+                        android:id="@+id/at_priority"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
                         android:layout_marginLeft="10dp"
-                        android:ems="10"
-                        android:fontFamily="sans-serif-light"
-                        android:inputType="number"
-                        android:textSize="@dimen/ae_input_font_size" />
+                        android:layout_marginRight="10dp" />
 
                     <CheckBox
                         android:id="@+id/at_divisible"

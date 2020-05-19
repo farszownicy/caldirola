@@ -135,4 +135,11 @@
     <string name ="edit_task_text">Edit task</string>
     <string name="doable_text">included in schedule</string>
     <string name="not_doable_text">not included in schedule</string>
+
+    <string-array name="Priorities">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+        <item>Urgent</item>
+    </string-array>
 </resources>

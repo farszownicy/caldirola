@@ -23,7 +23,6 @@ import farszownicy.caldirola.utils.DateTimeUtils
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_add_task.*
 import java.lang.Exception
-import java.sql.Time
 import java.time.LocalTime
 import java.util.*
 import kotlin.time.ExperimentalTime
@@ -111,13 +110,18 @@ class AddTaskActivity : AppCompatActivity(),
                     val name = document.getString(NAME_KEY)
                     places.add(name!!)
                 }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, places)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                val location_adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, places)
+                location_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 at_location.onItemSelectedListener = this@AddTaskActivity
-                at_location.adapter = adapter
+                at_location.adapter = location_adapter
             }.addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents: ", exception)
             }
+        val priorities = resources.getStringArray(R.array.Priorities)
+        val priority_adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, priorities)
+        priority_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        at_priority.onItemSelectedListener = this@AddTaskActivity
+        at_priority.adapter = priority_adapter
     }
     private fun setAllDatePickers()
     {
@@ -147,7 +151,7 @@ class AddTaskActivity : AppCompatActivity(),
         val deadline = calendarUtils.getDTFromTV(at_deadline_date, at_deadline_time)
         val selected_location = Place(at_location.selectedItem as String)
         val divisible = at_divisible.isChecked
-        var priority = at_input_priority.text.toString()
+        var priority =  at_priority.selectedItem.toString()
         val minSlice = getSliceTimeInMinutes()
         val duration: Int
         val time: LocalTime
@@ -175,7 +179,7 @@ class AddTaskActivity : AppCompatActivity(),
         if(priority == "")
             priority = "-1"
         val task = Task(UUID.randomUUID().toString(), name, description,
-            deadline, duration.minutes, priority= priority.toInt(),divisible=divisible,
+            deadline, duration.minutes, priority= priority,divisible=divisible,
             minSliceSize =  minSlice, places = listOf(selected_location)
         )
         val taskIntent = Intent()

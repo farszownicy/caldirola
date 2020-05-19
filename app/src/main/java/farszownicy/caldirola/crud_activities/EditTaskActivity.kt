@@ -48,6 +48,7 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     private val datetime_utils = DateTimeUtils()
     private var editedTask: Task? = null
     private var editedIndex:String? = null
+    private val priorities = resources.getStringArray(R.array.Priorities)
 
     @ExperimentalTime
     @RequiresApi(Build.VERSION_CODES.O)
@@ -78,7 +79,7 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     {
         et_input_name.setText(editedTask!!.name)
         et_input_description.setText(editedTask!!.description)
-        et_input_priority.setText(editedTask!!.priority)
+        //et_priority.setText(editedTask!!.priority)
         et_divisible.isChecked = editedTask!!.divisible
         setPreviousDuration()
         setPreviousSlices()
@@ -141,15 +142,20 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             }.addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents: ", exception)
             }
+        val priority_adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, priorities)
+        priority_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        et_priority.onItemSelectedListener = this@EditTaskActivity
+        et_priority.adapter = priority_adapter
     }
 
     private fun setDefSpinner()
     {
-        println(places.size)
         if(!editedTask!!.places.isEmpty()) {
             val curr = places.indexOfFirst { e -> e.equals(editedTask!!.places.first().name) }
             et_location.setSelection(curr)
         }
+        val curr_priority = priorities.indexOfFirst { pr -> pr.equals(editedTask!!.priority) }
+        et_priority.setSelection(curr_priority)
     }
 
     private fun setDatePickers()
@@ -170,7 +176,7 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         val description = et_input_description.text.toString()
         val deadline = datetime_utils.getDTFromTV(et_deadline_date, et_deadline_time)
         val locations = listOf(Place(et_location.selectedItem as String))
-        val priority = et_input_priority.text.toString().toInt()
+        val priority = et_priority.toString()
         val minSlice = getSliceTimeInMinutes()
         val divisible = et_divisible.isChecked
 

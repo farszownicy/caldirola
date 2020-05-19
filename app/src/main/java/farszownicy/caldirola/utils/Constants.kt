@@ -18,4 +18,8 @@ object Constants {
     const val DAY_OF_WEEK_FORMAT = "EEEE"
     const val MINUTES_IN_DAY = 1440f
     const val MINUTES_IN_HOUR = 60
+    const val PRIORITY_LOW = "Low"
+    const val PRIORITY_MEDIUM = "Medium"
+    const val PRIORITY_HIGH = "High"
+    const val PRIORITY_URGENT = "Urgent"
 }

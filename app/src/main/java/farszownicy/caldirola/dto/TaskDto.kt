@@ -2,6 +2,7 @@ package farszownicy.caldirola.dto
 
 import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.models.data_classes.Task
+import farszownicy.caldirola.utils.Constants.PRIORITY_LOW
 import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
 
@@ -12,7 +13,7 @@ data class TaskDto constructor(
     var description: String,
     var deadline: String,
     var duration: Int = 0,
-    var priority: Int = 0,
+    var priority: String = PRIORITY_LOW,
     var prerequisites: List<String> = mutableListOf(), //Ids
     var divisible: Boolean = false,
     var minSliceSize: Int = 0,
