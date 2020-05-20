@@ -1,54 +1,54 @@
 package farszownicy.caldirola.crud_activities
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
-import farszownicy.caldirola.activities.MainActivity
 import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.models.data_classes.Task
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
+import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_edit_task.*
-import java.lang.Exception
-import java.sql.Time
-import java.time.LocalTime
 import java.util.*
 import kotlin.time.ExperimentalTime
-import kotlin.time.minutes
-import androidx.appcompat.app.AppCompatActivity
 
 class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     companion object
     {
         const val NAME_KEY = "name"
-        const val DESCRIPTION_KEY = "description"
-        const val DEADLINE_KEY = "deadline"
-        const val LOCATION_KEY = "location"
-        const val TASKS_KEY = "tasks"
-        const val DIVISIBILITY_KEY = "divisibility"
-        const val PRIORITY_KEY = "priority"
-        const val DURATION_KEY = "duration"
-        const val SLICE_KEY = "slice"
         const val TAG = "debug"
     }
     private val db = FirebaseFirestore.getInstance()
     private val locations = db.collection("locations")
     private val places = ArrayList<String>()
-    private val calendarUtils = DateTimeUtils()
+    private var taskPlaces = ArrayList<Place>()
     private val datetime_utils = DateTimeUtils()
     private var editedTask: Task? = null
     private var editedIndex:String? = null
-    private val priorities = resources.getStringArray(R.array.Priorities)
+    private var adapter:LocationAdapter? = null
+    private val simpleCallback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT){
+        override fun onMove(p0: RecyclerView, p1: RecyclerView.ViewHolder, p2: RecyclerView.ViewHolder): Boolean {
+            return true
+        }
+
+        override fun onSwiped(p0: RecyclerView.ViewHolder, p1: Int) {
+            val position = p0.adapterPosition
+            adapter!!.removeLocation(position)
+        }
+    }
 
     @ExperimentalTime
     @RequiresApi(Build.VERSION_CODES.O)
@@ -58,11 +58,35 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         et_edit_button.setOnClickListener{
             editTask()
         }
-        //val taskID = intent.getStringExtra("ID")
-        val taskID = "aabbcc"
+        val taskID = intent.getStringExtra("ID")
         editedTask = PlanManager.getTask(taskID)
         editedIndex = taskID
+        taskPlaces = ArrayList(editedTask!!.places)
+        et_add_location_btn.setOnClickListener{
+            addLocation()
+        }
         fillBoxes()
+    }
+
+    private fun addLocation(){
+        val name = et_location_search.text.toString()
+        et_location_search.text.clear()
+        val newPlace = Place(name)
+        adapter!!.addItem(newPlace)
+        taskPlaces = adapter!!.getItems()
+    }
+
+    private fun setLocationsList()
+    {
+        recycler_view.adapter = LocationAdapter(taskPlaces)
+        recycler_view.layoutManager = LinearLayoutManager(this)
+        recycler_view.setHasFixedSize(true)
+        adapter = recycler_view.adapter as LocationAdapter
+        val itemTouchHelper = ItemTouchHelper(simpleCallback)
+        itemTouchHelper.attachToRecyclerView(recycler_view)
+
+        val arrAdapter = ArrayAdapter<String>(this@EditTaskActivity, android.R.layout.simple_list_item_1, places)
+        et_location_search.setAdapter(arrAdapter)
     }
 
     private fun setSlices()
@@ -79,14 +103,14 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     {
         et_input_name.setText(editedTask!!.name)
         et_input_description.setText(editedTask!!.description)
-        //et_priority.setText(editedTask!!.priority)
         et_divisible.isChecked = editedTask!!.divisible
         setPreviousDuration()
-        setPreviousSlices()
+        if(et_divisible.isChecked) setPreviousSlices()
         setSpinner()
         setDatePickers()
         setSlices()
         validateMinutes()
+        setLocationsList()
     }
 
     @ExperimentalTime
@@ -95,7 +119,8 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         val prevDur = editedTask!!.duration
         val hrs = prevDur.inHours.toInt()
         val mins = prevDur.inMinutes.toInt() / 60
-        et_input_time.setText("$hrs:$mins")
+        et_input_time.setText("$hrs".padStart(2, '0') + ":" + "$mins".padStart(2, '0'))
+        //et_input_time.setText("$hrs:$mins")
     }
 
     private fun setPreviousSlices()
@@ -136,24 +161,24 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                 }
                 val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, places)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                et_location.onItemSelectedListener = this@EditTaskActivity
-                et_location.adapter = adapter
                 setDefSpinner()
             }.addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents: ", exception)
             }
-        val priority_adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, priorities)
-        priority_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val priorities = resources.getStringArray(R.array.Priorities)
+        val priorityAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, priorities)
+        priorityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         et_priority.onItemSelectedListener = this@EditTaskActivity
-        et_priority.adapter = priority_adapter
+        et_priority.adapter = priorityAdapter
     }
 
     private fun setDefSpinner()
     {
         if(!editedTask!!.places.isEmpty()) {
             val curr = places.indexOfFirst { e -> e.equals(editedTask!!.places.first().name) }
-            et_location.setSelection(curr)
+            //et_location.setSelection(curr)
         }
+        val priorities = resources.getStringArray(R.array.Priorities)
         val curr_priority = priorities.indexOfFirst { pr -> pr.equals(editedTask!!.priority) }
         et_priority.setSelection(curr_priority)
     }
@@ -175,13 +200,14 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         val name = et_input_name.text.toString()
         val description = et_input_description.text.toString()
         val deadline = datetime_utils.getDTFromTV(et_deadline_date, et_deadline_time)
-        val locations = listOf(Place(et_location.selectedItem as String))
+        //val locations = listOf(Place(et_location.selectedItem as String))
+        val locations = adapter!!.getItems()
         val priority = et_priority.toString()
         val minSlice = getSliceTimeInMinutes()
         val divisible = et_divisible.isChecked
 
-        //TODO Ja bym zrobil tak, tez w samym dodawaniu, zeby task sie dodal nawet jesli sie go nie da aktualnie wcisnac, tak samo z edycja
         val taskUpdated = PlanManager.updateTask(editedTask!!, name, description, deadline, locations, priority, divisible, minSlice)
+        saveTasksToMemory(this)
         //val taskIntent = Intent()
     }
 

@@ -18,10 +18,13 @@ import farszownicy.caldirola.agendacalendar.CalendarManager
 import farszownicy.caldirola.crud_activities.AddEventActivity
 import farszownicy.caldirola.crud_activities.AddTaskActivity
 import farszownicy.caldirola.crud_activities.EditEventActivity
+import farszownicy.caldirola.crud_activities.EditTaskActivity
 import farszownicy.caldirola.day_views.EventView
 import farszownicy.caldirola.models.data_classes.Event
 import farszownicy.caldirola.models.data_classes.TaskSlice
 import farszownicy.caldirola.utils.Constants
+import farszownicy.caldirola.utils.Constants.EDIT_EVENT_CODE
+import farszownicy.caldirola.utils.Constants.EDIT_TASK_CODE
 import farszownicy.caldirola.utils.memory.saveEventsToMemory
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_agenda.*
@@ -77,7 +80,7 @@ class AgendaActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT).show()
                     val intent = Intent(this@AgendaActivity, EditEventActivity::class.java)
                     intent.putExtra("ID", data.id)
-                    startActivityForResult(intent, Constants.ADD_EVENT_CODE)
+                    startActivityForResult(intent, Constants.EDIT_EVENT_CODE)
                 }
             })
         (agenda.mHandler)!!.setOnEventLongClickListener(
@@ -99,6 +102,15 @@ class AgendaActivity : AppCompatActivity() {
                         "onTaskClick:${data!!.parent.name}, divisible: ${data.parent.divisible}, task start: ${data.startTime}, task end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}",
                         Toast.LENGTH_SHORT).show()
                     Log.e("TAG","onTaskClick:${data!!.parent.name}, divisible: ${data.parent.divisible}, task start: ${data.startTime}, task end: ${data.endTime}, top:${view!!.top}, bottom:${view.bottom}")
+
+                    //Go to edit task activity, then refresh
+                    val intent = Intent(this@AgendaActivity, EditTaskActivity::class.java)
+                    intent.putExtra("ID", data.parent.id)
+                    startActivityForResult(intent, Constants.EDIT_TASK_CODE)
+                    agenda.updateTasks()
+                    agenda.refreshEntries()
+                    PlanManager.memoryUpToDate = false
+                    CalendarManager.getInstance().loadEventsAndTasks()
                 }
             })
 
