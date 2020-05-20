@@ -45,6 +45,7 @@ android {
 }
 repositories {
     jcenter()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -69,6 +70,15 @@ dependencies {
 
     //agenda calendar view
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
+    // startup view
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // drawer menu
+    implementation 'androidx.navigation:navigation-fragment:2.2.2'
+    implementation 'androidx.navigation:navigation-ui:2.2.2'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.2.2'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.2.2'
 
     // other libraries
     implementation 'se.emilsjolander:stickylistheaders:2.7.0'

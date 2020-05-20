@@ -6,6 +6,7 @@
     <string name="title_activity_add_task">AddTaskActivity</string>
     <string name="title_activity_edit_event">EditEventActivity</string>
     <string name="title_activity_edit_task">EditTaskActivity</string>
+    <string name="title_activity_add_user">AddUserActivity</string>
     <string name="choose_location_prompt">Wybierz lokalizację</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
@@ -135,4 +136,12 @@
     <string name ="edit_task_text">Edit task</string>
     <string name="doable_text">included in schedule</string>
     <string name="not_doable_text">not included in schedule</string>
+
+    <!-- Menu -->
+    <string name="menu_fetch">Fetch</string>
+    <string name="menu_plan">Plan</string>
+    <string name="menu_agenda">Agenda</string>
+    <string name="menu_add_event">Add event</string>
+    <string name="menu_add_task">Add task</string>
+    <string name="menu_list">List</string>
 </resources>
