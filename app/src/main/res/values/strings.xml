@@ -22,7 +22,7 @@
     <string name="task_name_text">Task name</string>
     <string name="task_description_text">Task description</string>
     <string name="deadline_text">Deadline</string>
-    <string name="estimated_duration_text">Estimated duration [hh:mm]</string>
+    <string name="estimated_duration_text">Estimated duration</string>
     <string name="priority_text">Priority</string>
     <string name="divisible_task_text">Divisible task</string>
     <string name="add_task_text">Add task</string>

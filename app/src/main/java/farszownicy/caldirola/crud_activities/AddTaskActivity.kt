@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_add_task.*
 import java.lang.Exception
 import java.time.LocalTime
 import java.util.*
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.minutes
 
@@ -64,6 +65,7 @@ class AddTaskActivity : AppCompatActivity(),
         setAllDatePickers()
         setSlices()
         validateMinutes()
+        setWheelPickers()
 
         userDoc.addSnapshotListener(this
         ) { snapshot, e ->
@@ -82,6 +84,16 @@ class AddTaskActivity : AppCompatActivity(),
                 Log.d(MainActivity.TAG, "Current data: null")
             }
         }
+    }
+
+    private fun setWheelPickers()
+    {
+        at_hour_picker.minValue=0
+        at_hour_picker.maxValue=999
+        at_minute_picker.minValue=0
+        at_minute_picker.maxValue=59
+        at_hour_picker.wrapSelectorWheel=true
+        at_minute_picker.wrapSelectorWheel=true
     }
 
     private fun setSlices()
@@ -155,14 +167,16 @@ class AddTaskActivity : AppCompatActivity(),
         val minSlice = getSliceTimeInMinutes()
         val duration: Int
         val time: LocalTime
-        try {
-            time = LocalTime.parse(at_input_time.text.toString())
-        }
-        catch(e: Exception){
-            Toast.makeText(this, "Podano czas trwania w niepoprawnym formacie. Wymagany format: hh:mm", Toast.LENGTH_SHORT).show()
-            return
-        }
-        duration =  time.hour * 60 + time.minute
+//        try {
+//            //time = LocalTime.parse(at_input_time.text.toString())
+//            time = LocalTime.parse(at_hour_picker.text)
+//
+//        }
+//        catch(e: Exception){
+//            Toast.makeText(this, "Podano czas trwania w niepoprawnym formacie. Wymagany format: hh:mm", Toast.LENGTH_SHORT).show()
+//            return
+//        }
+        duration =  at_hour_picker.value * 60 + at_minute_picker.value
 
         if(name.isEmpty() || description.isEmpty() || duration<= 0)
             return

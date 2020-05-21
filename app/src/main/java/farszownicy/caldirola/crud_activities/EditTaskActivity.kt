@@ -70,10 +70,12 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
     private fun addLocation(){
         val name = et_location_search.text.toString()
-        et_location_search.text.clear()
-        val newPlace = Place(name)
-        adapter!!.addItem(newPlace)
-        taskPlaces = adapter!!.getItems()
+        et_location_search.setText("")
+        if(name != "" && !adapter!!.getItems().contains(Place(name))) {
+            val newPlace = Place(name)
+            adapter!!.addItem(newPlace)
+            taskPlaces = adapter!!.getItems()
+        }
     }
 
     private fun setLocationsList()

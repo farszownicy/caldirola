@@ -28,9 +28,7 @@ class LocationAdapter(private val locationList: ArrayList<Place>) : RecyclerView
     override fun onBindViewHolder(holder: LocationViewHolder, position: Int) {
         val currentLocation = locationList[position]
         holder.locationName.text = currentLocation.name
-        //holder.locationName.setOnClickListener{ _ -> Toast.makeText((context, position, Toast.LENGTH_SHORT)).show()}
         holder.locationDeleteBtn.setImageResource((R.drawable.pin))
-        holder.locationDeleteBtn.setOnClickListener { _ -> removeLocation(position) }
     }
 
      fun removeLocation(index: Int)
