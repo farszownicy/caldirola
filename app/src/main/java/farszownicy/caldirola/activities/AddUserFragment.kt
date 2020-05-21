@@ -4,6 +4,11 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
@@ -15,11 +20,11 @@ import farszownicy.caldirola.utils.memory.loadEventsFromMemory
 import farszownicy.caldirola.utils.memory.loadTasksFromMemory
 import farszownicy.caldirola.utils.memory.saveEventsToMemory
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
-import kotlinx.android.synthetic.main.activity_add_user.*
+import kotlinx.android.synthetic.main.fragment_add_user.*
 import java.time.LocalDateTime
 import kotlin.time.ExperimentalTime
 
-class AddUserActivity : AppCompatActivity() {
+class AddUserFragment : Fragment() {
 
     companion object {
         const val FIRST_NAME_KEY = "name"
@@ -30,24 +35,24 @@ class AddUserActivity : AppCompatActivity() {
     private val userDoc = db.collection("users").document("RL68xbDoaO34qCnG1pti")
 
     @ExperimentalTime
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_user)
-        addButton.setOnClickListener {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val root = inflater.inflate(R.layout.fragment_add_user, container, false)
+
+        root.findViewById<Button>(R.id.addButton).setOnClickListener {
             addUser()
         }
 
-        fetch_button.setOnClickListener{
+        root.findViewById<Button>(R.id.fetch_button).setOnClickListener{
             fetchUserData()
         }
 
-        plan_button.setOnClickListener{
-            val intent = Intent(this, CalendarActivity::class.java)
+        root.findViewById<Button>(R.id.plan_button).setOnClickListener{
+            val intent = Intent(requireContext(), CalendarActivity::class.java)
             startActivity(intent)
         }
 
-        agenda_btn.setOnClickListener(){
-            val intent = Intent(this, AgendaActivity::class.java)
+        root.findViewById<Button>(R.id.agenda_btn).setOnClickListener(){
+            val intent = Intent(requireContext(), AgendaActivity::class.java)
             val bundle = Bundle()
             bundle.putInt(AgendaActivity.DAY_KEY, LocalDateTime.now().dayOfMonth)
             bundle.putInt(AgendaActivity.MONTH_KEY, LocalDateTime.now().monthValue)
@@ -56,18 +61,18 @@ class AddUserActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        addevent_button.setOnClickListener{
-            val intent = Intent(this, AddEventActivity::class.java)
+        root.findViewById<Button>(R.id.addevent_button).setOnClickListener{
+            val intent = Intent(requireContext(), AddEventActivity::class.java)
             startActivity(intent)
         }
 
-        addtask_button.setOnClickListener{
-            val intent = Intent(this, AddTaskActivity::class.java)
+        root.findViewById<Button>(R.id.addtask_button).setOnClickListener{
+            val intent = Intent(requireContext(), AddTaskActivity::class.java)
             startActivity(intent)
         }
 
-        list_button.setOnClickListener{
-            val intent = Intent(this, EntryListActivity::class.java)
+        root.findViewById<Button>(R.id.list_button).setOnClickListener{
+            val intent = Intent(requireContext(), EntryListActivity::class.java)
             startActivity(intent)
         }
 
@@ -75,7 +80,7 @@ class AddUserActivity : AppCompatActivity() {
          * Nasłuchiwanie zmian w  danym dokumencie.
          * activity = this oznacza, że nasłuchiwanie nie będzie działało jak Activity się zatrzyma
          */
-        userDoc.addSnapshotListener(this
+        userDoc.addSnapshotListener(requireActivity()
         ) { snapshot, e ->
             if (e != null) {
                 Log.w(TAG, "Listen failed.", e)
@@ -90,6 +95,8 @@ class AddUserActivity : AppCompatActivity() {
         }
 //        loadTasksFromMemory(this)
 //        loadEventsFromMemory(this)
+
+        return root
     }
 
     /**
@@ -129,8 +136,8 @@ class AddUserActivity : AppCompatActivity() {
     @ExperimentalTime
     override fun onStop() {
         if(!PlanManager.memoryUpToDate){
-            saveEventsToMemory(this)
-            saveTasksToMemory(this)
+            saveEventsToMemory(requireContext())
+            saveTasksToMemory(requireContext())
             PlanManager.memoryUpToDate = true
         }
         super.onStop()

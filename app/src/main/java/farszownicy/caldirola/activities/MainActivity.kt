@@ -1,111 +1,45 @@
 package farszownicy.caldirola.activities
 
-import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
+import android.view.Menu
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.navigation.NavigationView
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.utils.ColorTemplate
-import farszownicy.caldirola.Logic.PlanManager
+import androidx.appcompat.widget.Toolbar
+import androidx.navigation.Navigation
 import farszownicy.caldirola.R
-import farszownicy.caldirola.models.data_classes.AgendaDrawableEntry
-import farszownicy.caldirola.utils.memory.loadEventsFromMemory
-import farszownicy.caldirola.utils.memory.loadTasksFromMemory
 import kotlinx.android.synthetic.main.activity_main.*
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.temporal.ChronoUnit.MINUTES
-import kotlin.time.ExperimentalTime
-
 
 class MainActivity : AppCompatActivity() {
 
-    @ExperimentalTime
+    private lateinit var appBarConfiguration: AppBarConfiguration
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        loadTasksFromMemory(this)
-        loadEventsFromMemory(this)
-
-        button.setOnClickListener {
-            val intent = Intent(this, AddUserActivity::class.java)
-            startActivity(intent)
-        }
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        val navView: NavigationView = findViewById(R.id.nav_view)
+        val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        appBarConfiguration = AppBarConfiguration(setOf(
+            R.id.nav_home, R.id.nav_add_user
+//            R.id.nav_fetch, R.id.nav_plan, R.id.nav_agenda, R.id.nav_add_event, R.id.nav_add_task, R.id.nav_list
+        ), drawerLayout)
+//        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
     }
 
-    @ExperimentalTime
-    override fun onResume() {
-        super.onResume()
-
-        val pieChart: PieChart = findViewById(R.id.pieChart)
-
-        val visitors: ArrayList<PieEntry> = ArrayList()
-        val colors: ArrayList<Int> = ArrayList()
-
-        val invisibleColor = Color.rgb(250, 250, 250) // lol
-
-        val entries = getSortedEntries()
-        var currentTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT)
-        entries.forEachIndexed { i, entry ->
-            val slackTime = currentTime.until(entry.startTime, MINUTES)
-            val entryTime = entry.startTime.until(entry.endTime, MINUTES)
-            if(slackTime > 0L) {
-                visitors.add(PieEntry(slackTime.toFloat(), ""))
-                colors.add(invisibleColor)
-            }
-            if(entryTime > 0L) {
-                visitors.add(PieEntry(entryTime.toFloat(), ""))
-                colors.add(ColorTemplate.MATERIAL_COLORS[i])
-            }
-            currentTime = entry.endTime
-        }
-        val nextMidnight = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.MIDNIGHT)
-        val finalSlackTime = currentTime.until(nextMidnight, MINUTES)
-        if(finalSlackTime > 0L) {
-            visitors.add(PieEntry(finalSlackTime.toFloat(), ""))
-            colors.add(invisibleColor)
-        }
-
-        val pieDataSet = PieDataSet(visitors, "")
-        pieDataSet.setColors(
-            convertIntegers(colors), 255
-        )
-
-        pieDataSet.valueTextColor = Color.BLACK
-        pieDataSet.valueTextSize = 0f
-
-        val pieData = PieData(pieDataSet)
-
-        pieChart.setDrawRoundedSlices(true)
-        pieChart.data = pieData
-        pieChart.description.isEnabled = false
-        pieChart.holeRadius = 75f
-        pieChart.setHoleColor(invisibleColor)
-
-        pieChart.legend.isEnabled = false
-        pieChart.isEnabled = true
-        pieChart.invalidate()
-        pieChart.setTouchEnabled(true)
-    }
-
-    @ExperimentalTime
-    private fun getSortedEntries(): List<AgendaDrawableEntry> {
-        val events = PlanManager.getEventsByDate(LocalDateTime.now())
-        val tasks = PlanManager.getTaskSlicesByDate(LocalDateTime.now())
-        val entries: List<AgendaDrawableEntry> = events + tasks
-        return entries.sortedBy { x -> x.startTime }
-    }
-
-    private fun convertIntegers(integers: List<Int>): IntArray? {
-        val ret = IntArray(integers.size)
-        for (i in ret.indices) {
-            ret[i] = integers[i]
-        }
-        return ret
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 }

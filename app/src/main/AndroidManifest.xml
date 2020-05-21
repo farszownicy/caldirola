@@ -33,10 +33,10 @@
             android:name="farszownicy.caldirola.crud_activities.EditTaskActivity"
             android:label="@string/title_activity_edit_task"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity
-            android:name="farszownicy.caldirola.activities.AddUserActivity"
-            android:label="@string/title_activity_add_user"
-            android:theme="@style/AppTheme.NoActionBar"/>
+<!--        <activity-->
+<!--            android:name="farszownicy.caldirola.activities.AddUserActivity"-->
+<!--            android:label="@string/title_activity_add_user"-->
+<!--            android:theme="@style/AppTheme.NoActionBar"/>-->
         <activity
             android:name=".activities.AgendaActivity"
             android:label="@string/title_activity_agenda"

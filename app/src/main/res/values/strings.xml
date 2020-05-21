@@ -144,4 +144,6 @@
     <string name="menu_add_event">Add event</string>
     <string name="menu_add_task">Add task</string>
     <string name="menu_list">List</string>
+    <string name="menu_add_user">Add user</string>
+    <string name="menu_home">Home</string>
 </resources>

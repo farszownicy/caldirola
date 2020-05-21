@@ -41,6 +41,11 @@ android {
     compileOptions {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 }
 repositories {
@@ -74,7 +79,9 @@ dependencies {
     // startup view
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
-    // drawer menu
+    // bottom menu
+    implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.5'
+
     implementation 'androidx.navigation:navigation-fragment:2.2.2'
     implementation 'androidx.navigation:navigation-ui:2.2.2'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.2.2'
