@@ -64,10 +64,10 @@ class AgendaActivity : AppCompatActivity() {
             year = b.getInt(YEAR_KEY)
         }
 
+        setListeners()
         agenda.setDay(day, month, year)
         agenda.setLimitTime(0, 24)
         updateDisplayedDay()
-        setListeners()
     }
 
     @ExperimentalTime
