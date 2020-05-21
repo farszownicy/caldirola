@@ -1,5 +1,7 @@
 package farszownicy.caldirola.crud_activities
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
+import farszownicy.caldirola.agendacalendar.CalendarManager
 import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.models.data_classes.Task
 import farszownicy.caldirola.utils.Constants
@@ -24,6 +27,7 @@ import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_edit_task.*
 import java.util.*
 import kotlin.time.ExperimentalTime
+import kotlin.time.minutes
 
 class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     companion object
@@ -93,6 +97,10 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
     private fun setSlices()
     {
+        if(et_divisible.isChecked){
+            et_input_slice_size_hr.isEnabled = true
+            et_input_slice_size_min.isEnabled = true
+        }
         et_divisible.setOnCheckedChangeListener {
                 _, isChecked ->
             et_input_slice_size_hr.isEnabled = isChecked
@@ -106,7 +114,8 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         et_input_name.setText(editedTask!!.name)
         et_input_description.setText(editedTask!!.description)
         et_divisible.isChecked = editedTask!!.divisible
-        setPreviousDuration()
+        //setPreviousDuration()
+        setWheelPickers()
         if(et_divisible.isChecked) setPreviousSlices()
         setSpinner()
         setDatePickers()
@@ -121,9 +130,28 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         val prevDur = editedTask!!.duration
         val hrs = prevDur.inHours.toInt()
         val mins = prevDur.inMinutes.toInt() / 60
-        et_input_time.setText("$hrs".padStart(2, '0') + ":" + "$mins".padStart(2, '0'))
+        //et_input_time.setText("$hrs".padStart(2, '0') + ":" + "$mins".padStart(2, '0'))
         //et_input_time.setText("$hrs:$mins")
     }
+
+    @ExperimentalTime
+    private fun setWheelPickers()
+    {
+        val prevDur = editedTask!!.duration
+        val hrs = prevDur.inHours.toInt()
+        val mins = prevDur.inMinutes.toInt() % 60
+
+        et_hour_picker.minValue=0
+        et_hour_picker.maxValue=999
+        et_hour_picker.value = hrs
+        et_hour_picker.wrapSelectorWheel=true
+
+        et_minute_picker.minValue=0
+        et_minute_picker.maxValue=59
+        et_minute_picker.value = mins
+        et_minute_picker.wrapSelectorWheel=true
+    }
+
 
     private fun setPreviousSlices()
     {
@@ -131,7 +159,7 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         val hrs = prevSlices / 60
         val mins = prevSlices % 60
         et_input_slice_size_hr.setText("$hrs".padStart(2, '0'))
-        et_input_slice_size_min.setText(mins)
+        et_input_slice_size_min.setText("$mins")
     }
 
     private fun getSliceTimeInMinutes(): Int
@@ -207,9 +235,16 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         val priority = et_priority.toString()
         val minSlice = getSliceTimeInMinutes()
         val divisible = et_divisible.isChecked
-
-        val taskUpdated = PlanManager.updateTask(editedTask!!, name, description, deadline, locations, priority, divisible, minSlice)
+        val duration =  et_hour_picker.value * 60 + et_minute_picker.value
+        val taskUpdated = PlanManager.updateTask(editedTask!!, name, description, deadline, locations, priority, divisible, minSlice, duration.minutes)
         saveTasksToMemory(this)
+        PlanManager.memoryUpToDate = true
+        val taskIntent = Intent()
+        taskIntent.putExtra(Constants.EDIT_TASK_KEY, true)
+        setResult(Activity.RESULT_OK, taskIntent)
+        PlanManager.memoryUpToDate = false
+        CalendarManager.getInstance(applicationContext).loadEventsAndTasks()
+        finish()
         //val taskIntent = Intent()
     }
 

@@ -74,14 +74,27 @@ object PlanManager {
     }
 
     @ExperimentalTime
-    public fun updateTask(task: Task, nName: String, nDesc: String, nDDL : LocalDateTime, nLoc : List<Place>, nPriority: String, nDivisible: Boolean, nMinSlice: Int):Boolean{
+    public fun updateTask(task: Task, nName: String, nDesc: String, nDDL : LocalDateTime, nLoc : List<Place>, nPriority: String, nDivisible: Boolean, nMinSlice: Int, nDuration:Duration):Boolean{
         task.name = nName
         task.description = nDesc
-        task.deadline = nDDL
         task.places = nLoc
+        task.duration = nDuration
         task.priority = nPriority
+
+        val oldDivisible = task.divisible
+        val oldMinSliceSlize = task.minSliceSize
+        val oldDeadline = task.deadline
+
         task.divisible = nDivisible
         task.minSliceSize = nMinSlice
+        task.deadline = nDDL
+
+        if((oldDivisible != nDivisible) || (oldMinSliceSlize != nMinSlice) || isBefore(nDDL, oldDeadline))
+        {
+            removeTask(task)
+            addTask(task)
+        }
+
         updateAllEntries()
         return true
     }

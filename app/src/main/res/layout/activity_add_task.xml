@@ -200,19 +200,19 @@
 
                         <NumberPicker
                             android:id="@+id/at_hour_picker"
+                            android:theme="@style/NumberPickerText"
                             android:layout_width="wrap_content"
-                            android:layout_height="70sp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="5"
-                            android:scaleX="1.75"
-                            android:scaleY="1.75" />
+                             />
 
                         <NumberPicker
                             android:id="@+id/at_minute_picker"
+                            android:theme="@style/NumberPickerText"
                             android:layout_width="wrap_content"
-                            android:layout_height="70sp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="5"
-                            android:scaleX="1.75"
-                            android:scaleY="1.75" />
+                            />
 
                     </TableRow>
 

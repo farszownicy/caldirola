@@ -177,12 +177,16 @@ class AgendaActivity : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 Constants.ADD_EVENT_CODE -> {
-                    agenda.updateEvents()
-                    agenda.drawEvents()
+                    agenda.refreshWholeView()
                 }
                 Constants.ADD_TASK_CODE -> {
-                    agenda.updateTasks()
-                    agenda.drawTasks()
+                    agenda.refreshWholeView()
+                }
+                Constants.EDIT_EVENT_CODE ->{
+                    agenda.refreshWholeView()
+                }
+                Constants.EDIT_TASK_CODE ->{
+                    agenda.refreshWholeView()
                 }
             }
         }
