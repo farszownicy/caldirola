@@ -9,7 +9,6 @@ import java.time.temporal.ChronoUnit
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.minutes
-import kotlin.time.toDuration
 
 object PlanManager {
 
@@ -31,7 +30,7 @@ object PlanManager {
         set(tasks){
             tasks.sortBy{it.deadline}
             field = tasks
-            distributeTasks(tasks)
+            //distributeTasks(tasks)
         }
 
     @ExperimentalTime
@@ -74,16 +73,46 @@ object PlanManager {
     }
 
     @ExperimentalTime
-    public fun updateTask(task: Task, nName: String, nDesc: String, nDDL : LocalDateTime, nLoc : List<Place>, nPriority: Int, nDivisible: Boolean, nMinSlice: Int):Boolean{
+    public fun updateTask(task: Task, nName: String, nDesc: String, nDDL : LocalDateTime,
+                          nLoc : List<Place>, nPriority: Int, nDivisible: Boolean, nMinSlice: Int):Boolean{
         task.name = nName
         task.description = nDesc
-        task.deadline = nDDL
         task.places = nLoc
         task.priority = nPriority
+        val oldDeadline = task.deadline
+        val oldDivisible = task.divisible
+        val oldMinSliceSize = task.minSliceSize
+        task.deadline = nDDL
         task.divisible = nDivisible
         task.minSliceSize = nMinSlice
+
+        if ((oldDivisible != nDivisible)
+            || (oldMinSliceSize != nMinSlice)
+            || isBefore(nDDL, oldDeadline)
+        ){
+            removeTask(task)
+            addTask(task)
+        }
+
+        //val oldPrerequisites =task.prerequisites
+        val prerequisitesChanged = false
+        if (prerequisitesChanged) {
+            handlePrerequisites(task)
+        }
+
+
         updateAllEntries()
         return true
+    }
+
+    private fun handlePrerequisites(task: Task) {
+        //topTasksInHierarchy(task)
+        val notFinishedPrereqSlices = mTaskSlices.filter { ts -> ts.startTime > LocalDateTime.now()
+                && task.prerequisites.contains(ts.parent)}
+
+        val futureTasks = getFutureSlices().map{ts -> ts.parent};
+        val notFinishedPrerequisites = task.prerequisites.filter { pt -> futureTasks.contains(pt)}
+        //addTaskWithPrerequisites()
     }
 
 
@@ -96,22 +125,40 @@ object PlanManager {
     }
 
     @ExperimentalTime
-    private fun distributeTasks(argTasks: List<Task>) {
+    private fun distributeTasks(argTasks: List<Task>): Boolean {
         val tasks = argTasks.sortedBy { it.deadline }
-        Log.d("rearrange", "${tasks.size}")
+        //Log.d("rearrange", "${tasks.size}")
+        var allTasksInserted = true
         for(task in tasks) {
-            if (!task.divisible) {
-                insertNonDivisibleTask(task)
+            val notCompletedPreTasks = task.prerequisites.filter{preTask -> (tasks.contains(preTask) && !preTask.doable)}
+            val allPreTasksInserted = distributeTasks(notCompletedPreTasks)
+
+            var inserted: Boolean
+            if(allPreTasksInserted) {
+                if (!task.doable) {
+                    if (!task.divisible)
+                        inserted = insertNonDivisibleTask(task)
+                    else {
+                        val originalDuration = task.duration
+                        val completedMinutes =
+                            getSlicesOfTask(task).map { ts ->
+                                differenceInMinutes(
+                                    ts.startTime,
+                                    ts.endTime
+                                )
+                            }.sum().minutes
+                        task.duration = originalDuration.minus(completedMinutes)
+                        inserted = insertDivisibleTask(task)
+
+                        task.duration = originalDuration
+                    }
+                    task.doable = inserted
+                }
             }
-            else {
-                val originalDuration = task.duration
-                val completedMinutes =
-                    getSlicesOfTask(task).map { ts-> differenceInMinutes(ts.startTime, ts.endTime) }.sum().minutes
-                task.duration = originalDuration.minus(completedMinutes)
-                insertDivisibleTask(task)
-                task.duration = originalDuration
-            }
+            if(!task.doable)
+                allTasksInserted = false
         }
+        return allTasksInserted
     }
 
     @ExperimentalTime
@@ -301,6 +348,8 @@ object PlanManager {
 
     @ExperimentalTime
     fun getEventsByDate(date : LocalDateTime): List<Event>{
+        Log.d("size", mTasks.size.toString())
+        Log.d("size", mEvents.size.toString())
         return mEvents.filter { e -> DateHelper.isBetweenInclusive(date, e.startTime, e.endTime) }
     }
 
@@ -312,6 +361,7 @@ object PlanManager {
     fun getSlicesOfTask(task: Task): List<TaskSlice> {
         return mTaskSlices.filter { t -> t.parent == task}
     }
+
 
     @ExperimentalTime
     fun removeTask(parent: Task) {
@@ -328,7 +378,7 @@ object PlanManager {
     }
 
     @ExperimentalTime
-    fun getFutureEvents(): List<Event> {
+    fun getFutureAndCurrentEvents(): List<Event> {
         return mEvents.filter { e -> e.endTime > LocalDateTime.now() }
     }
 
@@ -348,7 +398,28 @@ object PlanManager {
 
         mAllInsertedEntries.removeAll(futureSlices)
         mTaskSlices.removeAll(futureSlices)
-
-        distributeTasks(futureSlices.map { ts-> ts.parent })
+        val tasksToDistribute = futureSlices.map { ts-> ts.parent }.union(mTasks.filter{t -> !t.doable})
+        tasksToDistribute.forEach{t -> t.doable = false}
+        distributeTasks(tasksToDistribute.toList())
     }
+
+    @ExperimentalTime
+    fun getAllPossiblePrerequisites(task:Task): List<Task> {
+        //nie mozna do X dac jako prerekwizytu taska, ktorego X jest juz prerekwizytem (zrobi sie glupi cykl)
+        return mTasks.filter { t -> !getAllSubTasksInHierarchy(t).contains(task)}
+    }
+
+    //TODO: dodaj liste nadTaskow jako pole w Tasku
+    private fun getAllSubTasksInHierarchy(task: Task) : List<Task>{
+        val subTasks = ArrayList<Task>()
+        if(task.prerequisites.count() == 0){
+            subTasks.add(task)
+        }
+        else {
+            for(pt in task.prerequisites)
+                subTasks.addAll(getAllSubTasksInHierarchy(pt))
+        }
+        return subTasks
+    }
+
 }

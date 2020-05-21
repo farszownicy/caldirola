@@ -14,7 +14,7 @@ class Task @ExperimentalTime constructor(id: String = "-1",
                                          var divisible: Boolean = false,
                                          var minSliceSize: Int = 0,
                                          var places: List<Place> = mutableListOf(),
-                                         var doable: Boolean = true
+                                         var doable: Boolean = false
                                          //val timeSlices: MutableList<Pair<Calendar, Calendar>> = mutableListOf()
 ) : CalendarEntry(id, name, description) {
 

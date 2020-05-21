@@ -18,7 +18,7 @@ class EventListAdapter() : RecyclerView.Adapter<EventListAdapter.ViewHolder>() {
 
     @ExperimentalTime
     override fun getItemCount(): Int = if (showPastEvents) PlanManager.mEvents.size
-                                        else PlanManager.getFutureEvents().size
+                                        else PlanManager.getFutureAndCurrentEvents().size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.event_list_card, parent, false)
@@ -28,7 +28,7 @@ class EventListAdapter() : RecyclerView.Adapter<EventListAdapter.ViewHolder>() {
     @ExperimentalTime
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentItem = if (showPastEvents) PlanManager.mEvents[position]
-                                else PlanManager.getFutureEvents()[position]
+                                else PlanManager.getFutureAndCurrentEvents()[position]
         holder.titleText.text = currentItem.name
         if(currentItem.Location != null){
             holder.LocationText.text = currentItem.Location!!.name
