@@ -47,15 +47,10 @@ class EventListAdapter() : RecyclerView.Adapter<EventListAdapter.ViewHolder>() {
             holder.itemView.alpha = 1f
 
         holder.itemView.setOnClickListener {
+            //Zła praktyka \/ trzeba zrobić interface i wywoływać intenta w activity a nie tutaj
             //val intent = Intent(holder.itemView.context, Activity::class.java)
             //holder.itemView.context.startActivity(intent)
         }
-    }
-
-    @ExperimentalTime
-    fun removeEvent(position: Int){
-        PlanManager.mEvents.removeAt(position)
-        this.notifyItemRemoved(position)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

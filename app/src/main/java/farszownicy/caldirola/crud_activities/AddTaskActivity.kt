@@ -1,26 +1,35 @@
 package farszownicy.caldirola.crud_activities
 
+import android.app.ActionBar
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.marginBottom
+import androidx.core.view.setPadding
+import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.activities.MainActivity
 import farszownicy.caldirola.agendacalendar.CalendarManager
+import farszownicy.caldirola.crud_activities.fragments.PrerequisitesFragment
+import farszownicy.caldirola.dto.PrerequisitiesDialogResult
 import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.models.data_classes.Task
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
+import kotlinx.android.synthetic.main.activity_add_event.*
 import kotlinx.android.synthetic.main.activity_add_task.*
 import java.lang.Exception
 import java.sql.Time
@@ -29,7 +38,7 @@ import java.util.*
 import kotlin.time.ExperimentalTime
 import kotlin.time.minutes
 
-class AddTaskActivity : AppCompatActivity(),
+class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
     AdapterView.OnItemSelectedListener{
     companion object
     {
@@ -49,6 +58,7 @@ class AddTaskActivity : AppCompatActivity(),
     private val locations = db.collection("locations")
     private val places = ArrayList<String>()
     private val calendarUtils = DateTimeUtils()
+    private var prerequisities = listOf<Task>()
 
     @ExperimentalTime
     @RequiresApi(Build.VERSION_CODES.O)
@@ -59,6 +69,11 @@ class AddTaskActivity : AppCompatActivity(),
 
         at_add_button.setOnClickListener {
             addTask()
+        }
+
+        at_prereqs_button.setOnClickListener{
+            val dialogFragment = PrerequisitesFragment()
+            dialogFragment.show(supportFragmentManager, "Prerequisites Fragment")
         }
 
         setSpinner()
@@ -82,6 +97,28 @@ class AddTaskActivity : AppCompatActivity(),
             {
                 Log.d(MainActivity.TAG, "Current data: null")
             }
+        }
+    }
+
+    override fun getChosenTasks(tasks: List<Task>) {
+        prerequisities = tasks
+        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        params.setMargins(4,4,4,4)
+
+        at_prereqs_list.removeAllViewsInLayout()
+        for (task in tasks) {
+            val textView = TextView(this)
+            textView.text = task.name
+            textView.setBackgroundResource(R.color.colorPurpleT)
+            textView.layoutParams = params
+            at_prereqs_list.addView(textView)
+        }
+    }
+
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+        if(fragment is PrerequisitesFragment){
+            fragment.setCallback(this)
         }
     }
 
@@ -176,7 +213,7 @@ class AddTaskActivity : AppCompatActivity(),
             priority = "-1"
         val task = Task(UUID.randomUUID().toString(), name, description,
             deadline, duration.minutes, priority= priority.toInt(),divisible=divisible,
-            minSliceSize =  minSlice, places = listOf(selected_location)
+            minSliceSize =  minSlice, places = listOf(selected_location), prerequisites = prerequisities
         )
         val taskIntent = Intent()
 

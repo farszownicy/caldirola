@@ -1,4 +1,4 @@
-package farszownicy.caldirola.utils
+package farszownicy.caldirola.crud_activities.fragments
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,18 +8,19 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
+import farszownicy.caldirola.models.data_classes.Task
+import farszownicy.caldirola.utils.Constants
 import kotlinx.android.synthetic.main.task_list_card.view.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.time.ExperimentalTime
 
-class TaskListAdapter() : RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
+class PrerequisitesListAdapter(val tasks : List<Task>) : RecyclerView.Adapter<PrerequisitesListAdapter.ViewHolder>() {
 
-    var showPastTasks: Boolean = false
+    public val chosenTasks = mutableListOf<Task>()
 
     @ExperimentalTime
-    override fun getItemCount(): Int = if (showPastTasks) PlanManager.mTasks.size
-                                        else PlanManager.getFutureAndCurrentTasks().size
+    override fun getItemCount(): Int = tasks.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).
@@ -29,8 +30,8 @@ class TaskListAdapter() : RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
 
     @ExperimentalTime
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val currentItem = if (showPastTasks) PlanManager.mTasks[position]
-                                else PlanManager.getFutureAndCurrentTasks()[position]
+        val currentItem = tasks[position]
+
         holder.titleText.text = currentItem.name
         holder.descText.text = currentItem.description
         if(currentItem.places.isNotEmpty()){
@@ -53,12 +54,20 @@ class TaskListAdapter() : RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
             holder.itemView.task_list_const_layout.setBackgroundResource(R.color.colorPurpleT)
             holder.doableText.setText(R.string.doable_text)
         }
-        if(currentItem.deadline < LocalDateTime.now())
-            holder.itemView.alpha = 0.7f
-        else
-            holder.itemView.alpha = 1f
+
         holder.itemView.setOnClickListener {
-            //Zła praktyka \/ trzeba zrobić interface i wywoływać intenta w activity a nie tutaj
+            if(!chosenTasks.contains(currentItem)){
+                chosenTasks.add(currentItem);
+                holder.itemView.task_list_const_layout.setBackgroundResource(R.color.colorPurple)
+            }else{
+                chosenTasks.remove(currentItem)
+                if(!currentItem.doable){
+                    holder.itemView.task_list_const_layout.setBackgroundResource(R.color.colorAccentBleak)
+
+                }else{
+                    holder.itemView.task_list_const_layout.setBackgroundResource(R.color.colorPurpleT)
+                }
+            }
             //val intent = Intent(holder.itemView.context, Activity::class.java)
             //holder.itemView.context.startActivity(intent)
         }

@@ -37,27 +37,7 @@ class TaskListFragment : Fragment() {
             tasksAdapter.showPastTasks = isChecked
             tasksAdapter.notifyDataSetChanged()}
 
-        val itemTouchHelper = ItemTouchHelper(getLeftSwipeCallback())
-        itemTouchHelper.attachToRecyclerView(recyclerView)
-
         return root
-    }
-
-    @ExperimentalTime
-    private fun getLeftSwipeCallback() : ItemTouchHelper.SimpleCallback{
-        return object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-                tasksAdapter.removeTask(viewHolder.adapterPosition)
-            }
-        }
     }
 
 }
