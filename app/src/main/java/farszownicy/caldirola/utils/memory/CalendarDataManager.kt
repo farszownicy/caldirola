@@ -28,7 +28,7 @@ fun saveEventsToMemory(context: Context){
 }
 
 @ExperimentalTime
-fun saveLocationsToMemoty(context:Context){
+fun saveLocationsToMemory(context:Context){
     val placeDtos = PlanManager.mPlaces.map{ place -> PlaceDto(place) }
     writeObjectToSharedPreferences(
         context,

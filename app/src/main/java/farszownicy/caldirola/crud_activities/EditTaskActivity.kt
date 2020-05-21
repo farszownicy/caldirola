@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -23,6 +22,8 @@ import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.models.data_classes.Task
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
+import farszownicy.caldirola.utils.memory.loadLocationsFromMemory
+import farszownicy.caldirola.utils.memory.saveLocationsToMemory
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_edit_task.*
 import java.util.*
@@ -69,14 +70,18 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         et_add_location_btn.setOnClickListener{
             addLocation()
         }
+        loadLocationsFromMemory(this)
         fillBoxes()
     }
 
+    @ExperimentalTime
     private fun addLocation(){
         val name = et_location_search.text.toString()
         et_location_search.setText("")
         if(name != "" && !adapter!!.getItems().contains(Place(name))) {
             val newPlace = Place(name)
+            if(!PlanManager.mPlaces.contains(Place(name))) PlanManager.mPlaces.add(newPlace)
+            saveLocationsToMemory(this)
             adapter!!.addItem(newPlace)
             taskPlaces = adapter!!.getItems()
         }
@@ -91,7 +96,7 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         val itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(recycler_view)
 
-        val arrAdapter = ArrayAdapter<String>(this@EditTaskActivity, android.R.layout.simple_list_item_1, places)
+        val arrAdapter = ArrayAdapter<String>(this@EditTaskActivity, android.R.layout.simple_list_item_1, PlanManager.mPlaces.map{e -> e.name})
         et_location_search.setAdapter(arrAdapter)
     }
 
@@ -182,19 +187,20 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     }
 
     private fun setSpinner() {
-        locations.get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    Log.d(TAG, "${document.id} => ${document.data}")
-                    val name = document.getString(NAME_KEY)
-                    places.add(name!!)
-                }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, places)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                setDefSpinner()
-            }.addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents: ", exception)
-            }
+//        locations.get()
+//            .addOnSuccessListener { documents ->
+//                for (document in documents) {
+//                    Log.d(TAG, "${document.id} => ${document.data}")
+//                    val name = document.getString(NAME_KEY)
+//                    places.add(name!!)
+//                }
+//                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, places)
+//                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//                setDefSpinner()
+//            }.addOnFailureListener { exception ->
+//                Log.w(TAG, "Error getting documents: ", exception)
+//            }
+        setDefSpinner()
         val priorities = resources.getStringArray(R.array.Priorities)
         val priorityAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, priorities)
         priorityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
