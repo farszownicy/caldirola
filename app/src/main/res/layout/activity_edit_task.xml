@@ -148,6 +148,7 @@
                         android:textColor="@color/colorPurple"
                         android:textSize="18dp" />
 
+                    <!--
                     <EditText
                         android:id="@+id/et_input_time"
                         android:layout_width="fill_parent"
@@ -159,6 +160,60 @@
                         android:fontFamily="sans-serif-light"
                         android:inputType="time"
                         android:textSize="@dimen/ae_input_font_size" />
+                        -->
+
+                    <TableRow
+                        android:id="@+id/et_duration_prior"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:weightSum="10">
+
+                        <TextView
+                            android:id="@+id/et_duration_hr_prior"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5"
+                            android:text="Hours"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPurple"
+                            android:textSize="18dp" />
+
+                        <TextView
+                            android:id="@+id/et_duration_min_prior"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5"
+                            android:text="Minutes"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPurple"
+                            android:textSize="18dp" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/et_duration_wheels"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="10"
+                        android:layout_marginBottom="16sp">
+
+                        <NumberPicker
+                            android:id="@+id/et_hour_picker"
+                            android:theme="@style/NumberPickerText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5"
+                            />
+
+                        <NumberPicker
+                            android:id="@+id/et_minute_picker"
+                            android:theme="@style/NumberPickerText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5"
+                            />
+
+                    </TableRow>
 
                     <TextView
                         android:id="@+id/et_pior_text3"
@@ -216,15 +271,12 @@
                         android:textColor="@color/colorPurple"
                         android:textSize="18dp" />
 
-                    <EditText
-                        android:id="@+id/et_input_priority"
-                        android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
+                    <Spinner
+                        android:id="@+id/et_priority"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
                         android:layout_marginLeft="10dp"
-                        android:ems="10"
-                        android:fontFamily="sans-serif-light"
-                        android:inputType="number"
-                        android:textSize="@dimen/ae_input_font_size" />
+                        android:layout_marginRight="10dp" />
 
                     <CheckBox
                         android:id="@+id/et_divisible"
@@ -283,12 +335,52 @@
                             android:textSize="@dimen/ae_input_font_size" />
                     </TableRow>
 
-                    <Spinner
-                        android:id="@+id/et_location"
+                    <TextView
+                        android:id="@+id/et_pior_text_locations"
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp" />
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="Locations"
+                        android:textColor="@color/colorPurple"
+                        android:textSize="18dp" />
+
+                    <TableRow
+                        android:id="@+id/et_search_row"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="5">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/et_location_search"
+                            android:completionThreshold="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:dropDownAnchor="@id/et_location_search"
+                            android:fontFamily="sans-serif-light"
+                            android:textSize="@dimen/ae_input_font_size"
+                            android:layout_weight="4"
+                            android:hint="Location"
+                            />
+
+                        <Button
+                            android:id="@+id/et_add_location_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/card"
+                            android:scaleX="0.9"
+                            android:scaleY="0.9"
+                            android:text="Add"
+                            android:textColor="#FFFFFF" />
+
+                    </TableRow>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
                 </LinearLayout>
 

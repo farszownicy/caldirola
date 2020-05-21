@@ -17,6 +17,7 @@ import farszownicy.caldirola.models.data_classes.Event
 import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
+import farszownicy.caldirola.utils.memory.saveEventsToMemory
 import kotlinx.android.synthetic.main.activity_edit_event.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -52,7 +53,6 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
             editEvent()
         }
         val eventID = intent.getStringExtra("ID")
-        //val eventID = "4511bea6-01cc-4d6d-bf47-1641e37f3714"
         editedEvent = PlanManager.getEvent(eventID)
         editedIndex = eventID
         fillBoxes()
@@ -122,6 +122,7 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
         {
             eventIntent.putExtra(Constants.EDIT_EVENT_KEY, eventUpdated)
             setResult(Activity.RESULT_OK, eventIntent)
+            saveEventsToMemory(this)
             finish()
         }
         else{
