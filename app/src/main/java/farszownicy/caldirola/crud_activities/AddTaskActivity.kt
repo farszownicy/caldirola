@@ -166,16 +166,6 @@ class AddTaskActivity : AppCompatActivity(),
         var priority =  at_priority.selectedItem.toString()
         val minSlice = getSliceTimeInMinutes()
         val duration: Int
-        val time: LocalTime
-//        try {
-//            //time = LocalTime.parse(at_input_time.text.toString())
-//            time = LocalTime.parse(at_hour_picker.text)
-//
-//        }
-//        catch(e: Exception){
-//            Toast.makeText(this, "Podano czas trwania w niepoprawnym formacie. Wymagany format: hh:mm", Toast.LENGTH_SHORT).show()
-//            return
-//        }
         duration =  at_hour_picker.value * 60 + at_minute_picker.value
 
         if(name.isEmpty() || description.isEmpty() || duration<= 0)
