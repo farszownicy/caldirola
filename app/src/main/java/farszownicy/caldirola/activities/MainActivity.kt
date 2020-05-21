@@ -11,10 +11,7 @@ import farszownicy.caldirola.activities.entry_list.EntryListActivity
 import farszownicy.caldirola.crud_activities.AddEventActivity
 import farszownicy.caldirola.crud_activities.AddTaskActivity
 import farszownicy.caldirola.models.data_classes.User
-import farszownicy.caldirola.utils.memory.loadEventsFromMemory
-import farszownicy.caldirola.utils.memory.loadTasksFromMemory
-import farszownicy.caldirola.utils.memory.saveEventsToMemory
-import farszownicy.caldirola.utils.memory.saveTasksToMemory
+import farszownicy.caldirola.utils.memory.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.time.LocalDateTime
 import kotlin.time.ExperimentalTime
@@ -90,6 +87,7 @@ class MainActivity : AppCompatActivity() {
         }
         loadTasksFromMemory(this)
         loadEventsFromMemory(this)
+        loadLocationsFromMemory(this)
     }
 
     /**

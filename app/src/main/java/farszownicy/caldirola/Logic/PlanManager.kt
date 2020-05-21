@@ -16,8 +16,9 @@ object PlanManager {
     init{ }
     var mTaskSlices: ArrayList<TaskSlice> = ArrayList()
     var mAllInsertedEntries: ArrayList<AgendaDrawableEntry> = ArrayList()
-
+    var mPlaces: ArrayList<Place> = ArrayList()
     var memoryUpToDate = true
+
     @ExperimentalTime
     var mEvents: ArrayList<Event> = ArrayList()
         set(events){

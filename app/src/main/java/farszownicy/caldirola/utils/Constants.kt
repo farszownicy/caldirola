@@ -13,6 +13,7 @@ object Constants {
     const val SHARED_PREF_EVENTS_LIST_KEY = "EVENTS"
     const val SHARED_PREF_TASKS_LIST_KEY = "TASKS"
     const val SHARED_PREF_TASKS_SLICES_LIST_KEY = "TASKS_SLICES"
+    const val SHARED_PREF_LOCATIONS_LIST_KEY = "LOCATIONS"
     const val DATE_FORMAT = "dd.MM.yyyy"
     const val TIME_FORMAT = "HH:mm"
     const val DATETIME_FORMAT = "dd.MM.yyyy HH:mm"
