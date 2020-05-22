@@ -16,8 +16,9 @@ object PlanManager {
     init{ }
     var mTaskSlices: ArrayList<TaskSlice> = ArrayList()
     var mAllInsertedEntries: ArrayList<AgendaDrawableEntry> = ArrayList()
-
+    var mPlaces: ArrayList<Place> = ArrayList()
     var memoryUpToDate = true
+
     @ExperimentalTime
     var mEvents: ArrayList<Event> = ArrayList()
         set(events){
@@ -74,14 +75,30 @@ object PlanManager {
     }
 
     @ExperimentalTime
-    public fun updateTask(task: Task, nName: String, nDesc: String, nDDL : LocalDateTime, nLoc : List<Place>, nPriority: Int, nDivisible: Boolean, nMinSlice: Int):Boolean{
+    public fun updateTask(task: Task, nName: String, nDesc: String, nDDL : LocalDateTime,
+                          nLoc : List<Place>, nPriority: String, nDivisible: Boolean, nMinSlice: Int,
+                          nDuration:Duration, nPrereqs: List<Task>):Boolean{
         task.name = nName
         task.description = nDesc
-        task.deadline = nDDL
         task.places = nLoc
+        task.duration = nDuration
         task.priority = nPriority
+
+        val oldDivisible = task.divisible
+        val oldMinSliceSlize = task.minSliceSize
+        val oldDeadline = task.deadline
+
         task.divisible = nDivisible
         task.minSliceSize = nMinSlice
+        task.deadline = nDDL
+        task.prerequisites = nPrereqs
+
+        if((oldDivisible != nDivisible) || (oldMinSliceSlize != nMinSlice) || isBefore(nDDL, oldDeadline))
+        {
+            removeTask(task)
+            addTask(task)
+        }
+
         updateAllEntries()
         return true
     }

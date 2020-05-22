@@ -32,9 +32,9 @@ import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_add_event.*
 import kotlinx.android.synthetic.main.activity_add_task.*
 import java.lang.Exception
-import java.sql.Time
 import java.time.LocalTime
 import java.util.*
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.minutes
 
@@ -72,7 +72,7 @@ class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
         }
 
         at_prereqs_button.setOnClickListener{
-            val dialogFragment = PrerequisitesFragment()
+            val dialogFragment = PrerequisitesFragment(PlanManager.mTasks)
             dialogFragment.show(supportFragmentManager, "Prerequisites Fragment")
         }
 
@@ -80,6 +80,7 @@ class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
         setAllDatePickers()
         setSlices()
         validateMinutes()
+        setWheelPickers()
 
         userDoc.addSnapshotListener(this
         ) { snapshot, e ->
@@ -98,6 +99,16 @@ class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
                 Log.d(MainActivity.TAG, "Current data: null")
             }
         }
+    }
+
+    private fun setWheelPickers()
+    {
+        at_hour_picker.minValue=0
+        at_hour_picker.maxValue=999
+        at_minute_picker.minValue=0
+        at_minute_picker.maxValue=59
+        at_hour_picker.wrapSelectorWheel=true
+        at_minute_picker.wrapSelectorWheel=true
     }
 
     override fun getChosenTasks(tasks: List<Task>) {
@@ -148,13 +159,18 @@ class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
                     val name = document.getString(NAME_KEY)
                     places.add(name!!)
                 }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, places)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                val location_adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, places)
+                location_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 at_location.onItemSelectedListener = this@AddTaskActivity
-                at_location.adapter = adapter
+                at_location.adapter = location_adapter
             }.addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents: ", exception)
             }
+        val priorities = resources.getStringArray(R.array.Priorities)
+        val priority_adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, priorities)
+        priority_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        at_priority.onItemSelectedListener = this@AddTaskActivity
+        at_priority.adapter = priority_adapter
     }
     private fun setAllDatePickers()
     {
@@ -184,18 +200,10 @@ class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
         val deadline = calendarUtils.getDTFromTV(at_deadline_date, at_deadline_time)
         val selected_location = Place(at_location.selectedItem as String)
         val divisible = at_divisible.isChecked
-        var priority = at_input_priority.text.toString()
+        var priority =  at_priority.selectedItem.toString()
         val minSlice = getSliceTimeInMinutes()
         val duration: Int
-        val time: LocalTime
-        try {
-            time = LocalTime.parse(at_input_time.text.toString())
-        }
-        catch(e: Exception){
-            Toast.makeText(this, "Podano czas trwania w niepoprawnym formacie. Wymagany format: hh:mm", Toast.LENGTH_SHORT).show()
-            return
-        }
-        duration =  time.hour * 60 + time.minute
+        duration =  at_hour_picker.value * 60 + at_minute_picker.value
 
         if(name.isEmpty() || description.isEmpty() || duration<= 0)
             return
@@ -212,8 +220,8 @@ class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
         if(priority == "")
             priority = "-1"
         val task = Task(UUID.randomUUID().toString(), name, description,
-            deadline, duration.minutes, priority= priority.toInt(),divisible=divisible,
-            minSliceSize =  minSlice, places = listOf(selected_location), prerequisites = prerequisities
+            deadline, duration.minutes, priority= priority,divisible=divisible,
+            minSliceSize =  minSlice, places = listOf(selected_location),  prerequisites = prerequisities
         )
         val taskIntent = Intent()
 

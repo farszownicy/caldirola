@@ -1,5 +1,6 @@
 package farszownicy.caldirola.models.data_classes
 
+import farszownicy.caldirola.utils.Constants.PRIORITY_LOW
 import java.time.LocalDateTime
 import kotlin.time.ExperimentalTime
 import kotlin.time.minutes
@@ -9,7 +10,7 @@ class Task @ExperimentalTime constructor(id: String = "-1",
                                          description: String,
                                          var deadline: LocalDateTime,
                                          var duration: kotlin.time.Duration = 0.minutes,
-                                         var priority: Int = 0,
+                                         var priority: String = PRIORITY_LOW,
                                          var prerequisites: List<Task> = mutableListOf(),
                                          var divisible: Boolean = false,
                                          var minSliceSize: Int = 0,

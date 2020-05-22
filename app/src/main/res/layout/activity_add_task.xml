@@ -166,6 +166,7 @@
                         android:textColor="@color/colorPurple"
                         android:textSize="18dp" />
 
+                    <!--
                     <EditText
                         android:id="@+id/at_input_time"
                         android:layout_width="fill_parent"
@@ -177,6 +178,60 @@
                         android:fontFamily="sans-serif-light"
                         android:inputType="time"
                         android:textSize="@dimen/ae_input_font_size" />
+                        -->
+
+                    <TableRow
+                        android:id="@+id/at_duration_prior"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:weightSum="10">
+
+                        <TextView
+                            android:id="@+id/at_duration_hr_prior"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5"
+                            android:text="Hours"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPurple"
+                            android:textSize="18dp" />
+
+                        <TextView
+                            android:id="@+id/at_duration_min_prior"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5"
+                            android:text="Minutes"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPurple"
+                            android:textSize="18dp" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/at_duration_wheels"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="10"
+                        android:layout_marginBottom="16sp">
+
+                        <NumberPicker
+                            android:id="@+id/at_hour_picker"
+                            android:theme="@style/NumberPickerText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5"
+                             />
+
+                        <NumberPicker
+                            android:id="@+id/at_minute_picker"
+                            android:theme="@style/NumberPickerText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5"
+                            />
+
+                    </TableRow>
 
                     <TextView
                         android:id="@+id/pior_text3"
@@ -234,15 +289,12 @@
                         android:textColor="@color/colorPurple"
                         android:textSize="18dp" />
 
-                    <EditText
-                        android:id="@+id/at_input_priority"
-                        android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
+                    <Spinner
+                        android:id="@+id/at_priority"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
                         android:layout_marginLeft="10dp"
-                        android:ems="10"
-                        android:fontFamily="sans-serif-light"
-                        android:inputType="number"
-                        android:textSize="@dimen/ae_input_font_size" />
+                        android:layout_marginRight="10dp" />
 
                     <CheckBox
                         android:id="@+id/at_divisible"

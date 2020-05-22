@@ -6,8 +6,10 @@ import farszownicy.caldirola.models.data_classes.Event
 import farszownicy.caldirola.models.data_classes.Task
 import farszownicy.caldirola.models.data_classes.TaskSlice
 import farszownicy.caldirola.dto.EventDto
+import farszownicy.caldirola.dto.PlaceDto
 import farszownicy.caldirola.dto.TaskDto
 import farszownicy.caldirola.dto.TaskSliceDto
+import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.utils.Constants
 import java.time.LocalDateTime
 import kotlin.collections.ArrayList
@@ -23,6 +25,28 @@ fun saveEventsToMemory(context: Context){
         Constants.SHARED_PREF_EVENTS_LIST_KEY,
         eventDtos
     )
+}
+
+@ExperimentalTime
+fun saveLocationsToMemoty(context:Context){
+    val placeDtos = PlanManager.mPlaces.map{ place -> PlaceDto(place) }
+    writeObjectToSharedPreferences(
+        context,
+        Constants.SHARED_PREF_CALENDAR_FILE_NAME,
+        Constants.SHARED_PREF_LOCATIONS_LIST_KEY,
+        placeDtos
+    )
+}
+
+@ExperimentalTime
+fun loadLocationsFromMemory(context:Context){
+    val placeDtos = readObjectsFromSharedPreferences<ArrayList<PlaceDto>>(
+        context,
+        Constants.SHARED_PREF_CALENDAR_FILE_NAME,
+        Constants.SHARED_PREF_LOCATIONS_LIST_KEY
+    )
+        ?:ArrayList()
+    PlanManager.mPlaces = placeDtos.map{dto -> Place(dto.name) } as ArrayList
 }
 
 @ExperimentalTime

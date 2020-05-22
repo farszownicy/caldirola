@@ -20,6 +20,7 @@ import farszownicy.caldirola.models.data_classes.Event
 import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
+import farszownicy.caldirola.utils.memory.saveEventsToMemory
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_add_event.*
 import java.util.*
@@ -135,6 +136,7 @@ class AddEventActivity : AppCompatActivity()
 
         val eventAdded = PlanManager.addEvent(event)
         saveTasksToMemory(this)
+        saveEventsToMemory(this)
         PlanManager.memoryUpToDate = true
         if(eventAdded) {
             db.collection("events").add(event_data).addOnSuccessListener { documentReference ->

@@ -13,15 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.dto.PrerequisitiesDialogResult
+import farszownicy.caldirola.models.data_classes.Task
 import kotlin.time.ExperimentalTime
 
 
-class PrerequisitesFragment : DialogFragment() {
+class PrerequisitesFragment(tasks: List<Task>) : DialogFragment() {
 
     private lateinit var callback: PrerequisitiesDialogResult
 
     @ExperimentalTime
-    private val prerequisitesListAdapter = PrerequisitesListAdapter(PlanManager.mTasks)
+    private val prerequisitesListAdapter = PrerequisitesListAdapter(tasks)
 
     fun setCallback(callback: PrerequisitiesDialogResult){
         this.callback = callback
