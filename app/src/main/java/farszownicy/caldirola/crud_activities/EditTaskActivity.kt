@@ -7,10 +7,14 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +22,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.agendacalendar.CalendarManager
+import farszownicy.caldirola.crud_activities.fragments.PrerequisitesFragment
+import farszownicy.caldirola.dto.PrerequisitiesDialogResult
 import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.models.data_classes.Task
 import farszownicy.caldirola.utils.Constants
@@ -30,7 +36,7 @@ import java.util.*
 import kotlin.time.ExperimentalTime
 import kotlin.time.minutes
 
-class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, PrerequisitiesDialogResult {
     companion object
     {
         const val NAME_KEY = "name"
@@ -44,6 +50,7 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     private var editedTask: Task? = null
     private var editedIndex:String? = null
     private var adapter:LocationAdapter? = null
+    private var prerequisites = listOf<Task>()
     private val simpleCallback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT){
         override fun onMove(p0: RecyclerView, p1: RecyclerView.ViewHolder, p2: RecyclerView.ViewHolder): Boolean {
             return true
@@ -71,8 +78,25 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         et_add_location_btn.setOnClickListener{
             addLocation()
         }
+        et_prereqs_button.setOnClickListener{
+            val dialogFragment = PrerequisitesFragment(PlanManager.mTasks) //TODO: Change to filtered list of tasks
+            dialogFragment.show(supportFragmentManager, "Prerequisites Fragment")
+        }
+        fillBoxes()
         loadLocationsFromMemory(this)
         fillBoxes()
+    }
+
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+        if(fragment is PrerequisitesFragment){
+            fragment.setCallback(this)
+        }
+    }
+
+    override fun getChosenTasks(tasks: List<Task>) {
+        prerequisites = tasks
+        showPrerequites(prerequisites)
     }
 
     @ExperimentalTime
@@ -129,6 +153,7 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         setSlices()
         validateMinutes()
         setLocationsList()
+        showPrerequites(editedTask!!.prerequisites)
     }
 
     @ExperimentalTime
@@ -229,6 +254,19 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         datetime_utils.setTimePicker(et_deadline_time,this@EditTaskActivity)
     }
 
+    private fun showPrerequites(tasks: List<Task>){
+        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        params.setMargins(4,4,4,4)
+        et_prereqs_list.removeAllViewsInLayout()
+        for (task in tasks) {
+            val textView = TextView(this)
+            textView.text = task.name
+            textView.setBackgroundResource(R.color.colorPurpleT)
+            textView.layoutParams = params
+            et_prereqs_list.addView(textView)
+        }
+    }
+
     override fun onNothingSelected(p0: AdapterView<*>?) {}
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {}
 
@@ -244,7 +282,7 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         val minSlice = getSliceTimeInMinutes()
         val divisible = et_divisible.isChecked
         val duration =  et_hour_picker.value * 60 + et_minute_picker.value
-        val taskUpdated = PlanManager.updateTask(editedTask!!, name, description, deadline, locations, priority, divisible, minSlice, duration.minutes)
+        val taskUpdated = PlanManager.updateTask(editedTask!!, name, description, deadline, locations, priority, divisible, minSlice, duration.minutes, prerequisites)
         saveTasksToMemory(this)
         PlanManager.memoryUpToDate = true
         val taskIntent = Intent()

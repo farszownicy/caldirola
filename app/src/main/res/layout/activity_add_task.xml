@@ -137,6 +137,23 @@
                         android:textSize="@dimen/ae_input_font_size"
                         tools:layout_marginRight="10dp" />
 
+                    <Button
+                        android:id="@+id/at_prereqs_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="28dp"
+                        android:background="@drawable/bg_ui"
+                        android:fontFamily="sans-serif-light"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/manage_prerequisites"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="16dp" />
+
+                    <LinearLayout
+                        android:id="@+id/at_prereqs_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"></LinearLayout>
 
                     <TextView
                         android:id="@+id/pior_text2"

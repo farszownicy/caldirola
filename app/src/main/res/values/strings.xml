@@ -45,7 +45,7 @@
     <string name="agenda_event_day_duration">d</string>
     <string name="agenda_event_no_events">No events</string>
 
-    <string name ="edit_task_text">Edit task</string>
+    <string name="edit_task_text">Edit task</string>
     <string name="doable_text">included in schedule</string>
     <string name="not_doable_text">not included in schedule</string>
 
@@ -56,4 +56,6 @@
         <item>Urgent</item>
     </string-array>
     <string name="search">Search location</string>
+
+    <string name="manage_prerequisites">Manage prerequisites</string>
 </resources>

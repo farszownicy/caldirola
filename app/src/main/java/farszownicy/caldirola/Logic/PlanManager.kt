@@ -75,7 +75,9 @@ object PlanManager {
     }
 
     @ExperimentalTime
-    public fun updateTask(task: Task, nName: String, nDesc: String, nDDL : LocalDateTime, nLoc : List<Place>, nPriority: String, nDivisible: Boolean, nMinSlice: Int, nDuration:Duration):Boolean{
+    public fun updateTask(task: Task, nName: String, nDesc: String, nDDL : LocalDateTime,
+                          nLoc : List<Place>, nPriority: String, nDivisible: Boolean, nMinSlice: Int,
+                          nDuration:Duration, nPrereqs: List<Task>):Boolean{
         task.name = nName
         task.description = nDesc
         task.places = nLoc
@@ -89,6 +91,7 @@ object PlanManager {
         task.divisible = nDivisible
         task.minSliceSize = nMinSlice
         task.deadline = nDDL
+        task.prerequisites = nPrereqs
 
         if((oldDivisible != nDivisible) || (oldMinSliceSlize != nMinSlice) || isBefore(nDDL, oldDeadline))
         {
