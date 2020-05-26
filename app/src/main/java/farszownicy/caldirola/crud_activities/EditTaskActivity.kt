@@ -52,6 +52,7 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         override fun onSwiped(p0: RecyclerView.ViewHolder, p1: Int) {
             val position = p0.adapterPosition
             adapter!!.removeLocation(position)
+            recycler_view.invalidate()
         }
     }
 
@@ -84,6 +85,7 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             saveLocationsToMemory(this)
             adapter!!.addItem(newPlace)
             taskPlaces = adapter!!.getItems()
+            recycler_view.invalidate()
         }
     }
 
