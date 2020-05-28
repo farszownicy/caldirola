@@ -1,20 +1,21 @@
 package farszownicy.caldirola.activities
 
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
+import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
-import farszownicy.caldirola.activities.AgendaActivity.Companion.DAY_KEY
-import farszownicy.caldirola.activities.AgendaActivity.Companion.MONTH_KEY
-import farszownicy.caldirola.activities.AgendaActivity.Companion.YEAR_KEY
+import farszownicy.caldirola.activities.AgendaFragment.Companion.DAY_KEY
+import farszownicy.caldirola.activities.AgendaFragment.Companion.MONTH_KEY
+import farszownicy.caldirola.activities.AgendaFragment.Companion.YEAR_KEY
 import farszownicy.caldirola.agendacalendar.AgendaCalendarView
 import farszownicy.caldirola.agendacalendar.CalendarManager
 import farszownicy.caldirola.agendacalendar.CalendarPickerController
@@ -27,15 +28,13 @@ import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.memory.saveEventsToMemory
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
-import kotlinx.android.synthetic.main.activity_agenda.*
-import kotlinx.android.synthetic.main.calendar_view.*
-import kotlinx.android.synthetic.main.view_agendacalendar.*
+import kotlinx.android.synthetic.main.fragment_calendar.*
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.time.ExperimentalTime
 
 
-class CalendarActivity : AppCompatActivity(), CalendarPickerController {
+class CalendarFragment : Fragment(), CalendarPickerController {
     lateinit var mAgendaCalendarView: AgendaCalendarView
 
     companion object {
@@ -43,12 +42,11 @@ class CalendarActivity : AppCompatActivity(), CalendarPickerController {
     }
 
     @ExperimentalTime
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val root = inflater.inflate(R.layout.fragment_calendar, container, false)
 
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.calendar_view)
-        setSupportActionBar(activity_toolbar)
-        mAgendaCalendarView = findViewById(R.id.agenda_calendar_view)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(activity_toolbar)
+        mAgendaCalendarView = root.findViewById(R.id.agenda_calendar_view)
         val minDate: Calendar = Calendar.getInstance()
         val maxDate: Calendar = Calendar.getInstance()
 
@@ -56,15 +54,17 @@ class CalendarActivity : AppCompatActivity(), CalendarPickerController {
         minDate.set(Calendar.DAY_OF_MONTH, 1)
         maxDate.add(Calendar.YEAR, 1)
         mAgendaCalendarView.init(minDate, maxDate, Locale.UK, this)
-        calAddButton.setOnClickListener {
+        root.findViewById<FloatingActionButton>(R.id.calAddButton).setOnClickListener {
             AddDialog()
         }
-        rearrangeButton.setOnClickListener { v: View? ->
+        root.findViewById<FloatingActionButton>(R.id.rearrangeButton).setOnClickListener { v: View? ->
             PlanManager.rearrangeTasks()
-            saveTasksToMemory(this)
+            saveTasksToMemory(requireContext())
             CalendarManager.getInstance().loadEventsAndTasks()
         }
 //        mAgendaCalendarView.addEventRenderer(DefaultEventRenderer())
+
+        return root
     }
 
     private fun mockList(eventList: MutableList<Event>) {
@@ -132,23 +132,23 @@ class CalendarActivity : AppCompatActivity(), CalendarPickerController {
     @ExperimentalTime
     override fun onStop() {
         if (!PlanManager.memoryUpToDate) {
-            saveEventsToMemory(this)
-            saveTasksToMemory(this)
+            saveEventsToMemory(requireContext())
+            saveTasksToMemory(requireContext())
             PlanManager.memoryUpToDate = true
         }
         super.onStop()
     }
 
     override fun onScrollToDate(calendar: Calendar?) {
-        if (supportActionBar != null) {
-            supportActionBar!!.title =
+        if ((requireActivity() as AppCompatActivity).supportActionBar != null) {
+            (requireActivity() as AppCompatActivity).supportActionBar!!.title =
                 calendar!!.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.UK);
         }
     }
 
     override fun onEventSelected(entry: BaseCalendarEntry) {
         Log.d(LOG_TAG, String.format("Selected event: %s", entry))
-        val intent = Intent(this, AgendaActivity::class.java)
+        val intent = Intent(requireContext(), AgendaFragment::class.java)
         val bundle = Bundle()
         bundle.putInt(DAY_KEY, entry.instanceDay.get(Calendar.DAY_OF_MONTH))
         bundle.putInt(MONTH_KEY, entry.instanceDay.get(Calendar.MONTH) + 1)
@@ -165,20 +165,20 @@ class CalendarActivity : AppCompatActivity(), CalendarPickerController {
 
     @ExperimentalTime
     fun AddDialog() {
-        AlertDialog.Builder(this).setTitle("CHOOSE ENTRY TYPE")
+        AlertDialog.Builder(requireContext()).setTitle("CHOOSE ENTRY TYPE")
             .setPositiveButton("EVENT") { dialog, id -> StartAEActivity() }
             .setNegativeButton("TASK") { dialog, id -> StartATActivity() }
             .create().show()
     }
 
     fun StartAEActivity() {
-        val intent = Intent(this, AddEventActivity::class.java)
+        val intent = Intent(requireContext(), AddEventActivity::class.java)
         startActivityForResult(intent, Constants.ADD_EVENT_CODE)
     }
 
     @ExperimentalTime
     fun StartATActivity() {
-        val intent = Intent(this, AddTaskActivity::class.java)
+        val intent = Intent(requireContext(), AddTaskActivity::class.java)
         startActivityForResult(intent, Constants.ADD_TASK_CODE)
     }
 

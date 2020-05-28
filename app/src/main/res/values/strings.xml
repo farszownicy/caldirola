@@ -6,6 +6,7 @@
     <string name="title_activity_add_task">AddTaskActivity</string>
     <string name="title_activity_edit_event">EditEventActivity</string>
     <string name="title_activity_edit_task">EditTaskActivity</string>
+    <string name="title_activity_add_user">AddUserActivity</string>
     <string name="choose_location_prompt">Wybierz lokalizację</string>
     <string name="large_text"></string>
 
@@ -58,4 +59,14 @@
     <string name="search">Search location</string>
 
     <string name="manage_prerequisites">Manage prerequisites</string>
+
+    <!-- Menu -->
+    <string name="menu_fetch">Fetch</string>
+    <string name="menu_plan">Plan</string>
+    <string name="menu_agenda">Agenda</string>
+    <string name="menu_add_event">Add event</string>
+    <string name="menu_add_task">Add task</string>
+    <string name="menu_list">List</string>
+    <string name="menu_add_user">Add user</string>
+    <string name="menu_home">Home</string>
 </resources>

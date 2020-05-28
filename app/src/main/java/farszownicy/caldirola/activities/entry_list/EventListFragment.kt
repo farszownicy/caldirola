@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import farszownicy.caldirola.R
 import farszownicy.caldirola.utils.EventListAdapter
-import kotlinx.android.synthetic.main.fragment_entry_list.view.*
+import kotlinx.android.synthetic.main.fragment_event_list.view.*
 import kotlin.time.ExperimentalTime
 
 class EventListFragment : Fragment() {
@@ -26,7 +26,7 @@ class EventListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_entry_list, container, false)
+        val root = inflater.inflate(R.layout.fragment_event_list, container, false)
 
         val recyclerView = root.findViewById<RecyclerView>(R.id.el_recycler_view)
         recyclerView.adapter = eventsAdapter
