@@ -55,7 +55,19 @@
         <item>High</item>
         <item>Urgent</item>
     </string-array>
+    <string-array name="WeekdayChoices">
+        <item>Every day</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
     <string name="search">Search location</string>
 
     <string name="manage_prerequisites">Manage prerequisites</string>
+    <string name="add_new_preference">Add new preference</string>
+    <string name="title_activity_preferences">PreferencesActivity</string>
 </resources>

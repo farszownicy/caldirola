@@ -5,6 +5,7 @@ import android.util.Log
 import farszownicy.caldirola.utils.DateHelper
 import farszownicy.caldirola.models.data_classes.*
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -17,6 +18,7 @@ object PlanManager {
     var mTaskSlices: ArrayList<TaskSlice> = ArrayList()
     var mAllInsertedEntries: ArrayList<AgendaDrawableEntry> = ArrayList()
     var mPlaces: ArrayList<Place> = ArrayList()
+    var mPreferences: ArrayList<TimePreference> = ArrayList()
     var memoryUpToDate = true
 
     @ExperimentalTime
@@ -34,6 +36,11 @@ object PlanManager {
             field = tasks
             distributeTasks(tasks)
         }
+
+    fun addEmptyPref(){
+        val time = LocalTime.now()
+        mPreferences.add(TimePreference(0, time, time))
+    }
 
     @ExperimentalTime
     public fun getEvent(id: String): Event?{

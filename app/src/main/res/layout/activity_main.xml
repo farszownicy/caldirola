@@ -274,6 +274,22 @@
             app:layout_constraintBottom_toTopOf="@+id/rel_panel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/pref_button"
+            android:layout_width="45dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ui"
+            android:clickable="false"
+            android:drawableTop="@android:drawable/ic_menu_manage"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintBottom_toBottomOf="@+id/list_button"
+            app:layout_constraintStart_toEndOf="@+id/list_button"
+            app:layout_constraintTop_toTopOf="@+id/list_button" />
+
         <RelativeLayout
             android:id="@+id/rel_panel"
             android:layout_width="wrap_content"
