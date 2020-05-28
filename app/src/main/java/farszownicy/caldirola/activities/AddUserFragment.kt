@@ -1,7 +1,5 @@
 package farszownicy.caldirola.activities
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,16 +10,8 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
-import farszownicy.caldirola.activities.entry_list.EntryListActivity
-import farszownicy.caldirola.crud_activities.AddEventActivity
-import farszownicy.caldirola.crud_activities.AddTaskActivity
 import farszownicy.caldirola.models.data_classes.User
-import farszownicy.caldirola.utils.memory.loadEventsFromMemory
-import farszownicy.caldirola.utils.memory.loadTasksFromMemory
-import farszownicy.caldirola.utils.memory.saveEventsToMemory
-import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.fragment_add_user.*
-import java.time.LocalDateTime
 import kotlin.time.ExperimentalTime
 
 class AddUserFragment : Fragment() {
@@ -46,35 +36,35 @@ class AddUserFragment : Fragment() {
             fetchUserData()
         }
 
-        root.findViewById<Button>(R.id.plan_button).setOnClickListener{
-            val intent = Intent(requireContext(), CalendarActivity::class.java)
-            startActivity(intent)
-        }
-
-        root.findViewById<Button>(R.id.agenda_btn).setOnClickListener(){
-            val intent = Intent(requireContext(), AgendaActivity::class.java)
-            val bundle = Bundle()
-            bundle.putInt(AgendaActivity.DAY_KEY, LocalDateTime.now().dayOfMonth)
-            bundle.putInt(AgendaActivity.MONTH_KEY, LocalDateTime.now().monthValue)
-            bundle.putInt(AgendaActivity.YEAR_KEY, LocalDateTime.now().year)
-            intent.putExtras(bundle)
-            startActivity(intent)
-        }
-
-        root.findViewById<Button>(R.id.addevent_button).setOnClickListener{
-            val intent = Intent(requireContext(), AddEventActivity::class.java)
-            startActivity(intent)
-        }
-
-        root.findViewById<Button>(R.id.addtask_button).setOnClickListener{
-            val intent = Intent(requireContext(), AddTaskActivity::class.java)
-            startActivity(intent)
-        }
-
-        root.findViewById<Button>(R.id.list_button).setOnClickListener{
-            val intent = Intent(requireContext(), EntryListActivity::class.java)
-            startActivity(intent)
-        }
+//        root.findViewById<Button>(R.id.plan_button).setOnClickListener{
+//            val intent = Intent(requireContext(), CalendarFragment::class.java)
+//            startActivity(intent)
+//        }
+//
+//        root.findViewById<Button>(R.id.agenda_btn).setOnClickListener(){
+//            val intent = Intent(requireContext(), AgendaFragment::class.java)
+//            val bundle = Bundle()
+//            bundle.putInt(AgendaFragment.DAY_KEY, LocalDateTime.now().dayOfMonth)
+//            bundle.putInt(AgendaFragment.MONTH_KEY, LocalDateTime.now().monthValue)
+//            bundle.putInt(AgendaFragment.YEAR_KEY, LocalDateTime.now().year)
+//            intent.putExtras(bundle)
+//            startActivity(intent)
+//        }
+//
+//        root.findViewById<Button>(R.id.addevent_button).setOnClickListener{
+//            val intent = Intent(requireContext(), AddEventActivity::class.java)
+//            startActivity(intent)
+//        }
+//
+//        root.findViewById<Button>(R.id.addtask_button).setOnClickListener{
+//            val intent = Intent(requireContext(), AddTaskActivity::class.java)
+//            startActivity(intent)
+//        }
+//
+//        root.findViewById<Button>(R.id.list_button).setOnClickListener{
+//            val intent = Intent(requireContext(), EntryListActivity::class.java)
+//            startActivity(intent)
+//        }
 
         /**
          * Nasłuchiwanie zmian w  danym dokumencie.
@@ -133,13 +123,4 @@ class AddUserFragment : Fragment() {
             .addOnFailureListener{e -> Log.w(TAG, "Error adding user", e)}
     }
 
-    @ExperimentalTime
-    override fun onStop() {
-        if(!PlanManager.memoryUpToDate){
-            saveEventsToMemory(requireContext())
-            saveTasksToMemory(requireContext())
-            PlanManager.memoryUpToDate = true
-        }
-        super.onStop()
-    }
 }

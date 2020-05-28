@@ -1,40 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="navigation_view">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/fetch"
-            android:title="@string/menu_home" />
-        <item
-            android:id="@+id/nav_add_user"
-            android:icon="@drawable/fetch"
-            android:title="@string/menu_add_user" />
-        <item
-            android:id="@+id/nav_fetch"
-            android:icon="@drawable/fetch"
-            android:title="@string/menu_fetch" />
-        <item
-            android:id="@+id/nav_plan"
-            android:icon="@drawable/calendar"
-            android:title="@string/menu_plan" />
-        <item
-            android:id="@+id/nav_agenda"
-            android:icon="@drawable/agenda"
-            android:title="@string/menu_agenda" />
-        <item
-            android:id="@+id/nav_add_event"
-            android:icon="@drawable/add_event"
-            android:title="@string/menu_add_event" />
-        <item
-            android:id="@+id/nav_add_task"
-            android:icon="@drawable/task"
-            android:title="@string/menu_add_task" />
-        <item
-            android:id="@+id/nav_list"
-            android:icon="@drawable/agenda"
-            android:title="@string/menu_list" />
-    </group>
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/fetch"
+        android:title="@string/menu_home" />
+    <item
+        android:id="@+id/nav_add_user"
+        android:icon="@drawable/fetch"
+        android:title="@string/menu_add_user" />
+    <item
+        android:id="@+id/nav_calendar"
+        android:icon="@drawable/calendar"
+        android:title="@string/menu_plan" />
+    <item
+        android:id="@+id/nav_agenda"
+        android:icon="@drawable/agenda"
+        android:title="@string/menu_agenda" />
+    <item
+        android:id="@+id/nav_list"
+        android:icon="@drawable/agenda"
+        android:title="@string/menu_list" />
 </menu>

@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.entry_list.EntryListActivity"
+            android:name=".activities.entry_list.EntryListFragment"
             android:label="@string/title_activity_entry_list"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
@@ -22,24 +22,12 @@
             android:label="@string/title_activity_add_task"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.CalendarActivity"
-            android:label="@string/title_activity_calendar"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name="farszownicy.caldirola.crud_activities.EditEventActivity"
             android:label="@string/title_activity_edit_event"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name="farszownicy.caldirola.crud_activities.EditTaskActivity"
             android:label="@string/title_activity_edit_task"
-            android:theme="@style/AppTheme.NoActionBar"/>
-<!--        <activity-->
-<!--            android:name="farszownicy.caldirola.activities.AddUserActivity"-->
-<!--            android:label="@string/title_activity_add_user"-->
-<!--            android:theme="@style/AppTheme.NoActionBar"/>-->
-        <activity
-            android:name=".activities.AgendaActivity"
-            android:label="@string/title_activity_agenda"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activities.MainActivity">
             <intent-filter>
