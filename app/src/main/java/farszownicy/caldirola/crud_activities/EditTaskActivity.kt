@@ -79,7 +79,7 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             addLocation()
         }
         et_prereqs_button.setOnClickListener{
-            val dialogFragment = PrerequisitesFragment(PlanManager.mTasks) //TODO: Change to filtered list of tasks
+            val dialogFragment = PrerequisitesFragment(PlanManager.getAllPossiblePrerequisites(editedTask!!)) //TODO: Change to filtered list of tasks
             dialogFragment.show(supportFragmentManager, "Prerequisites Fragment")
         }
         fillBoxes()
