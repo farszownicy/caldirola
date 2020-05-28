@@ -67,6 +67,7 @@ class AgendaFragment : Fragment() {
     @ExperimentalTime
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         root = inflater.inflate(R.layout.fragment_agenda, container, false)
+        agenda = root.findViewById(R.id.agenda)
 
 //        if (savedInstanceState != null) {
 //            day = savedInstanceState.getInt(DAY_KEY)
@@ -79,7 +80,6 @@ class AgendaFragment : Fragment() {
         year = LocalDateTime.now().year
 
         setListeners()
-        agenda = root.findViewById(R.id.agenda)
         agenda.setDay(day, month, year)
         agenda.setLimitTime(0, 24)
         updateDisplayedDay()

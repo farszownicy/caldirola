@@ -50,7 +50,6 @@
     <string name="doable_text">included in schedule</string>
     <string name="not_doable_text">not included in schedule</string>
 
-<<<<<<< HEAD
     <string-array name="Priorities">
         <item>Low</item>
         <item>Medium</item>
@@ -60,7 +59,7 @@
     <string name="search">Search location</string>
 
     <string name="manage_prerequisites">Manage prerequisites</string>
-=======
+
     <!-- Menu -->
     <string name="menu_fetch">Fetch</string>
     <string name="menu_plan">Plan</string>
@@ -70,5 +69,4 @@
     <string name="menu_list">List</string>
     <string name="menu_add_user">Add user</string>
     <string name="menu_home">Home</string>
->>>>>>> kb_start_screen
 </resources>
