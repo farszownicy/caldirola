@@ -69,15 +69,15 @@ class AgendaFragment : Fragment() {
         root = inflater.inflate(R.layout.fragment_agenda, container, false)
         agenda = root.findViewById(R.id.agenda)
 
-//        if (savedInstanceState != null) {
-//            day = savedInstanceState.getInt(DAY_KEY)
-//            month = savedInstanceState.getInt(MONTH_KEY)
-//            year = savedInstanceState.getInt(YEAR_KEY)
-//        }
-
-        day = LocalDateTime.now().dayOfMonth
-        month = LocalDateTime.now().monthValue
-        year = LocalDateTime.now().year
+        if (arguments != null) {
+            day = requireArguments().getInt(DAY_KEY)
+            month = requireArguments().getInt(MONTH_KEY)
+            year = requireArguments().getInt(YEAR_KEY)
+        } else {
+            day = LocalDateTime.now().dayOfMonth
+            month = LocalDateTime.now().monthValue
+            year = LocalDateTime.now().year
+        }
 
         setListeners()
         agenda.setDay(day, month, year)
