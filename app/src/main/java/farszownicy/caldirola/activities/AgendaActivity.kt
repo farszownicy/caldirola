@@ -9,9 +9,11 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.alpha
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.agendacalendar.CalendarManager
@@ -29,6 +31,7 @@ import farszownicy.caldirola.utils.memory.saveEventsToMemory
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_agenda.*
 import kotlinx.android.synthetic.main.activity_agenda.view.*
+import kotlinx.android.synthetic.main.view_agendacalendar.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -44,13 +47,16 @@ class AgendaActivity : AppCompatActivity() {
     var year: Int = 0
     var x1 : Float = 0F
     var x2 : Float = 0F
+    var y1 : Float = 0F
+    var y2 : Float = 0F
 
     companion object{
         const val LOG_TAG = "DEBUG"
         const val DAY_KEY = "DAY"
         const val MONTH_KEY = "MONTH"
         const val YEAR_KEY = "YEAR"
-        const val MIN_SWIPE_DISTANCE = 100
+        const val MIN_SWIPE_DISTANCE = 80
+        const val VERTICAL_SWIPE_THRESHOLD = 70
     }
 
     @ExperimentalTime
@@ -64,10 +70,10 @@ class AgendaActivity : AppCompatActivity() {
             year = b.getInt(YEAR_KEY)
         }
 
-        setListeners()
         agenda.setDay(day, month, year)
         agenda.setLimitTime(0, 24)
         updateDisplayedDay()
+        setListeners()
     }
 
     @ExperimentalTime
@@ -142,15 +148,20 @@ class AgendaActivity : AppCompatActivity() {
 
         agenda_scroll_view.setOnTouchListener { v, event ->
             when (event!!.action) {
-                MotionEvent.ACTION_DOWN -> x1 = event.x
+                MotionEvent.ACTION_DOWN -> {
+                    x1 = event.x
+                    y1 = event.y
+                }
                 MotionEvent.ACTION_UP -> {
                     x2 = event.x
+                    y2 = event.y
                     val deltaX: Float = x2 - x1
-                    if (deltaX > MIN_SWIPE_DISTANCE) {
+                    val deltaY:Float = abs(y2- y1)
+                    if (deltaX > MIN_SWIPE_DISTANCE && deltaY < VERTICAL_SWIPE_THRESHOLD) {
                         agenda.moveDay(-1)
                         updateDisplayedDay()
                     }
-                    else if(deltaX < - MIN_SWIPE_DISTANCE){
+                    else if(deltaX < - MIN_SWIPE_DISTANCE && deltaY < VERTICAL_SWIPE_THRESHOLD){
                         agenda.moveDay(1)
                         updateDisplayedDay()
                     }
@@ -158,6 +169,25 @@ class AgendaActivity : AppCompatActivity() {
             }
             false
         }
+    }
+
+    private fun animateDaySwitch() {
+        findViewById<View>(R.id.agenda).apply {
+            alpha = 0f
+            visibility = View.VISIBLE
+            animate().alpha(1f).setDuration(400).setListener(null)
+        }
+        findViewById<View>(R.id.day_of_month_tv).apply {
+            alpha = 0f
+            visibility = View.VISIBLE
+            animate().alpha(1f).setDuration(150).setListener(null)
+        }
+        findViewById<View>(R.id.day_of_week_tv).apply {
+            alpha = 0f
+            visibility = View.VISIBLE
+            animate().alpha(1f).setDuration(150).setListener(null)
+        }
+
     }
 
     @ExperimentalTime
@@ -169,6 +199,7 @@ class AgendaActivity : AppCompatActivity() {
 
         day_of_month_tv.text = agenda.mDay.format(formatDayOfMonth)
         day_of_week_tv.text = agenda.mDay.format(formatDayOfWeek)
+        animateDaySwitch()
         agenda.refreshEntries()
     }
 
