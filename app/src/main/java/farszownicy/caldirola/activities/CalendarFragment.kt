@@ -10,6 +10,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.findNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
@@ -148,15 +151,11 @@ class CalendarFragment : Fragment(), CalendarPickerController {
 
     override fun onEventSelected(entry: BaseCalendarEntry) {
         Log.d(LOG_TAG, String.format("Selected event: %s", entry))
-        val intent = Intent(requireContext(), AgendaFragment::class.java)
         val bundle = Bundle()
         bundle.putInt(DAY_KEY, entry.instanceDay.get(Calendar.DAY_OF_MONTH))
         bundle.putInt(MONTH_KEY, entry.instanceDay.get(Calendar.MONTH) + 1)
         bundle.putInt(YEAR_KEY, entry.instanceDay.get(Calendar.YEAR))
-
-        intent.putExtras(bundle)
-
-        startActivity(intent)
+        requireView().findNavController().navigate(R.id.nav_agenda, bundle)
     }
 
     override fun onResume() {
