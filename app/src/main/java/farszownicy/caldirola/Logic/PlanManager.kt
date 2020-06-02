@@ -413,7 +413,7 @@ object PlanManager {
         println(exclEvents.size)
         exclEvents.forEach{e -> println(""+e.startTime+ "    DO    " +e.endTime)}
         val free = !exclEvents.any{isBeforeOrEqual(it.startTime,currTime) && isAfter(it.endTime,currTime)}
-        val legal = illegalIntervals.any { it.dayOfWeek == currTime.dayOfWeek
+        val legal = !illegalIntervals.any { it.dayOfWeek == currTime.dayOfWeek
                 && isTimeBetweenInclusive(currTime, it.startTime, it.endTime) }
         return free && legal
     }

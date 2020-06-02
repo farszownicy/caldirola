@@ -4,8 +4,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat.getColor
 import farszownicy.caldirola.R
 import farszownicy.caldirola.models.data_classes.TaskSlice
+import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.Constants.DATETIME_FORMAT
 import kotlinx.android.synthetic.main.task_entry.view.*
 import java.time.format.DateTimeFormatter
@@ -31,7 +33,12 @@ class TaskSliceView @JvmOverloads constructor(context: Context, attrs: Attribute
 //                    "${deadline.getDisplayName(Calendar.MINUTE, Calendar.LONG, Locale.ENGLISH)}."
             val durationHours = mTaskSlice?.parent!!.duration.inHours.toInt()
             val durationMinutes = mTaskSlice?.parent!!.duration.inMinutes.toInt() - durationHours*60
-            duration_tv.text = "${durationHours}hr ${durationMinutes} min"
+            when(mTaskSlice?.parent!!.priority){
+                Constants.PRIORITY_LOW -> item_event_content.setBackgroundColor(getColor(context, R.color.task_low))
+                Constants.PRIORITY_MEDIUM -> item_event_content.setBackgroundColor(getColor(context, R.color.task_medium))
+                Constants.PRIORITY_HIGH -> item_event_content.setBackgroundColor(getColor(context, R.color.task_high))
+                Constants.PRIORITY_URGENT -> item_event_content.setBackgroundColor(getColor(context, R.color.task_urgent))
+            }
         }
     var mTaskClickListener: OnTaskClickListener? = null
     var mTaskLongClickListener: OnTaskLongClickListener? = null
@@ -39,7 +46,6 @@ class TaskSliceView @JvmOverloads constructor(context: Context, attrs: Attribute
 
     init {
         LayoutInflater.from(context).inflate(R.layout.task_entry, this, true)
-
         super.setOnClickListener {
             if (mTaskClickListener != null) {
                 mTaskClickListener!!.onTaskClick(this@TaskSliceView, mTaskSlice)

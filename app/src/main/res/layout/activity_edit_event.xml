@@ -6,6 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Button
+        android:id="@+id/et_remove_btn"
+        android:layout_width="60sp"
+        android:layout_height="60sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="40sp"
+        android:layout_marginEnd="40sp"
+        android:background="@drawable/trash"></Button>
+
     <ImageButton
         android:id="@+id/circle9"
         android:layout_width="90dp"
@@ -325,12 +335,6 @@
                             android:textColor="#FFFFFF" />
 
                     </TableRow>
-
-                    <Button
-                        android:id="@+id/ee_remove_btn"
-                        android:layout_height="70dp"
-                        android:layout_width="78dp">
-                    </Button>
 
 
                 </LinearLayout>

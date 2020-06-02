@@ -27,9 +27,9 @@
                 android:textSize="22sp"></TextView>
 
             <ImageView
-                android:id="@+id/locationDeleteBtn"
-                android:layout_width="40sp"
-                android:layout_height="40sp"
+                android:id="@+id/locationSign"
+                android:layout_width="30sp"
+                android:layout_height="30sp"
                 android:layout_weight="2"
                 android:scaleType="centerInside"></ImageView>
         </TableRow>

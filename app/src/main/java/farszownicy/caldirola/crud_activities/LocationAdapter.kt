@@ -1,21 +1,18 @@
 package farszownicy.caldirola.crud_activities
 
-import android.location.Location
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import farszownicy.caldirola.R
 import farszownicy.caldirola.models.data_classes.Place
 import kotlinx.android.synthetic.main.location_item.view.*
-import kotlinx.serialization.json.Json.Default.context
 
 class LocationAdapter(private val locationList: ArrayList<Place>) : RecyclerView.Adapter<LocationAdapter.LocationViewHolder>() {
 
     public class LocationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val locationName = itemView.locationName
-        val locationDeleteBtn = itemView.locationDeleteBtn
+        val locationDeleteBtn = itemView.locationSign
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationViewHolder {

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -20,7 +19,6 @@ import farszownicy.caldirola.utils.DateTimeUtils
 import farszownicy.caldirola.utils.memory.saveEventsToMemory
 import farszownicy.caldirola.utils.memory.saveLocationsToMemory
 import kotlinx.android.synthetic.main.activity_edit_event.*
-import kotlin.collections.ArrayList
 import kotlin.time.ExperimentalTime
 
 class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
@@ -52,7 +50,7 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
         ee_add_button.setOnClickListener {
             editEvent()
         }
-        ee_remove_btn.setOnClickListener{
+        et_remove_btn.setOnClickListener{
             deleteEvent()
         }
         ee_add_location_btn.setOnClickListener{

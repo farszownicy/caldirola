@@ -230,12 +230,12 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 //            }.addOnFailureListener { exception ->
 //                Log.w(TAG, "Error getting documents: ", exception)
 //            }
-        setDefSpinner()
         val priorities = resources.getStringArray(R.array.Priorities)
         val priorityAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, priorities)
         priorityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         et_priority.onItemSelectedListener = this@EditTaskActivity
         et_priority.adapter = priorityAdapter
+        setDefSpinner()
     }
 
     @ExperimentalTime
@@ -257,7 +257,7 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             //et_location.setSelection(curr)
         }
         val priorities = resources.getStringArray(R.array.Priorities)
-        val curr_priority = priorities.indexOfFirst { pr -> pr.equals(editedTask!!.priority) }
+        val curr_priority = priorities.indexOfFirst { pr -> pr == editedTask!!.priority }
         et_priority.setSelection(curr_priority)
     }
 
@@ -293,7 +293,7 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         val deadline = datetime_utils.getDTFromTV(et_deadline_date, et_deadline_time)
         //val locations = listOf(Place(et_location.selectedItem as String))
         val locations = adapter!!.getItems()
-        val priority = et_priority.toString()
+        val priority = et_priority.selectedItem.toString()
         val minSlice = getSliceTimeInMinutes()
         val divisible = et_divisible.isChecked
         val duration =  et_hour_picker.value * 60 + et_minute_picker.value
