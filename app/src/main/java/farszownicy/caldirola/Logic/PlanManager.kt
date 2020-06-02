@@ -24,6 +24,8 @@ object PlanManager {
     var mPlaces: ArrayList<Place> = ArrayList()
     var illegalIntervals: ArrayList<IllegalInterval> = ArrayList()
     var memoryUpToDate = true
+    var maxTasksPerDay = 0
+    var minutesBetweenTasks = 0
 
     @ExperimentalTime
     var mEvents: ArrayList<Event> = ArrayList()

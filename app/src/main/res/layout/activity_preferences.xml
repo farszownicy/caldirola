@@ -6,15 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".activities.preferences.PreferencesActivity">
 
+    <TextView
+        android:id="@+id/pref_min_time_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/pref_min_time_between_tasks"
+        android:textColor="@color/colorPurple"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/pref_min_time_input"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/pref_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/pref_add_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/pref_illegal_intervals_label">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
     <Button
         android:id="@+id/pref_add_button"
@@ -29,4 +47,60 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/pref_min_time_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:ems="2"
+        android:inputType="number"
+        android:maxLength="2"
+        android:textAlignment="textEnd"
+        app:layout_constraintBottom_toBottomOf="@+id/pref_min_time_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/pref_min_time_label" />
+
+    <EditText
+        android:id="@+id/pref_task_amount_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:ems="2"
+        android:inputType="number"
+        android:maxLength="1"
+        android:textAlignment="textEnd"
+        app:layout_constraintBottom_toBottomOf="@+id/pref_task_amount_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/pref_task_amount_label" />
+
+    <TextView
+        android:id="@+id/pref_task_amount_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/pref_max_tasks_per_day"
+        android:textColor="@color/colorPurple"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/pref_task_amount_input"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pref_min_time_label" />
+
+    <TextView
+        android:id="@+id/pref_illegal_intervals_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="40dp"
+        android:text="@string/pref_illegal_intervals_label"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPurple"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pref_task_amount_label" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,5 @@
 package farszownicy.caldirola.activities.preferences
 
-import android.app.TimePickerDialog
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,12 +15,9 @@ import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
-import java.text.SimpleDateFormat
 import java.time.DayOfWeek
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 import kotlin.time.ExperimentalTime
 
 
@@ -39,6 +35,16 @@ class PreferencesListAdapter(val context: Context) : RecyclerView.Adapter<Prefer
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentItem = PlanManager.illegalIntervals[position]
 
+        holder.deleteButton.setOnClickListener {
+            PlanManager.illegalIntervals.remove(currentItem)
+            notifyItemRemoved(position)
+        }
+
+        holder.titleText.setText(currentItem.title)
+        holder.titleText.doOnTextChanged { text, _, _, _ ->
+            currentItem.title = text.toString()
+        }
+
         val weekdayChoices = context.resources.getStringArray(R.array.WeekdayChoices)
 
         holder.daySpinner.adapter = ArrayAdapter(
@@ -46,6 +52,8 @@ class PreferencesListAdapter(val context: Context) : RecyclerView.Adapter<Prefer
             android.R.layout.simple_spinner_dropdown_item,
             weekdayChoices
         )
+
+        holder.daySpinner.setSelection(currentItem.dayOfWeek?.value ?: 0)
 
         holder.daySpinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
@@ -60,27 +68,24 @@ class PreferencesListAdapter(val context: Context) : RecyclerView.Adapter<Prefer
             override fun onNothingSelected(arg0: AdapterView<*>?) {}
         }
 
-        holder.startTimeText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                currentItem.startTime = LocalDateTime.parse("21.03.2017 " + holder.startTimeText.text,  DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT))
-            }
-        })
-        holder.endTimeText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                currentItem.endTime = LocalDateTime.parse("21.03.2017 " + holder.endTimeText.text,  DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT))
-            }
-        })
+        timeUtils.setTime(holder.startTimeText, currentItem.startTime)
+        holder.startTimeText.doOnTextChanged { text, _, _, _ ->
+            currentItem.startTime = LocalDateTime.parse("21.03.2017 " + text.toString(),  DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT))
+        }
+        timeUtils.setTime(holder.endTimeText, currentItem.endTime)
+        holder.endTimeText.doOnTextChanged { text, _, _, _ ->
+            currentItem.endTime = LocalDateTime.parse("21.03.2017 " + text.toString(),  DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT))
+        }
+
         timeUtils.setTimePicker(holder.startTimeText, context)
         timeUtils.setTimePicker(holder.endTimeText, context)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val daySpinner: Spinner = itemView.findViewById(R.id.pref_day_spinner)
-        val startTimeText: TextView = itemView.findViewById(R.id.pref_start_time)
-        val endTimeText: TextView = itemView.findViewById(R.id.pref_end_time)
+        val titleText: EditText = itemView.findViewById(R.id.pref_card_title)
+        val daySpinner: Spinner = itemView.findViewById(R.id.pref_card_day_spinner)
+        val startTimeText: TextView = itemView.findViewById(R.id.pref_card_start_time)
+        val endTimeText: TextView = itemView.findViewById(R.id.pref_card_end_time)
+        val deleteButton: ImageButton = itemView.findViewById(R.id.pref_card_del_button)
     }
 }

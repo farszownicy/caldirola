@@ -35,7 +35,10 @@
     <string name="entry_list_tab2_name">Tasks</string>
 
     <!-- Preferences -->
-    <string name="add_new_preference">Add new preference</string>
+    <string name="add_new_preference">Add new time</string>
+    <string name="pref_illegal_intervals_label">Time periods to exclude from scheduling</string>
+    <string name="pref_max_tasks_per_day">Maximum amount of tasks per day</string>
+    <string name="pref_min_time_between_tasks">Minimal time between tasks in minutes</string>
     <string-array name="WeekdayChoices">
         <item>Every day</item>
         <item>Monday</item>

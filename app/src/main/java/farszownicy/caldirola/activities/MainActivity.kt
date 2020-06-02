@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         loadTasksFromMemory(this)
         loadEventsFromMemory(this)
         loadLocationsFromMemory(this)
+        loadPreferencesFromMemory(this)
     }
 
 
