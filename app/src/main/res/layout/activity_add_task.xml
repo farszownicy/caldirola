@@ -353,12 +353,53 @@
                             android:textSize="@dimen/ae_input_font_size" />
                     </TableRow>
 
-                    <Spinner
-                        android:id="@+id/at_location"
+
+                    <TextView
+                        android:id="@+id/at_pior_text_locations"
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp" />
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="Locations"
+                        android:textColor="@color/colorPurple"
+                        android:textSize="18dp" />
+
+                    <TableRow
+                        android:id="@+id/at_search_row"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="5">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/at_location_search"
+                            android:completionThreshold="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:dropDownAnchor="@id/at_location_search"
+                            android:fontFamily="sans-serif-light"
+                            android:textSize="@dimen/ae_input_font_size"
+                            android:layout_weight="4"
+                            android:hint="Location"
+                            />
+
+                        <Button
+                            android:id="@+id/at_add_location_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/card"
+                            android:scaleX="0.9"
+                            android:scaleY="0.9"
+                            android:text="Add"
+                            android:textColor="#FFFFFF" />
+
+                    </TableRow>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/at_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
                 </LinearLayout>
 

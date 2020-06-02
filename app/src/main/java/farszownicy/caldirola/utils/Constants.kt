@@ -4,6 +4,8 @@ object Constants {
     const val EDIT_TASK_KEY = "EDIT_TASK"
     const val ADD_EVENT_KEY = "EVENT"
     const val ADD_TASK_KEY = "TASK"
+    const val REMOVE_EVENT_KEY = "REMOVE_EVENT"
+    const val REMOVE_TASK_KEY = "REMOVE_TASK"
     const val ADD_EVENT_CODE = 997
     const val ADD_TASK_CODE = 420
     const val EDIT_EVENT_CODE = 666

@@ -1,26 +1,24 @@
 package farszownicy.caldirola.crud_activities
 
-import android.app.ActionBar
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.marginBottom
-import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
-import farszownicy.caldirola.activities.AddUserFragment
 import farszownicy.caldirola.agendacalendar.CalendarManager
 import farszownicy.caldirola.crud_activities.fragments.PrerequisitesFragment
 import farszownicy.caldirola.dto.PrerequisitiesDialogResult
@@ -28,13 +26,11 @@ import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.models.data_classes.Task
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
+import farszownicy.caldirola.utils.memory.loadLocationsFromMemory
+import farszownicy.caldirola.utils.memory.saveLocationsToMemory
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
-import kotlinx.android.synthetic.main.activity_add_event.*
 import kotlinx.android.synthetic.main.activity_add_task.*
-import java.lang.Exception
-import java.time.LocalTime
 import java.util.*
-import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.minutes
 
@@ -57,8 +53,21 @@ class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
     private val userDoc = db.collection("tasks").document("D3KEydQ5IWiBzZtuQegV")
     private val locations = db.collection("locations")
     private val places = ArrayList<String>()
+    private var adapter:LocationAdapter? = null
+    private var taskPlaces = ArrayList<Place>()
     private val calendarUtils = DateTimeUtils()
     private var prerequisities = listOf<Task>()
+    private val simpleCallback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT){
+        override fun onMove(p0: RecyclerView, p1: RecyclerView.ViewHolder, p2: RecyclerView.ViewHolder): Boolean {
+            return true
+        }
+
+        override fun onSwiped(p0: RecyclerView.ViewHolder, p1: Int) {
+            val position = p0.adapterPosition
+            adapter!!.removeLocation(position)
+            at_recycler_view.invalidate()
+        }
+    }
 
     @ExperimentalTime
     @RequiresApi(Build.VERSION_CODES.O)
@@ -76,13 +85,19 @@ class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
             dialogFragment.show(supportFragmentManager, "Prerequisites Fragment")
         }
 
+        at_add_location_btn.setOnClickListener{
+            addLocation()
+        }
+
+        loadLocationsFromMemory(this)
         setSpinner()
         setAllDatePickers()
         setSlices()
         validateMinutes()
         setWheelPickers()
+        setLocationsList()
 
-        userDoc.addSnapshotListener(this
+        /*userDoc.addSnapshotListener(this
         ) { snapshot, e ->
             if (e != null)
             {
@@ -98,7 +113,7 @@ class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
             {
                 Log.d(AddUserFragment.TAG, "Current data: null")
             }
-        }
+        }*/
     }
 
     private fun setWheelPickers()
@@ -152,7 +167,7 @@ class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
     }
 
     private fun setSpinner() {
-        locations.get()
+        /*locations.get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     Log.d(TAG, "${document.id} => ${document.data}")
@@ -165,13 +180,41 @@ class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
                 at_location.adapter = location_adapter
             }.addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents: ", exception)
-            }
+            }*/
         val priorities = resources.getStringArray(R.array.Priorities)
         val priority_adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, priorities)
         priority_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         at_priority.onItemSelectedListener = this@AddTaskActivity
         at_priority.adapter = priority_adapter
     }
+
+    private fun setLocationsList()
+    {
+        at_recycler_view.adapter = LocationAdapter(taskPlaces)
+        at_recycler_view.layoutManager = LinearLayoutManager(this)
+        at_recycler_view.setHasFixedSize(true)
+        adapter = at_recycler_view.adapter as LocationAdapter
+        val itemTouchHelper = ItemTouchHelper(simpleCallback)
+        itemTouchHelper.attachToRecyclerView(at_recycler_view)
+
+        val arrAdapter = ArrayAdapter<String>(this@AddTaskActivity, android.R.layout.simple_list_item_1, PlanManager.mPlaces.map{e -> e.name})
+        at_location_search.setAdapter(arrAdapter)
+    }
+
+    @ExperimentalTime
+    private fun addLocation(){
+        val name = at_location_search.text.toString()
+        at_location_search.setText("")
+        if(name != "" && !adapter!!.getItems().contains(Place(name))) {
+            val newPlace = Place(name)
+            if(!PlanManager.mPlaces.contains(Place(name))) PlanManager.mPlaces.add(newPlace)
+            saveLocationsToMemory(this)
+            adapter!!.addItem(newPlace)
+            taskPlaces = adapter!!.getItems()
+            at_recycler_view.invalidate()
+        }
+    }
+
     private fun setAllDatePickers()
     {
         calendarUtils.setDatePicker(at_deadline_date, this@AddTaskActivity)
@@ -190,7 +233,6 @@ class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
         return mins
     }
 
-    //TODO: event->task
     @ExperimentalTime
     @RequiresApi(Build.VERSION_CODES.O)
     fun addTask()
@@ -198,7 +240,8 @@ class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
         val name = at_input_name.text.toString()
         val description = at_input_description.text.toString()
         val deadline = calendarUtils.getDTFromTV(at_deadline_date, at_deadline_time)
-        val selected_location = Place(at_location.selectedItem as String)
+        //val selected_location = Place(at_location.selectedItem as String)
+        val locations = adapter!!.getItems()
         val divisible = at_divisible.isChecked
         var priority =  at_priority.selectedItem.toString()
         val minSlice = getSliceTimeInMinutes()
@@ -211,7 +254,7 @@ class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
             NAME_KEY to name,
             DESCRIPTION_KEY to description,
             DEADLINE_KEY to deadline,
-            LOCATION_KEY to selected_location,
+            LOCATION_KEY to locations,
             DIVISIBILITY_KEY to divisible,
             PRIORITY_KEY to priority,
             SLICE_KEY to minSlice,
@@ -221,7 +264,7 @@ class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
             priority = "-1"
         val task = Task(UUID.randomUUID().toString(), name, description,
             deadline, duration.minutes, priority= priority,divisible=divisible,
-            minSliceSize =  minSlice, places = listOf(selected_location),  prerequisites = prerequisities
+            minSliceSize =  minSlice, places = locations,  prerequisites = prerequisities
         )
         val taskIntent = Intent()
 

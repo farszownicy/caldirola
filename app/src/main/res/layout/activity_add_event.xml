@@ -294,6 +294,37 @@
                         android:layout_marginBottom="@dimen/ae_bottom_margin"
                         android:spinnerMode="dropdown" />
 
+                    <TableRow
+                        android:id="@+id/ae_search_row"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="5">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/ae_location_search"
+                            android:completionThreshold="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:dropDownAnchor="@id/ae_location_search"
+                            android:fontFamily="sans-serif-light"
+                            android:textSize="@dimen/ae_input_font_size"
+                            android:layout_weight="4"
+                            android:hint="Location"
+                            />
+
+                        <Button
+                            android:id="@+id/ae_add_location_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/card"
+                            android:scaleX="0.9"
+                            android:scaleY="0.9"
+                            android:text="Add"
+                            android:textColor="#FFFFFF" />
+
+                    </TableRow>
+
 
                     <TableRow
                         android:id="@+id/at_since_table"

@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.Logic.PlanManager
+import farszownicy.caldirola.Logic.PlanManager.mPlaces
 import farszownicy.caldirola.R
 import farszownicy.caldirola.activities.AddUserFragment
 import farszownicy.caldirola.agendacalendar.CalendarManager
@@ -21,6 +22,7 @@ import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
 import farszownicy.caldirola.utils.memory.saveEventsToMemory
+import farszownicy.caldirola.utils.memory.saveLocationsToMemory
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import kotlinx.android.synthetic.main.activity_add_event.*
 import java.util.*
@@ -44,7 +46,7 @@ class AddEventActivity : AppCompatActivity()
     private val db = FirebaseFirestore.getInstance()
     private val userDoc = db.collection("events").document("sKNWMetaOLJXTIkXeU0W")
     private val locations = db.collection("locations")
-    private val places = ArrayList<String>()
+    private var places = mPlaces.map{ el -> el.name}.toMutableList()
     private val datetime_utils = DateTimeUtils()
 
     @ExperimentalTime
@@ -56,6 +58,10 @@ class AddEventActivity : AppCompatActivity()
 
         ae_add_button.setOnClickListener {
             addEvent()
+        }
+
+        ae_add_location_btn.setOnClickListener{
+            addLocation()
         }
 
         setSpinner()
@@ -80,21 +86,26 @@ class AddEventActivity : AppCompatActivity()
         }
     }
 
-    private fun setSpinner(){
-        locations.get()
-            .addOnSuccessListener { documents ->
-                for(document in documents){
-                    Log.d(TAG, "${document.id} => ${document.data}")
-                    val name = document.getString(NAME_KEY)
-                    places.add(name!!)
-                }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, places)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                ae_location.onItemSelectedListener = this@AddEventActivity
-                ae_location.adapter = adapter
-            }.addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents: ", exception)
+    @ExperimentalTime
+    private fun addLocation(){
+        val name = ae_location_search.text.toString()
+        ae_location_search.setText("")
+        if(name != "" && !places.contains(name)) {
+            val newPlace = Place(name)
+            if(!mPlaces.contains(Place(name))) {
+                mPlaces.add(newPlace)
+                saveLocationsToMemory(this)
+                places.add(newPlace.name)
+                ae_location.setSelection(places.size - 1)
             }
+        }
+    }
+
+    private fun setSpinner(){
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, places)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        ae_location.onItemSelectedListener = this@AddEventActivity
+        ae_location.adapter = adapter
     }
 
     private fun setAllDatePickers()

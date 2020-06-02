@@ -59,7 +59,7 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         override fun onSwiped(p0: RecyclerView.ViewHolder, p1: Int) {
             val position = p0.adapterPosition
             adapter!!.removeLocation(position)
-            recycler_view.invalidate()
+            at_recycler_view.invalidate()
         }
     }
 
@@ -70,6 +70,9 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         setContentView(R.layout.activity_edit_task)
         et_edit_button.setOnClickListener{
             editTask()
+        }
+        et_remove_btn.setOnClickListener{
+            removeTask()
         }
         val taskID = intent.getStringExtra("ID")
         editedTask = PlanManager.getTask(taskID)
@@ -109,18 +112,18 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             saveLocationsToMemory(this)
             adapter!!.addItem(newPlace)
             taskPlaces = adapter!!.getItems()
-            recycler_view.invalidate()
+            at_recycler_view.invalidate()
         }
     }
 
     private fun setLocationsList()
     {
-        recycler_view.adapter = LocationAdapter(taskPlaces)
-        recycler_view.layoutManager = LinearLayoutManager(this)
-        recycler_view.setHasFixedSize(true)
-        adapter = recycler_view.adapter as LocationAdapter
+        at_recycler_view.adapter = LocationAdapter(taskPlaces)
+        at_recycler_view.layoutManager = LinearLayoutManager(this)
+        at_recycler_view.setHasFixedSize(true)
+        adapter = at_recycler_view.adapter as LocationAdapter
         val itemTouchHelper = ItemTouchHelper(simpleCallback)
-        itemTouchHelper.attachToRecyclerView(recycler_view)
+        itemTouchHelper.attachToRecyclerView(at_recycler_view)
 
         val arrAdapter = ArrayAdapter<String>(this@EditTaskActivity, android.R.layout.simple_list_item_1, PlanManager.mPlaces.map{e -> e.name})
         et_location_search.setAdapter(arrAdapter)
@@ -233,6 +236,18 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         priorityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         et_priority.onItemSelectedListener = this@EditTaskActivity
         et_priority.adapter = priorityAdapter
+    }
+
+    @ExperimentalTime
+    private fun removeTask()
+    {
+        PlanManager.removeTask(editedTask!!)
+        val taskIntent = Intent()
+        taskIntent.putExtra(Constants.EDIT_TASK_KEY, true)
+        setResult(Activity.RESULT_OK, taskIntent)
+        PlanManager.memoryUpToDate = false
+        CalendarManager.getInstance(applicationContext).loadEventsAndTasks()
+        finish()
     }
 
     private fun setDefSpinner()

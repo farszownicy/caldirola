@@ -11,14 +11,15 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.Logic.PlanManager
+import farszownicy.caldirola.Logic.PlanManager.mPlaces
 import farszownicy.caldirola.R
 import farszownicy.caldirola.models.data_classes.Event
 import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
 import farszownicy.caldirola.utils.memory.saveEventsToMemory
+import farszownicy.caldirola.utils.memory.saveLocationsToMemory
 import kotlinx.android.synthetic.main.activity_edit_event.*
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.time.ExperimentalTime
 
@@ -32,7 +33,7 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
 
     private val db = FirebaseFirestore.getInstance()
     private val locations = db.collection("locations")
-    private val places = ArrayList<String>()
+    private var places = mPlaces.map{ el -> el.name}.toMutableList()
     private val datetime_utils = DateTimeUtils()
     private var editedEvent:Event? = null
     private var editedIndex:String? = null
@@ -51,6 +52,12 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
         ee_add_button.setOnClickListener {
             editEvent()
         }
+        ee_remove_btn.setOnClickListener{
+            deleteEvent()
+        }
+        ee_add_location_btn.setOnClickListener{
+            addLocation()
+        }
         val eventID = intent.getStringExtra("ID")
         editedEvent = PlanManager.getEvent(eventID)
         editedIndex = eventID
@@ -66,22 +73,11 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
     }
 
     private fun setSpinner(){
-        locations.get()
-            .addOnSuccessListener { documents ->
-                for(document in documents){
-                    Log.d(TAG, "${document.id} => ${document.data}")
-                    val name = document.getString(NAME_KEY)
-                    places.add(name!!)
-                    println("PLACE" + name!!)
-                }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, places)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                ee_location.onItemSelectedListener = this@EditEventActivity
-                ee_location.adapter = adapter
-                setDefSpinner()
-            }.addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents: ", exception)
-            }
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, places)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        ee_location.onItemSelectedListener = this@EditEventActivity
+        ee_location.adapter = adapter
+        setDefSpinner()
     }
 
     private fun setDefSpinner()
@@ -91,6 +87,32 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
             val curr = places.indexOfFirst { e -> e.equals(editedEvent!!.Location!!.name) }
             ee_location.setSelection(curr)
         }
+    }
+
+    @ExperimentalTime
+    private fun addLocation(){
+        val name = ee_location_search.text.toString()
+        ee_location_search.setText("")
+        if(name != "" && !places.contains(name)) {
+            val newPlace = Place(name)
+            if(!mPlaces.contains(Place(name))) {
+                mPlaces.add(newPlace)
+                saveLocationsToMemory(this)
+                places.add(newPlace.name)
+                ee_location.setSelection(places.size - 1)
+            }
+        }
+    }
+
+    @ExperimentalTime
+    private fun deleteEvent()
+    {
+        PlanManager.removeEvent(editedEvent!!)
+        val eventIntent = Intent()
+        eventIntent.putExtra(Constants.REMOVE_EVENT_KEY, true)
+        setResult(Activity.RESULT_OK, eventIntent)
+        saveEventsToMemory(this)
+        finish()
     }
 
     private fun setAllDatePickers()

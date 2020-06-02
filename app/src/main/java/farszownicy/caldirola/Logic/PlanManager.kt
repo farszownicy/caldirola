@@ -69,6 +69,7 @@ object PlanManager {
         newEvent.endTime = nET
         newEvent.Location = nLoc
         return if(canEventBeEdited(newEvent, event)) {
+            println("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
             var rearrangementRequired = nET != event.endTime || nST != event.startTime
             event.Location = nLoc
             event.name = nName
@@ -273,7 +274,6 @@ object PlanManager {
             currTime = currTime.plusMinutes(1)
             numOfAvailableMinutes += 1
         }
-
         return numOfAvailableMinutes >= eventDuration
     }
 
@@ -408,7 +408,10 @@ object PlanManager {
 
     @ExperimentalTime
     private fun isTimeAvailableExclude(currTime: LocalDateTime, exclEvent: Event):Boolean{
+        println(mAllInsertedEntries.size)
         val exclEvents = mAllInsertedEntries.filter{e -> e != exclEvent}
+        println(exclEvents.size)
+        exclEvents.forEach{e -> println(""+e.startTime+ "    DO    " +e.endTime)}
         val free = !exclEvents.any{isBeforeOrEqual(it.startTime,currTime) && isAfter(it.endTime,currTime)}
         val legal = illegalIntervals.any { it.dayOfWeek == currTime.dayOfWeek
                 && isTimeBetweenInclusive(currTime, it.startTime, it.endTime) }

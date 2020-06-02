@@ -396,9 +396,15 @@
                     </TableRow>
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recycler_view"
+                        android:id="@+id/at_recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
+
+                    <Button
+                        android:id="@+id/et_remove_btn"
+                        android:layout_height="70dp"
+                        android:layout_width="78dp">
+                    </Button>
 
                 </LinearLayout>
 
