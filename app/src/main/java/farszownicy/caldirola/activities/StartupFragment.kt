@@ -75,10 +75,14 @@ class StartupFragment : Fragment() {
         }
 
         val textView: TextView = requireView().findViewById(R.id.textView5)
-        textView.text = if(currentEntry is TaskSlice) {
-            (currentEntry as TaskSlice).parent.name
+        textView.text = if(currentEntry != null) {
+            if(currentEntry is TaskSlice) {
+                (currentEntry as TaskSlice).parent.name
+            } else {
+                (currentEntry as Event).name
+            }
         } else {
-            (currentEntry as Event).name
+            ""
         }
 
         val pieDataSet = PieDataSet(visitors, "")
