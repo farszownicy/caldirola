@@ -20,7 +20,7 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
-import farszownicy.caldirola.activities.MainActivity
+import farszownicy.caldirola.activities.AddUserFragment
 import farszownicy.caldirola.agendacalendar.CalendarManager
 import farszownicy.caldirola.crud_activities.fragments.PrerequisitesFragment
 import farszownicy.caldirola.dto.PrerequisitiesDialogResult
@@ -86,17 +86,17 @@ class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
         ) { snapshot, e ->
             if (e != null)
             {
-                Log.w(MainActivity.TAG, "Listen failed.", e)
+                Log.w(AddUserFragment.TAG, "Listen failed.", e)
                 return@addSnapshotListener
             }
 
             if (snapshot != null && snapshot.exists())
             {
-                Log.d(MainActivity.TAG, "Current data: ${snapshot.data}")
+                Log.d(AddUserFragment.TAG, "Current data: ${snapshot.data}")
             }
             else
             {
-                Log.d(MainActivity.TAG, "Current data: null")
+                Log.d(AddUserFragment.TAG, "Current data: null")
             }
         }
     }

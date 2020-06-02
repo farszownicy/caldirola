@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_calendar">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="farszownicy.caldirola.activities.StartupFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/startup_fragment" />
+    <fragment
+        android:id="@+id/nav_add_user"
+        android:name="farszownicy.caldirola.activities.AddUserFragment"
+        android:label="@string/menu_add_user"
+        tools:layout="@layout/fragment_add_user" />
+    <fragment
+        android:id="@+id/nav_calendar"
+        android:name="farszownicy.caldirola.activities.CalendarFragment"
+        android:label="@string/menu_plan"
+        tools:layout="@layout/fragment_calendar" />
+    <fragment
+        android:id="@+id/nav_agenda"
+        android:name="farszownicy.caldirola.activities.AgendaFragment"
+        android:label="@string/menu_agenda"
+        tools:layout="@layout/fragment_agenda" />
+    <fragment
+        android:id="@+id/nav_list"
+        android:name="farszownicy.caldirola.activities.entry_list.EntryListFragment"
+        android:label="@string/menu_list"
+        tools:layout="@layout/fragment_entry_list" />
+</navigation>

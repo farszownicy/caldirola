@@ -17,7 +17,10 @@ import farszownicy.caldirola.R
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
 import java.text.SimpleDateFormat
+import java.time.DayOfWeek
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.time.ExperimentalTime
 
@@ -25,7 +28,7 @@ import kotlin.time.ExperimentalTime
 class PreferencesListAdapter(val context: Context) : RecyclerView.Adapter<PreferencesListAdapter.ViewHolder>() {
     val timeUtils : DateTimeUtils = DateTimeUtils()
 
-    override fun getItemCount(): Int = PlanManager.mPreferences.size;
+    override fun getItemCount(): Int = PlanManager.illegalIntervals.size;
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.preference_time_card, parent, false)
@@ -34,7 +37,7 @@ class PreferencesListAdapter(val context: Context) : RecyclerView.Adapter<Prefer
 
     @ExperimentalTime
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val currentItem = PlanManager.mPreferences[position]
+        val currentItem = PlanManager.illegalIntervals[position]
 
         val weekdayChoices = context.resources.getStringArray(R.array.WeekdayChoices)
 
@@ -49,7 +52,9 @@ class PreferencesListAdapter(val context: Context) : RecyclerView.Adapter<Prefer
                 arg0: AdapterView<*>?, arg1: View,
                 arg2: Int, id: Long
             ) {
-                currentItem.weekDay = id.toInt()
+                var dayOfWeek:DayOfWeek? = null
+                if(id.toInt() != 0) dayOfWeek = DayOfWeek.of(id.toInt())
+                currentItem.dayOfWeek = dayOfWeek
                 Log.d("Pref", "Chosen day ID:$id")
             }
             override fun onNothingSelected(arg0: AdapterView<*>?) {}
@@ -59,14 +64,14 @@ class PreferencesListAdapter(val context: Context) : RecyclerView.Adapter<Prefer
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                currentItem.startTime = LocalTime.parse(s)
+                currentItem.startTime = LocalDateTime.parse("21.03.2017 " + holder.startTimeText.text,  DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT))
             }
         })
         holder.endTimeText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                currentItem.endTime = LocalTime.parse(s)
+                currentItem.endTime = LocalDateTime.parse("21.03.2017 " + holder.endTimeText.text,  DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT))
             }
         })
         timeUtils.setTimePicker(holder.startTimeText, context)

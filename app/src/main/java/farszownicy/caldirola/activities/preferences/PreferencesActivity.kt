@@ -5,7 +5,9 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
+import farszownicy.caldirola.models.data_classes.IllegalInterval
 import kotlinx.android.synthetic.main.activity_preferences.*
+import java.time.LocalDateTime
 
 class PreferencesActivity : AppCompatActivity() {
 
@@ -19,8 +21,9 @@ class PreferencesActivity : AppCompatActivity() {
         pref_recycler_view.layoutManager = LinearLayoutManager(this)
 
         pref_add_button.setOnClickListener {
-            PlanManager.addEmptyPref()
-            preferencesAdapter.notifyItemInserted(PlanManager.mPreferences.size-1)
+            val now = LocalDateTime.now()
+            PlanManager.illegalIntervals.add(IllegalInterval(null, now, now))
+            preferencesAdapter.notifyItemInserted(PlanManager.illegalIntervals.size-1)
         }
     }
 }

@@ -10,41 +10,32 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.preferences.PreferencesActivity"
+            android:name="farszownicy.caldirola.activities.preferences.PreferencesActivity"
             android:label="@string/title_activity_preferences"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.entry_list.EntryListActivity"
+            android:name="farszownicy.caldirola.activities.entry_list.EntryListFragment"
             android:label="@string/title_activity_entry_list"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".crud_activities.AddEventActivity"
+            android:name="farszownicy.caldirola.crud_activities.AddEventActivity"
             android:label="@string/title_activity_add_event"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".crud_activities.AddTaskActivity"
+            android:name="farszownicy.caldirola.crud_activities.AddTaskActivity"
             android:label="@string/title_activity_add_task"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.CalendarActivity"
-            android:label="@string/title_activity_calendar"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".crud_activities.EditEventActivity"
+            android:name="farszownicy.caldirola.crud_activities.EditEventActivity"
             android:label="@string/title_activity_edit_event"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".crud_activities.EditTaskActivity"
+            android:name="farszownicy.caldirola.crud_activities.EditTaskActivity"
             android:label="@string/title_activity_edit_task"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activities.AgendaActivity"
-            android:label="@string/title_activity_agenda"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorAccent"
-    tools:context="farszownicy.caldirola.activities.AgendaActivity">
+    tools:context="farszownicy.caldirola.activities.AgendaFragment">
 
     <TextView
         android:id="@+id/day_of_month_tv"

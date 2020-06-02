@@ -2,7 +2,6 @@ package farszownicy.caldirola.agendacalendar;
 
 import farszownicy.caldirola.Logic.PlanManager;
 import farszownicy.caldirola.R;
-import farszownicy.caldirola.activities.CalendarActivity;
 import farszownicy.caldirola.models.BaseCalendarEntry;
 import farszownicy.caldirola.models.DayItem;
 import farszownicy.caldirola.models.MonthItem;
