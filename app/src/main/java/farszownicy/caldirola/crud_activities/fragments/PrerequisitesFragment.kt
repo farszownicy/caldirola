@@ -1,18 +1,14 @@
 package farszownicy.caldirola.crud_activities.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Button
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
-import farszownicy.caldirola.dto.PrerequisitiesDialogResult
 import farszownicy.caldirola.models.data_classes.Task
 import kotlin.time.ExperimentalTime
 

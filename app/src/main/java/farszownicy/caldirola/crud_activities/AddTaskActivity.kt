@@ -1,21 +1,17 @@
 package farszownicy.caldirola.crud_activities
 
-import android.app.ActionBar
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.marginBottom
-import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.Logic.PlanManager
@@ -23,22 +19,19 @@ import farszownicy.caldirola.R
 import farszownicy.caldirola.activities.AddUserFragment
 import farszownicy.caldirola.agendacalendar.CalendarManager
 import farszownicy.caldirola.crud_activities.fragments.PrerequisitesFragment
-import farszownicy.caldirola.dto.PrerequisitiesDialogResult
+import farszownicy.caldirola.crud_activities.fragments.PrerequisitiesDialogResult
 import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.models.data_classes.Task
 import farszownicy.caldirola.utils.Constants
 import farszownicy.caldirola.utils.DateTimeUtils
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
-import kotlinx.android.synthetic.main.activity_add_event.*
 import kotlinx.android.synthetic.main.activity_add_task.*
-import java.lang.Exception
-import java.time.LocalTime
 import java.util.*
-import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.minutes
 
-class AddTaskActivity : AppCompatActivity(), PrerequisitiesDialogResult,
+class AddTaskActivity : AppCompatActivity(),
+    PrerequisitiesDialogResult,
     AdapterView.OnItemSelectedListener{
     companion object
     {

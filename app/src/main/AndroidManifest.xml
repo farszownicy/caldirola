@@ -10,11 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.entry_list.EntryListFragment"
+            android:name="farszownicy.caldirola.activities.preferences.PreferencesActivity"
+            android:label="@string/title_activity_preferences"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="farszownicy.caldirola.activities.entry_list.EntryListFragment"
             android:label="@string/title_activity_entry_list"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".crud_activities.AddEventActivity"
+            android:name="farszownicy.caldirola.crud_activities.AddEventActivity"
             android:label="@string/title_activity_add_event"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

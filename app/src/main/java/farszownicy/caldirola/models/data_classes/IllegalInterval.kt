@@ -4,7 +4,8 @@ import java.time.DayOfWeek
 import java.time.LocalDateTime
 
 class IllegalInterval constructor(
-    var dayOfWeek: DayOfWeek,
+    var dayOfWeek: DayOfWeek?,
     var startTime: LocalDateTime,
-    var endTime: LocalDateTime
+    var endTime: LocalDateTime,
+    var title: String
 )
