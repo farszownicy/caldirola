@@ -62,7 +62,7 @@ class AgendaFragment : Fragment() {
         const val MONTH_KEY = "MONTH"
         const val YEAR_KEY = "YEAR"
         const val MIN_SWIPE_DISTANCE = 80
-        const val VERTICAL_SWIPE_THRESHOLD = 70
+        const val VERTICAL_SWIPE_THRESHOLD = 150
     }
 
     private lateinit var root: View
