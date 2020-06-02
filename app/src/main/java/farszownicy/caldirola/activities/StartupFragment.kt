@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
@@ -14,6 +15,8 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.models.data_classes.AgendaDrawableEntry
+import farszownicy.caldirola.models.data_classes.Event
+import farszownicy.caldirola.models.data_classes.TaskSlice
 import farszownicy.caldirola.utils.memory.loadEventsFromMemory
 import farszownicy.caldirola.utils.memory.loadTasksFromMemory
 import java.time.LocalDate
@@ -30,11 +33,6 @@ class StartupFragment : Fragment() {
         loadTasksFromMemory(requireContext())
         loadEventsFromMemory(requireContext())
 
-//        button.setOnClickListener {
-//            val intent = Intent(requireContext(), AddUserActivity::class.java)
-//            startActivity(intent)
-//        }
-
         return inflater.inflate(R.layout.startup_fragment, container, false)
     }
 
@@ -49,18 +47,23 @@ class StartupFragment : Fragment() {
 
         val invisibleColor = Color.rgb(250, 250, 250) // lol
 
+        val now = LocalDateTime.now()
         val entries = getSortedEntries()
         var currentTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT)
+        var currentEntry: AgendaDrawableEntry? = null
         entries.forEachIndexed { i, entry ->
             val slackTime = currentTime.until(entry.startTime, MINUTES)
             val entryTime = entry.startTime.until(entry.endTime, MINUTES)
             if(slackTime > 0L) {
                 visitors.add(PieEntry(slackTime.toFloat(), ""))
-                colors.add(invisibleColor)
+                colors.add(Color.rgb(240, 240, 240))
             }
             if(entryTime > 0L) {
                 visitors.add(PieEntry(entryTime.toFloat(), ""))
                 colors.add(ColorTemplate.MATERIAL_COLORS[i])
+            }
+            if(now.isAfter(entry.startTime) && now.isBefore(entry.endTime)) {
+                currentEntry = entry
             }
             currentTime = entry.endTime
         }
@@ -68,7 +71,14 @@ class StartupFragment : Fragment() {
         val finalSlackTime = currentTime.until(nextMidnight, MINUTES)
         if(finalSlackTime > 0L) {
             visitors.add(PieEntry(finalSlackTime.toFloat(), ""))
-            colors.add(invisibleColor)
+            colors.add(Color.rgb(240, 240, 240))
+        }
+
+        val textView: TextView = requireView().findViewById(R.id.textView5)
+        textView.text = if(currentEntry is TaskSlice) {
+            (currentEntry as TaskSlice).parent.name
+        } else {
+            (currentEntry as Event).name
         }
 
         val pieDataSet = PieDataSet(visitors, "")
