@@ -62,7 +62,7 @@ class CalendarFragment : Fragment(), CalendarPickerController {
 
             minDate.add(Calendar.MONTH, -1)
             minDate.set(Calendar.DAY_OF_MONTH, 1)
-            maxDate.add(Calendar.MONTH, 6)
+            maxDate.add(Calendar.MONTH, 7)
             mAgendaCalendarView.init(minDate, maxDate, Locale.UK, this)
             root.findViewById<FloatingActionButton>(R.id.calAddButton).setOnClickListener {
                 AddDialog()

@@ -9,7 +9,6 @@ import java.time.temporal.ChronoUnit
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.minutes
-import kotlin.time.toDuration
 
 object PlanManager {
 
@@ -62,7 +61,8 @@ object PlanManager {
     }
 
     @ExperimentalTime
-    public fun updateEvent(event: Event, nName: String, nDesc: String, nST : LocalDateTime, nET : LocalDateTime, nLoc : Place?):Boolean{
+    public fun updateEvent(event: Event, nName: String, nDesc: String, nST : LocalDateTime, nET : LocalDateTime,
+                           nLoc : Place?, forceUpdate:Boolean):Boolean?{
 
         var newEvent: Event = Event()
         newEvent.name = nName
@@ -70,7 +70,8 @@ object PlanManager {
         newEvent.startTime = nST
         newEvent.endTime = nET
         newEvent.Location = nLoc
-        return if(canEventBeEdited(newEvent, event)) {
+        val editPossible = canEventBeEdited(newEvent, event)
+        return if(editPossible== true || (editPossible == null && forceUpdate && newEvent.startTime >= LocalDateTime.now())) {
             var rearrangementRequired = nET != event.endTime || nST != event.startTime
             event.Location = nLoc
             event.name = nName
@@ -82,7 +83,7 @@ object PlanManager {
                 updateAllEntries()
             }
             true
-        } else false
+        } else editPossible
     }
 
     @ExperimentalTime
@@ -112,8 +113,8 @@ object PlanManager {
         task.prerequisites = nPrereqs
 
         if((oldDivisible != nDivisible) || (oldMinSliceSize != nMinSlice) ||
-            nDDL!= oldDeadline || nDuration != oldDuration ||
-            nPriority != nPriority || prerequisitesChanged)
+            isBefore(nDDL, oldDeadline) || nDuration != oldDuration ||
+            oldPriority != nPriority || prerequisitesChanged)
         {
             rearrangeTasks()
             updateAllEntries()
@@ -242,19 +243,22 @@ object PlanManager {
     }
 
     @ExperimentalTime
-    public fun addEvent(event: Event): Boolean{
-        if (canEventBeInserted(event)) {
+    public fun addEvent(event: Event, forceInsert:Boolean): Boolean?{
+        val insertPossible = canEventBeInserted(event)
+        if (insertPossible == true || (insertPossible == null &&forceInsert) ) {
             mEvents.add(event)
             mEvents.sortBy{it.startTime}
             mAllInsertedEntries.add(event)
             mAllInsertedEntries.sortBy{it.startTime}
+            if(insertPossible == null)
+                rearrangeTasks()
             return true
         }
-        return false
+        return insertPossible
     }
 
     @ExperimentalTime
-    private fun canEventBeInserted(event : Event): Boolean {
+    private fun canEventBeInserted(event : Event): Boolean? {
         var currTime = event.startTime
         var numOfAvailableMinutes = 0
         val eventDuration = differenceInMinutes(event.startTime, event.endTime)
@@ -263,24 +267,56 @@ object PlanManager {
             numOfAvailableMinutes += 1
         }
 
-        return numOfAvailableMinutes >= eventDuration
-    }
-
-    private fun isTimeAvailableForEvent(currTime: LocalDateTime): Boolean {
-        val free = !mAllInsertedEntries.any{isBeforeOrEqual(it.startTime,currTime) && isAfter(it.endTime,currTime)}
-        return free
+        val canBeInserted = numOfAvailableMinutes >= eventDuration
+        if(canBeInserted){
+            currTime = event.startTime
+            numOfAvailableMinutes = 0
+            while(isAnyTaskColliding(currTime) && numOfAvailableMinutes < eventDuration) {
+                currTime = currTime.plusMinutes(1)
+                numOfAvailableMinutes += 1
+            }
+            val taskColliding = numOfAvailableMinutes < eventDuration
+            if(taskColliding)
+                return null
+        }
+        return canBeInserted
     }
 
     @ExperimentalTime
-    private fun canEventBeEdited(upEvent : Event, oldEvent:Event): Boolean{
+    private fun isTimeAvailableForEvent(currTime: LocalDateTime): Boolean {
+        val events = ArrayList<AgendaDrawableEntry>()
+        events.addAll((mEvents))
+        events.addAll(mTaskSlices.filter { ts -> ts.startTime <= LocalDateTime.now()})
+        return !events.any { isBeforeOrEqual(it.startTime,currTime) && isAfter(it.endTime,currTime) }
+    }
+
+    @ExperimentalTime
+    private fun canEventBeEdited(upEvent : Event, oldEvent:Event): Boolean?{
         var currTime = upEvent.startTime
         var numOfAvailableMinutes = 0
         val eventDuration = differenceInMinutes(upEvent.startTime, upEvent.endTime)
-        while(isTimeAvailableExclude(currTime, oldEvent) && numOfAvailableMinutes < eventDuration) {
+        while(isAnyEventOrPastTaskCollidingExclude(currTime, oldEvent) && numOfAvailableMinutes < eventDuration) {
             currTime = currTime.plusMinutes(1)
             numOfAvailableMinutes += 1
         }
-        return numOfAvailableMinutes >= eventDuration
+
+        val canBeInserted = numOfAvailableMinutes >= eventDuration
+        if(canBeInserted){
+            currTime = upEvent.startTime
+            numOfAvailableMinutes = 0
+            while(isAnyTaskColliding(currTime) && numOfAvailableMinutes < eventDuration) {
+                currTime = currTime.plusMinutes(1)
+                numOfAvailableMinutes += 1
+            }
+            val taskColliding = numOfAvailableMinutes < eventDuration
+            if(taskColliding)
+                return null
+        }
+        return canBeInserted
+    }
+
+    private fun isAnyTaskColliding(currTime: LocalDateTime): Boolean {
+        return !mTaskSlices.any{isBeforeOrEqual(it.startTime,currTime) && isAfter(it.endTime,currTime)}
     }
 
     @ExperimentalTime
@@ -476,13 +512,11 @@ object PlanManager {
     }
 
     @ExperimentalTime
-    private fun isTimeAvailableExclude(currTime: LocalDateTime, exclEvent: Event):Boolean{
-        //println(mAllInsertedEntries.size)
-        val exclEvents = mAllInsertedEntries.filter{e -> e != exclEvent}
-        //println(exclEvents.size)
-        exclEvents.forEach{e -> println(""+e.startTime+ "    DO    " +e.endTime)}
-        val free = !exclEvents.any{isBeforeOrEqual(it.startTime,currTime) && isAfter(it.endTime,currTime)}
-        return free //&& legal
+    private fun isAnyEventOrPastTaskCollidingExclude(currTime: LocalDateTime, exclEvent: Event):Boolean{
+        val exclEvents = ArrayList<AgendaDrawableEntry>()
+        exclEvents.addAll((mEvents.filter{ e -> e != exclEvent}))
+        exclEvents.addAll(mTaskSlices.filter { ts -> ts.startTime <= LocalDateTime.now()})
+        return !exclEvents.any { isBeforeOrEqual(it.startTime,currTime) && isAfter(it.endTime,currTime) }
     }
 
     private fun isTimeBetweenInclusive(time: LocalDateTime, earlierDate: LocalDateTime, laterDate:LocalDateTime) : Boolean{

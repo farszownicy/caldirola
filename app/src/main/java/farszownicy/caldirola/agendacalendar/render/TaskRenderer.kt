@@ -15,6 +15,7 @@ import farszownicy.caldirola.models.BaseCalendarEntry
 import farszownicy.caldirola.utils.Constants
 import java.time.format.DateTimeFormatter
 import kotlin.time.ExperimentalTime
+import kotlinx.android.synthetic.main.view_calendar_task.*
 
 
 class TaskRenderer : EntryRenderer<BaseCalendarEntry>() {
