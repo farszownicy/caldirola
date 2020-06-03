@@ -23,7 +23,7 @@ import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.agendacalendar.CalendarManager
 import farszownicy.caldirola.crud_activities.fragments.PrerequisitesFragment
-import farszownicy.caldirola.dto.PrerequisitiesDialogResult
+import farszownicy.caldirola.crud_activities.fragments.PrerequisitiesDialogResult
 import farszownicy.caldirola.models.data_classes.Place
 import farszownicy.caldirola.models.data_classes.Task
 import farszownicy.caldirola.utils.Constants
@@ -36,7 +36,8 @@ import java.util.*
 import kotlin.time.ExperimentalTime
 import kotlin.time.minutes
 
-class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, PrerequisitiesDialogResult {
+class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
+    PrerequisitiesDialogResult {
     companion object
     {
         const val NAME_KEY = "name"

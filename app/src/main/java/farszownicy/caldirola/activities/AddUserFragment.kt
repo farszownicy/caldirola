@@ -1,5 +1,6 @@
 package farszownicy.caldirola.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
+import farszownicy.caldirola.activities.preferences.PreferencesActivity
 import farszownicy.caldirola.models.data_classes.User
 import kotlinx.android.synthetic.main.fragment_add_user.*
 import kotlin.time.ExperimentalTime
@@ -65,6 +67,11 @@ class AddUserFragment : Fragment() {
 //            val intent = Intent(requireContext(), EntryListActivity::class.java)
 //            startActivity(intent)
 //        }
+
+        root.findViewById<Button>(R.id.pref_button).setOnClickListener {
+            val intent = Intent(requireContext(), PreferencesActivity::class.java)
+            startActivity(intent)
+        }
 
         /**
          * Nasłuchiwanie zmian w  danym dokumencie.

@@ -1,4 +1,4 @@
-package farszownicy.caldirola.dto
+package farszownicy.caldirola.crud_activities.fragments
 
 import farszownicy.caldirola.models.data_classes.Task
 

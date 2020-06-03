@@ -2,15 +2,10 @@ package farszownicy.caldirola.utils.memory
 
 import android.content.Context
 import farszownicy.caldirola.Logic.PlanManager
-import farszownicy.caldirola.models.data_classes.Event
-import farszownicy.caldirola.models.data_classes.Task
-import farszownicy.caldirola.models.data_classes.TaskSlice
-import farszownicy.caldirola.dto.EventDto
-import farszownicy.caldirola.dto.PlaceDto
-import farszownicy.caldirola.dto.TaskDto
-import farszownicy.caldirola.dto.TaskSliceDto
-import farszownicy.caldirola.models.data_classes.Place
+import farszownicy.caldirola.dto.*
+import farszownicy.caldirola.models.data_classes.*
 import farszownicy.caldirola.utils.Constants
+import java.time.DayOfWeek
 import java.time.LocalDateTime
 import kotlin.collections.ArrayList
 import kotlin.time.ExperimentalTime
@@ -132,4 +127,53 @@ fun loadTasksFromMemory(context: Context){
             LocalDateTime.parse(dto.startTime),
             LocalDateTime.parse(dto.endTime)
         ) } as ArrayList
+}
+
+fun savePreferencesToMemory(context: Context){
+    val dtos = PlanManager.illegalIntervals.map { interval -> IllegalIntervalDto(interval) }
+    writeObjectToSharedPreferences(context,
+        Constants.SHARED_PREF_CALENDAR_FILE_NAME,
+        Constants.SHARED_PREF_INTERVALS_LIST_KEY,
+        dtos
+        )
+
+    writeObjectToSharedPreferences(context,
+        Constants.SHARED_PREF_CALENDAR_FILE_NAME,
+        Constants.SHARED_PREF_MAX_TASKS_KEY,
+        PlanManager.maxTasksPerDay
+        )
+
+    writeObjectToSharedPreferences(context,
+        Constants.SHARED_PREF_CALENDAR_FILE_NAME,
+        Constants.SHARED_PREF_MINUTES_BETWEEN_KEY,
+        PlanManager.minutesBetweenTasks
+    )
+}
+
+fun loadPreferencesFromMemory(context: Context){
+    val dtos = readObjectsFromSharedPreferences<ArrayList<IllegalIntervalDto>>(
+        context,
+        Constants.SHARED_PREF_CALENDAR_FILE_NAME,
+        Constants.SHARED_PREF_INTERVALS_LIST_KEY
+    ) ?: ArrayList()
+
+    PlanManager.illegalIntervals = dtos.map { dto ->
+        IllegalInterval(if(dto.dayOfWeek == 0) null else DayOfWeek.of(dto.dayOfWeek),
+            LocalDateTime.parse(dto.startTime),
+            LocalDateTime.parse(dto.endTime),
+            dto.title
+        )
+    } as ArrayList<IllegalInterval>
+
+    PlanManager.maxTasksPerDay = readObjectsFromSharedPreferences<Int>(
+        context,
+        Constants.SHARED_PREF_CALENDAR_FILE_NAME,
+        Constants.SHARED_PREF_MAX_TASKS_KEY
+    ) ?: 0
+
+    PlanManager.minutesBetweenTasks = readObjectsFromSharedPreferences<Int>(
+        context,
+        Constants.SHARED_PREF_CALENDAR_FILE_NAME,
+        Constants.SHARED_PREF_MINUTES_BETWEEN_KEY
+    ) ?: 0
 }
