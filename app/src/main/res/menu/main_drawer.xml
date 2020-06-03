@@ -3,22 +3,27 @@
 
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/fetch"
+        android:icon="@drawable/time_circle"
         android:title="@string/menu_home" />
+<!--    <item-->
+<!--        android:id="@+id/nav_add_user"-->
+<!--        android:icon="@drawable/user_24dp"-->
+<!--        android:title="@string/menu_add_user" />-->
     <item
-        android:id="@+id/nav_add_user"
-        android:icon="@drawable/fetch"
-        android:title="@string/menu_add_user" />
+        android:id="@+id/nav_agenda"
+        android:icon="@drawable/agenda_icon"
+        android:title="@string/menu_agenda" />
+
     <item
         android:id="@+id/nav_calendar"
         android:icon="@drawable/calendar"
-        android:title="@string/menu_plan" />
-    <item
-        android:id="@+id/nav_agenda"
-        android:icon="@drawable/agenda"
-        android:title="@string/menu_agenda" />
+        android:title="@string/menu_calendar" />
     <item
         android:id="@+id/nav_list"
-        android:icon="@drawable/agenda"
+        android:icon="@drawable/list"
         android:title="@string/menu_list" />
+    <item
+        android:id="@+id/nav_preferences"
+        android:icon="@drawable/preferences"
+        android:title="@string/menu_preferences" />
 </menu>

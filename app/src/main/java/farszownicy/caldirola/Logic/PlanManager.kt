@@ -24,7 +24,7 @@ object PlanManager {
     var mPlaces: ArrayList<Place> = ArrayList()
     var illegalIntervals: ArrayList<IllegalInterval> = ArrayList()
     var memoryUpToDate = true
-    var maxTasksPerDay = 0
+    var maxTaskHoursPerDay = 0
     var minutesBetweenTasks = 0
 
     @ExperimentalTime
@@ -71,7 +71,6 @@ object PlanManager {
         newEvent.endTime = nET
         newEvent.Location = nLoc
         return if(canEventBeEdited(newEvent, event)) {
-            println("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
             var rearrangementRequired = nET != event.endTime || nST != event.startTime
             event.Location = nLoc
             event.name = nName
@@ -259,12 +258,17 @@ object PlanManager {
         var currTime = event.startTime
         var numOfAvailableMinutes = 0
         val eventDuration = differenceInMinutes(event.startTime, event.endTime)
-        while(isTimeAvailable(currTime) && numOfAvailableMinutes < eventDuration) {
+        while(isTimeAvailableForEvent(currTime) && numOfAvailableMinutes < eventDuration) {
             currTime = currTime.plusMinutes(1)
             numOfAvailableMinutes += 1
         }
 
         return numOfAvailableMinutes >= eventDuration
+    }
+
+    private fun isTimeAvailableForEvent(currTime: LocalDateTime): Boolean {
+        val free = !mAllInsertedEntries.any{isBeforeOrEqual(it.startTime,currTime) && isAfter(it.endTime,currTime)}
+        return free
     }
 
     @ExperimentalTime
@@ -277,52 +281,6 @@ object PlanManager {
             numOfAvailableMinutes += 1
         }
         return numOfAvailableMinutes >= eventDuration
-    }
-
-    @ExperimentalTime
-    private fun insertDivisibleTask(task: Task): Boolean {
-        var currTime = findLastPrerequisiteEndTime(task)
-        var totalInsertedDuration = 0
-        var sliceDuration: Int
-        val insertedTaskSlices:  ArrayList<TaskSlice> = ArrayList()
-
-        while(isBefore(currTime, task.deadline) && totalInsertedDuration < task.duration.inMinutes) {
-
-            for(insertedEntry in mAllInsertedEntries){
-                if(isBeforeOrEqual(insertedEntry.startTime, currTime) && isAfter(insertedEntry.endTime, currTime)) //jesli jakis event nachodzi na aktualny czas
-                    currTime = insertedEntry.endTime //to przesun sie na czas konca tego eventu
-            }
-
-            val slotStartTime = currTime
-            sliceDuration = 0
-
-            while(isTimeAvailable(currTime) && totalInsertedDuration + sliceDuration < task.duration.inMinutes
-                && isBefore(currTime, task.deadline)
-            ) {
-                currTime = currTime.plusMinutes(1)
-                sliceDuration += 1
-            }
-
-            if(sliceDuration >= task.minSliceSize) {
-                val slotEndTime = slotStartTime.plusMinutes(sliceDuration.toLong())
-                val slice = TaskSlice(task, slotStartTime, slotEndTime)
-                insertedTaskSlices.add(slice)
-                totalInsertedDuration += sliceDuration
-            }
-        }
-        var inserted = true
-        if(totalInsertedDuration < task.duration.inMinutes) {
-            //abortTask(task)
-            Log.d("LOG", "Nie udalo sie wcisnac calego taska ${task.name}.")
-            inserted = false
-            //Toast.makeText(this.context, "Podzielnego zadania ${task.name} nie da sie wcisnac do kalendarza.", Toast.LENGTH_SHORT).show()
-        }
-        else{
-            mTaskSlices.addAll(insertedTaskSlices)
-            mAllInsertedEntries.addAll(insertedTaskSlices)
-            mAllInsertedEntries.sortBy{it.startTime}
-        }
-        return inserted
     }
 
     @ExperimentalTime
@@ -372,19 +330,121 @@ object PlanManager {
     }
 
     @ExperimentalTime
+    private fun insertDivisibleTask(task: Task): Boolean {
+        var currTime = findLastPrerequisiteEndTime(task)
+        var totalInsertedDuration = 0
+        var sliceDuration: Int
+        val insertedTaskSlices:  ArrayList<TaskSlice> = ArrayList()
+        var insertable = true
+        if(task.minSliceSize >= maxTaskHoursPerDay*60)
+            insertable = false
+
+        if(insertable) {
+            var dayTasksDuration =
+                mTaskSlices.filter { ts -> DateHelper.sameDate(ts.startTime, currTime) }.map { ts ->
+                    differenceInMinutes(
+                        ts.startTime,
+                        getEarlierDate(ts.endTime, ts.startTime.withHour(0).withMinute(0))
+                    )
+                }.sum()
+
+            while (dayTasksDuration + task.minSliceSize >= maxTaskHoursPerDay * 60) {
+                currTime = currTime.plusDays(1).withHour(0).withMinute(0)
+                dayTasksDuration = mTaskSlices.filter { ts -> DateHelper.sameDate(ts.startTime, currTime) }
+                        .map { ts ->
+                            differenceInMinutes(
+                                ts.startTime,
+                                getEarlierDate(ts.endTime, ts.startTime.withHour(0).withMinute(0))
+                            ) }.sum()
+            }
+
+            while (isBefore(currTime, task.deadline) && totalInsertedDuration < task.duration.inMinutes) {
+                for(illegalInterval in illegalIntervals){
+                    val sameDay = illegalInterval.dayOfWeek == currTime.dayOfWeek || illegalInterval.dayOfWeek == null
+                    val st = illegalInterval.startTime
+                    val et = illegalInterval.endTime
+                    if(sameDay)
+                        if(isTimeBetweenInclusive(currTime, st, et)){ //jesli jakis interwal nachodzi na aktualny czas}
+                            currTime = if(isAfter(st, et))
+                                currTime.withHour(et.hour).withMinute(et.minute).plusDays(1) //to przesun sie na czas konca tego interwalu
+                            else
+                                currTime.withHour(et.hour).withMinute(et.minute).plusMinutes(minutesBetweenTasks.toLong())
+                        }
+                }
+
+                for (insertedEntry in mAllInsertedEntries) {
+                    if (isBeforeOrEqual(insertedEntry.startTime, currTime) && isAfter(insertedEntry.endTime, currTime)) //jesli jakis event nachodzi na aktualny czas
+                        currTime = insertedEntry.endTime //to przesun sie na czas konca tego eventu
+                }
+
+                val slotStartTime = currTime
+                sliceDuration = 0
+
+                while (isTimeAvailable(currTime) && totalInsertedDuration + sliceDuration < task.duration.inMinutes
+                    && isBefore(currTime, task.deadline))
+                {
+                    currTime = currTime.plusMinutes(1)
+                    sliceDuration += 1
+                }
+
+                if (sliceDuration >= task.minSliceSize) {
+                    val slotEndTime = slotStartTime.plusMinutes(sliceDuration.toLong())
+                    val slice = TaskSlice(task, slotStartTime, slotEndTime)
+                    insertedTaskSlices.add(slice)
+                    totalInsertedDuration += sliceDuration
+                }
+            }
+        }
+
+        if(totalInsertedDuration < task.duration.inMinutes) {
+            //abortTask(task)
+            Log.d("LOG", "Nie udalo sie wcisnac calego taska ${task.name}.")
+            insertable = false
+            //Toast.makeText(this.context, "Podzielnego zadania ${task.name} nie da sie wcisnac do kalendarza.", Toast.LENGTH_SHORT).show()
+        }
+        else{
+            mTaskSlices.addAll(insertedTaskSlices)
+            mAllInsertedEntries.addAll(insertedTaskSlices)
+            mAllInsertedEntries.sortBy{it.startTime}
+        }
+        return insertable
+    }
+
+    @ExperimentalTime
     private fun findNextEmptySlotLasting(minutes: Duration, deadline: LocalDateTime, startTime: LocalDateTime?): LocalDateTime? {
         var currTime = startTime!!
+        if(minutes.inMinutes >= maxTaskHoursPerDay*60)
+            return null
+        var dayTasksDuration = mTaskSlices.filter { ts -> DateHelper.sameDate(ts.startTime, currTime) }.
+        map { ts -> differenceInMinutes(ts.startTime, getEarlierDate(ts.endTime, ts.startTime.withHour(0).withMinute(0))) }.sum()
+        while(dayTasksDuration + minutes.inMinutes >= maxTaskHoursPerDay * 60) {
+            currTime = currTime.plusDays(1).withHour(0).withMinute(0)
+            dayTasksDuration = mTaskSlices.filter { ts -> DateHelper.sameDate(ts.startTime, currTime) }.
+            map { ts -> differenceInMinutes(ts.startTime, getEarlierDate(ts.endTime, ts.startTime.withHour(0).withMinute(0))) }.sum()
+        }
         var slotStartTime:LocalDateTime
         var slotEndTime:LocalDateTime
 
         val maxStartTime = deadline.plusMinutes((-minutes.inMinutes).toLong())
 
         while(isBefore(currTime, maxStartTime)) {
+            for(illegalInterval in illegalIntervals){
+                val sameDay = illegalInterval.dayOfWeek == currTime.dayOfWeek || illegalInterval.dayOfWeek == null
+                val st = illegalInterval.startTime
+                val et = illegalInterval.endTime
+                if(sameDay)
+                    if(isTimeBetweenInclusive(currTime, st, et)){ //jesli jakis interwal nachodzi na aktualny czas}
+                        currTime = if(isAfter(st, et))
+                            currTime.withHour(et.hour).withMinute(et.minute).plusDays(1) //to przesun sie na czas konca tego interwalu
+                        else
+                            currTime.withHour(et.hour).withMinute(et.minute)
+                    }
+            }
             for(insertedEntry in mAllInsertedEntries){
                 val st = insertedEntry.startTime
                 val et = insertedEntry.endTime
                 if(isBeforeOrEqual(st, currTime) && isAfter(et, currTime)) //jesli jakis event nachodzi na aktualny czas
-                    currTime = insertedEntry.endTime //to przesun sie na czas konca tego eventu
+                    currTime = insertedEntry.endTime.plusMinutes(minutesBetweenTasks.toLong()) //to przesun sie na czas konca tego eventu
             }
 
             slotStartTime = currTime
@@ -400,30 +460,38 @@ object PlanManager {
         return null
     }
 
+    private fun getEarlierDate(firstDate: LocalDateTime, secDate: LocalDateTime): LocalDateTime {
+        if(isBefore(firstDate, secDate))
+            return firstDate
+        else
+            return secDate
+    }
+
     @ExperimentalTime
     private fun isTimeAvailable(currTime: LocalDateTime): Boolean {
         val free=  !mAllInsertedEntries.any{isBeforeOrEqual(it.startTime,currTime) && isAfter(it.endTime,currTime)}
-        val legal = !illegalIntervals.any { it.dayOfWeek == currTime.dayOfWeek
+        val legal = !illegalIntervals.any { (it.dayOfWeek == currTime.dayOfWeek || it.dayOfWeek == null)
                 && isTimeBetweenInclusive(currTime, it.startTime, it.endTime) }
         return free && legal
     }
 
     @ExperimentalTime
     private fun isTimeAvailableExclude(currTime: LocalDateTime, exclEvent: Event):Boolean{
-        println(mAllInsertedEntries.size)
+        //println(mAllInsertedEntries.size)
         val exclEvents = mAllInsertedEntries.filter{e -> e != exclEvent}
-        println(exclEvents.size)
+        //println(exclEvents.size)
         exclEvents.forEach{e -> println(""+e.startTime+ "    DO    " +e.endTime)}
         val free = !exclEvents.any{isBeforeOrEqual(it.startTime,currTime) && isAfter(it.endTime,currTime)}
-        val legal = !illegalIntervals.any { it.dayOfWeek == currTime.dayOfWeek
-                && isTimeBetweenInclusive(currTime, it.startTime, it.endTime) }
-        return free && legal
+        return free //&& legal
     }
 
     private fun isTimeBetweenInclusive(time: LocalDateTime, earlierDate: LocalDateTime, laterDate:LocalDateTime) : Boolean{
-        return DateHelper.isBetweenInclusive(time,
-            earlierDate.withYear(time.year).withMonth(time.monthValue).withDayOfMonth(time.dayOfYear),
-            earlierDate.withYear(time.year).withMonth(time.monthValue).withDayOfMonth(time.dayOfYear))
+        val earlierTime = earlierDate.withYear(time.year).withMonth(time.monthValue).withDayOfMonth(time.dayOfMonth)
+        var laterTime = laterDate.withYear(time.year).withMonth(time.monthValue).withDayOfMonth(time.dayOfMonth)
+        if(isAfter(earlierTime, laterTime))
+            laterTime = laterTime.plusDays(1)
+        return isBeforeOrEqual(earlierTime, time)
+                && isBefore(time, laterTime)
     }
 
     fun isBeforeOrEqual(earlierDate: LocalDateTime, laterDate: LocalDateTime): Boolean {

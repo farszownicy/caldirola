@@ -63,7 +63,6 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
         drawHourViews()
         event_container.removeAllViews()
         drawEvents()
-        //distributeTasks()
         drawTasks()
     }
 
@@ -71,7 +70,6 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
     fun refreshEntries() {
         event_container.removeAllViews()
         drawEvents()
-        //distributeTasks()
         drawTasks()
     }
 
@@ -179,6 +177,12 @@ class CalendarDayView @JvmOverloads constructor(context: Context, attrs: Attribu
     @ExperimentalTime
     fun moveDay(numOfDaysForward: Long) {
         mDay = mDay.plusDays(numOfDaysForward)
+        mEvents = PlanManager.getEventsByDate(mDay)
+        mTaskSlices = PlanManager.getTaskSlicesByDate(mDay)
+    }
+
+    @ExperimentalTime
+    fun refreshDay(){
         mEvents = PlanManager.getEventsByDate(mDay)
         mTaskSlices = PlanManager.getTaskSlicesByDate(mDay)
     }

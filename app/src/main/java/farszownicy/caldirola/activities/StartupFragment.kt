@@ -22,6 +22,7 @@ import farszownicy.caldirola.utils.memory.loadTasksFromMemory
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.temporal.ChronoUnit
 import java.time.temporal.ChronoUnit.MINUTES
 import kotlin.time.ExperimentalTime
 
@@ -59,8 +60,11 @@ class StartupFragment : Fragment() {
                 colors.add(Color.rgb(240, 240, 240))
             }
             if(entryTime > 0L) {
-                visitors.add(PieEntry(entryTime.toFloat(), ""))
-                colors.add(ColorTemplate.MATERIAL_COLORS[i])
+                if(entry is Event)
+                    visitors.add(PieEntry(entryTime.toFloat(), entry.name))
+                else if(entry is TaskSlice)
+                    visitors.add(PieEntry(entryTime.toFloat(), entry.parent.name))
+                colors.add(ColorTemplate.MATERIAL_COLORS[i % ColorTemplate.MATERIAL_COLORS.size])
             }
             if(now.isAfter(entry.startTime) && now.isBefore(entry.endTime)) {
                 currentEntry = entry
@@ -76,13 +80,24 @@ class StartupFragment : Fragment() {
 
         val textView: TextView = requireView().findViewById(R.id.textView5)
         textView.text = if(currentEntry != null) {
+            "In progress: " +
             if(currentEntry is TaskSlice) {
                 (currentEntry as TaskSlice).parent.name
             } else {
                 (currentEntry as Event).name
             }
         } else {
-            ""
+            val nextEntry = entries.minBy {e -> LocalDateTime.now().until(e.startTime, MINUTES)  }
+            if(nextEntry != null) {
+                "In ${LocalDateTime.now().until(nextEntry.startTime, MINUTES)} minutes: " +
+                if (nextEntry is TaskSlice) {
+                    (currentEntry as TaskSlice).parent.name
+                } else {
+                    (nextEntry as Event).name
+                }
+            }
+            else
+                ""
         }
 
         val pieDataSet = PieDataSet(visitors, "")
@@ -100,7 +115,7 @@ class StartupFragment : Fragment() {
         pieChart.description.isEnabled = false
         pieChart.holeRadius = 75f
         pieChart.setHoleColor(invisibleColor)
-
+        pieChart.setDrawEntryLabels(true);
         pieChart.legend.isEnabled = false
         pieChart.isEnabled = true
         pieChart.invalidate()

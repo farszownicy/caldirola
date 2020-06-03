@@ -37,7 +37,7 @@
     <!-- Preferences -->
     <string name="add_new_preference">Add new time</string>
     <string name="pref_illegal_intervals_label">Time periods to exclude from scheduling</string>
-    <string name="pref_max_tasks_per_day">Maximum amount of tasks per day</string>
+    <string name="pref_max_task_hours_per_day">Maximum hours of tasks per day</string>
     <string name="pref_min_time_between_tasks">Minimal time between tasks in minutes</string>
     <string-array name="WeekdayChoices">
         <item>Every day</item>
@@ -79,11 +79,12 @@
 
     <!-- Menu -->
     <string name="menu_fetch">Fetch</string>
-    <string name="menu_plan">Plan</string>
+    <string name="menu_calendar">Calendar</string>
     <string name="menu_agenda">Agenda</string>
     <string name="menu_add_event">Add event</string>
     <string name="menu_add_task">Add task</string>
     <string name="menu_list">List</string>
     <string name="menu_add_user">Add user</string>
     <string name="menu_home">Home</string>
+    <string name="menu_preferences">Preferences</string>
 </resources>

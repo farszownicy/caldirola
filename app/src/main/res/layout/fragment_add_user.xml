@@ -269,7 +269,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_ui"
             android:clickable="false"
-            android:drawableTop="@drawable/agenda"
+            android:drawableTop="@drawable/list"
             android:textColor="@color/colorWhite"
             app:layout_constraintBottom_toTopOf="@+id/rel_panel"
             app:layout_constraintEnd_toEndOf="parent"
@@ -361,7 +361,7 @@
                     android:layout_margin="10dp"
                     android:background="@drawable/bg_ui"
                     android:clickable="false"
-                    android:drawableTop="@drawable/agenda"
+                    android:drawableTop="@drawable/list"
                     android:textColor="@color/colorWhite" />
 
             </LinearLayout>

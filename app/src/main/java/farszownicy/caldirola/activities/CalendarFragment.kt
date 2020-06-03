@@ -39,9 +39,15 @@ import kotlin.time.ExperimentalTime
 
 class CalendarFragment : Fragment(), CalendarPickerController {
     lateinit var mAgendaCalendarView: AgendaCalendarView
+    var initialized = false;
 
     companion object {
         const val LOG_TAG = "DEBUG"
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
     }
 
     @ExperimentalTime
@@ -49,21 +55,24 @@ class CalendarFragment : Fragment(), CalendarPickerController {
         val root = inflater.inflate(R.layout.fragment_calendar, container, false)
 
         (requireActivity() as AppCompatActivity).setSupportActionBar(activity_toolbar)
-        mAgendaCalendarView = root.findViewById(R.id.agenda_calendar_view)
-        val minDate: Calendar = Calendar.getInstance()
-        val maxDate: Calendar = Calendar.getInstance()
+        if(!initialized) {
+            mAgendaCalendarView = root.findViewById(R.id.agenda_calendar_view)
+            val minDate: Calendar = Calendar.getInstance()
+            val maxDate: Calendar = Calendar.getInstance()
 
-        minDate.add(Calendar.MONTH, -2)
-        minDate.set(Calendar.DAY_OF_MONTH, 1)
-        maxDate.add(Calendar.YEAR, 1)
-        mAgendaCalendarView.init(minDate, maxDate, Locale.UK, this)
-        root.findViewById<FloatingActionButton>(R.id.calAddButton).setOnClickListener {
-            AddDialog()
-        }
-        root.findViewById<FloatingActionButton>(R.id.rearrangeButton).setOnClickListener { v: View? ->
-            PlanManager.rearrangeTasks()
-            saveTasksToMemory(requireContext())
-            CalendarManager.getInstance().loadEventsAndTasks()
+            minDate.add(Calendar.MONTH, -1)
+            minDate.set(Calendar.DAY_OF_MONTH, 1)
+            maxDate.add(Calendar.MONTH, 6)
+            mAgendaCalendarView.init(minDate, maxDate, Locale.UK, this)
+            root.findViewById<FloatingActionButton>(R.id.calAddButton).setOnClickListener {
+                AddDialog()
+            }
+            root.findViewById<FloatingActionButton>(R.id.rearrangeButton).setOnClickListener { v: View? ->
+                PlanManager.rearrangeTasks()
+                saveTasksToMemory(requireContext())
+                CalendarManager.getInstance().loadEventsAndTasks()
+            }
+            initialized = true;
         }
 //        mAgendaCalendarView.addEventRenderer(DefaultEventRenderer())
 

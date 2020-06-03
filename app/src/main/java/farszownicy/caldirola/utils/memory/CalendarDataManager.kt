@@ -140,7 +140,7 @@ fun savePreferencesToMemory(context: Context){
     writeObjectToSharedPreferences(context,
         Constants.SHARED_PREF_CALENDAR_FILE_NAME,
         Constants.SHARED_PREF_MAX_TASKS_KEY,
-        PlanManager.maxTasksPerDay
+        PlanManager.maxTaskHoursPerDay
         )
 
     writeObjectToSharedPreferences(context,
@@ -165,7 +165,7 @@ fun loadPreferencesFromMemory(context: Context){
         )
     } as ArrayList<IllegalInterval>
 
-    PlanManager.maxTasksPerDay = readObjectsFromSharedPreferences<Int>(
+    PlanManager.maxTaskHoursPerDay = readObjectsFromSharedPreferences<Int>(
         context,
         Constants.SHARED_PREF_CALENDAR_FILE_NAME,
         Constants.SHARED_PREF_MAX_TASKS_KEY

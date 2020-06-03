@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="farszownicy.caldirola.activities.preferences.PreferencesActivity"
+            android:name="farszownicy.caldirola.activities.preferences.PreferencesFragment"
             android:label="@string/title_activity_preferences"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

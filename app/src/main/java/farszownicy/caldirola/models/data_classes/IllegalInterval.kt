@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 
 class IllegalInterval constructor(
     var dayOfWeek: DayOfWeek?,
-    var startTime: LocalDateTime,
-    var endTime: LocalDateTime,
+    startTime: LocalDateTime,
+    endTime: LocalDateTime,
     var title: String
-)
+) : AgendaDrawableEntry(startTime, endTime)

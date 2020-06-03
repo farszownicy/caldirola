@@ -1,12 +1,10 @@
 package farszownicy.caldirola.agendacalendar.render
 
-import android.content.Context
-import android.content.res.Resources
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
+import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.models.BaseCalendarEntry
 import farszownicy.caldirola.utils.Constants
@@ -21,9 +19,17 @@ class TaskRenderer : EntryRenderer<BaseCalendarEntry>() {
         val nameView = view!!.findViewById<TextView>(R.id.task_name_tv)
         nameView.text = task!!.name
         val deadlineView = view.findViewById<TextView>(R.id.deadline_tv)
-        val simpleDateFormat = DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT)
+        val simpleDateFormat = DateTimeFormatter.ofPattern(Constants.SHORT_DATETIME_FORMAT)
         deadlineView.text = simpleDateFormat.format(task.taskSliceReference.parent.deadline)
-        val durationView = view.findViewById<TextView>(R.id.duration_tv)
+        val partView = view.findViewById<TextView>(R.id.duration_tv)
+        val numOfParts = PlanManager.mTaskSlices.filter { ts -> ts.parent.id == task.taskSliceReference.parent.id}.count()
+        val whichPart = PlanManager.mTaskSlices.filter { ts ->
+            ts.parent.id == task.taskSliceReference.parent.id && PlanManager.isBefore(
+                ts.startTime,
+                task.taskSliceReference.startTime
+            )
+        }.count() + 1
+        partView.text = "part ${whichPart}/${numOfParts}"
         val durationHours = task.taskSliceReference?.parent!!.duration.inHours.toInt()
         val durationMinutes = task.taskSliceReference?.parent!!.duration.inMinutes.toInt() - durationHours*60
         val backgroundView = view.findViewById<ConstraintLayout>(R.id.item_event_content)

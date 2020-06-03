@@ -9,9 +9,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
-import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
-import farszownicy.caldirola.activities.preferences.PreferencesActivity
+import farszownicy.caldirola.activities.preferences.PreferencesFragment
 import farszownicy.caldirola.models.data_classes.User
 import kotlinx.android.synthetic.main.fragment_add_user.*
 import kotlin.time.ExperimentalTime
@@ -69,7 +68,7 @@ class AddUserFragment : Fragment() {
 //        }
 
         root.findViewById<Button>(R.id.pref_button).setOnClickListener {
-            val intent = Intent(requireContext(), PreferencesActivity::class.java)
+            val intent = Intent(requireContext(), PreferencesFragment::class.java)
             startActivity(intent)
         }
 

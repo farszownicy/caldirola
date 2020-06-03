@@ -28,9 +28,10 @@
             android:layout_gravity="center"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="2dp"
             android:text="Ulep pierogi"
             android:textColor="#000000"
-            app:layout_constraintEnd_toEndOf="@+id/deadline_tv"
+            app:layout_constraintEnd_toStartOf="@+id/deadline_tv"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,7 +50,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="@+id/location_tv"
             app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
-            android:text="1 hr 35 m"
+            android:text="location"
             app:layout_constraintStart_toEndOf="@+id/location_iv"
             app:layout_constraintTop_toBottomOf="@+id/task_name_tv" />
 
@@ -70,11 +71,11 @@
             android:id="@+id/duration_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="1 hr 35 m"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/places_tv" />
+            android:layout_marginEnd="8dp"
+            android:text="part 1/4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/deadline_tv" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

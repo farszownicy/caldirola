@@ -83,11 +83,10 @@ class AgendaFragment : Fragment() {
             year = LocalDateTime.now().year
         }
 
-        setListeners()
         agenda.setDay(day, month, year)
         agenda.setLimitTime(0, 24)
         updateDisplayedDay()
-
+        setListeners()
         return root
     }
 
@@ -224,16 +223,20 @@ class AgendaFragment : Fragment() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 Constants.ADD_EVENT_CODE -> {
-                    agenda.refreshWholeView()
+                    agenda.refreshDay()
+                    agenda.refreshEntries()
                 }
                 Constants.ADD_TASK_CODE -> {
-                    agenda.refreshWholeView()
+                    agenda.refreshDay()
+                    agenda.refreshEntries()
                 }
                 Constants.EDIT_EVENT_CODE ->{
-                    agenda.refreshWholeView()
+                    agenda.refreshDay()
+                    agenda.refreshEntries()
                 }
                 Constants.EDIT_TASK_CODE ->{
-                    agenda.refreshWholeView()
+                    agenda.refreshDay()
+                    agenda.refreshEntries()
                 }
             }
         }
