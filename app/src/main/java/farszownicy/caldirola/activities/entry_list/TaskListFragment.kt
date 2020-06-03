@@ -1,5 +1,6 @@
 package farszownicy.caldirola.activities.entry_list
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -49,4 +50,15 @@ class TaskListFragment : Fragment() {
         return root
     }
 
+    @ExperimentalTime
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                Constants.EDIT_TASK_CODE ->{
+                    tasksAdapter.notifyDataSetChanged()
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 }

@@ -19,11 +19,15 @@ import farszownicy.caldirola.models.data_classes.Event
 import farszownicy.caldirola.models.data_classes.TaskSlice
 import farszownicy.caldirola.utils.memory.loadEventsFromMemory
 import farszownicy.caldirola.utils.memory.loadTasksFromMemory
+import kotlinx.android.synthetic.main.activity_add_event.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
 import java.time.temporal.ChronoUnit.MINUTES
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.time.ExperimentalTime
 
 
@@ -31,8 +35,8 @@ class StartupFragment : Fragment() {
 
     @ExperimentalTime
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        loadTasksFromMemory(requireContext())
-        loadEventsFromMemory(requireContext())
+//        loadTasksFromMemory(requireContext())
+//        loadEventsFromMemory(requireContext())
 
         return inflater.inflate(R.layout.startup_fragment, container, false)
     }
@@ -54,16 +58,24 @@ class StartupFragment : Fragment() {
         var currentEntry: AgendaDrawableEntry? = null
         entries.forEachIndexed { i, entry ->
             val slackTime = currentTime.until(entry.startTime, MINUTES)
-            val entryTime = entry.startTime.until(entry.endTime, MINUTES)
+            val endTime =
+            if(entry.startTime.dayOfMonth != entry.endTime.dayOfMonth)
+                entry.startTime.withHour(23).withMinute(59)
+            else
+                entry.endTime
+            val entryTime = entry.startTime.until(endTime, MINUTES)
             if(slackTime > 0L) {
                 visitors.add(PieEntry(slackTime.toFloat(), ""))
                 colors.add(Color.rgb(240, 240, 240))
             }
             if(entryTime > 0L) {
                 if(entry is Event)
-                    visitors.add(PieEntry(entryTime.toFloat(), entry.name))
+                    visitors.add(PieEntry(entryTime.toFloat(), entry.name.substring(0,
+                        entry.name.length.coerceAtMost(10)
+                    )))
                 else if(entry is TaskSlice)
-                    visitors.add(PieEntry(entryTime.toFloat(), entry.parent.name))
+                    visitors.add(PieEntry(entryTime.toFloat(), entry.parent.name.substring(0,
+                        entry.parent.name.length.coerceAtMost(10))))
                 colors.add(ColorTemplate.MATERIAL_COLORS[i % ColorTemplate.MATERIAL_COLORS.size])
             }
             if(now.isAfter(entry.startTime) && now.isBefore(entry.endTime)) {
@@ -87,11 +99,12 @@ class StartupFragment : Fragment() {
                 (currentEntry as Event).name
             }
         } else {
-            val nextEntry = entries.minBy {e -> LocalDateTime.now().until(e.startTime, MINUTES)  }
+            val nextEntry =
+                entries.filter{e -> e.startTime >= LocalDateTime.now()}.minBy {e -> LocalDateTime.now().until(e.startTime, MINUTES)  }
             if(nextEntry != null) {
                 "In ${LocalDateTime.now().until(nextEntry.startTime, MINUTES)} minutes: " +
                 if (nextEntry is TaskSlice) {
-                    (currentEntry as TaskSlice).parent.name
+                    (nextEntry as TaskSlice).parent.name
                 } else {
                     (nextEntry as Event).name
                 }
@@ -113,13 +126,25 @@ class StartupFragment : Fragment() {
         pieChart.setDrawRoundedSlices(true)
         pieChart.data = pieData
         pieChart.description.isEnabled = false
-        pieChart.holeRadius = 75f
+        pieChart.holeRadius = 70f
         pieChart.setHoleColor(invisibleColor)
         pieChart.setDrawEntryLabels(true);
         pieChart.legend.isEnabled = false
         pieChart.isEnabled = true
         pieChart.invalidate()
         pieChart.setTouchEnabled(true)
+        var busyMinutes = 0L
+        for(e in entries){
+            val endTime =
+                if(e.startTime.dayOfMonth != e.endTime.dayOfMonth)
+                    e.startTime.withHour(23).withMinute(59)
+                else
+                    e.endTime
+            busyMinutes += PlanManager.differenceInMinutes(e.startTime, endTime)
+        }
+        pieChart.centerText = "${busyMinutes/60}h ${busyMinutes%60}min" +
+                "\n ${LocalDate.now().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.UK)}"
+        pieChart.setCenterTextSize(28f)
     }
 
     @ExperimentalTime

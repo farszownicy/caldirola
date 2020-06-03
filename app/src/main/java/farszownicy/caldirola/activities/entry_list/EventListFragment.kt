@@ -1,5 +1,6 @@
 package farszownicy.caldirola.activities.entry_list
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,6 +21,7 @@ import kotlin.time.ExperimentalTime
 class EventListFragment : Fragment() {
 
     private val eventsAdapter = EventListAdapter()
+    private lateinit var  root:View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,14 +32,14 @@ class EventListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_event_list, container, false)
+        root = inflater.inflate(R.layout.fragment_event_list, container, false)
 
         val recyclerView = root.findViewById<RecyclerView>(R.id.el_recycler_view)
 
         eventsAdapter.onEventClick = { event ->
             val intent = Intent(activity, EditEventActivity::class.java)
             intent.putExtra("ID", event.id)
-            requireActivity().startActivityForResult(intent, Constants.EDIT_EVENT_CODE)
+            startActivityForResult(intent, Constants.EDIT_EVENT_CODE)
         }
 
         recyclerView.adapter = eventsAdapter
@@ -48,5 +50,17 @@ class EventListFragment : Fragment() {
             eventsAdapter.notifyDataSetChanged()}
 
         return root
+    }
+
+    @ExperimentalTime
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                Constants.EDIT_EVENT_CODE ->{
+                    eventsAdapter.notifyDataSetChanged()
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

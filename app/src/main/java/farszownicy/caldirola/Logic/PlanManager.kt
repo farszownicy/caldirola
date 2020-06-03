@@ -294,7 +294,7 @@ object PlanManager {
 //            Log.d("LOG", "zadania ${task.name} nie da sie wcisnac do kalendarza - prerekwizyty nie sa ukonczone")
 //            return false
 //        }
-        val minStartTime: LocalDateTime? =  findLastPrerequisiteEndTime(task)
+        val minStartTime: LocalDateTime? =  findLastPrerequisiteEndTime(task).plusMinutes(minutesBetweenTasks.toLong())
         val startTime = findNextEmptySlotLasting(task.duration, task.deadline, minStartTime)
         if(startTime != null) {
             val endTime = startTime.plusMinutes(task.duration.inMinutes.toLong())
@@ -331,7 +331,7 @@ object PlanManager {
 
     @ExperimentalTime
     private fun insertDivisibleTask(task: Task): Boolean {
-        var currTime = findLastPrerequisiteEndTime(task)
+        var currTime = findLastPrerequisiteEndTime(task).plusMinutes(minutesBetweenTasks.toLong())
         var totalInsertedDuration = 0
         var sliceDuration: Int
         val insertedTaskSlices:  ArrayList<TaskSlice> = ArrayList()
@@ -531,17 +531,18 @@ object PlanManager {
     }
 
     fun getSlicesOfTask(task: Task): List<TaskSlice> {
-        return mTaskSlices.filter { t -> t.parent == task}
+        return mTaskSlices.filter { t -> t.parent.id == task.id}
     }
 
     @ExperimentalTime
     fun removeTask(task: Task) {
         val taskChildren: List<TaskSlice> = getSlicesOfTask(task)
-        mTaskSlices.removeAll (taskChildren)
+        mTaskSlices.removeAll(taskChildren)
         mTasks.remove(task)
         mAllInsertedEntries.removeAll(taskChildren)
         for(tsk in mTasks)
             tsk.prerequisites = tsk.prerequisites.filter {  t-> t!= task }
+        memoryUpToDate = false
     }
 
     @ExperimentalTime

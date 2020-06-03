@@ -81,10 +81,10 @@ class AgendaFragment : Fragment() {
             year = LocalDateTime.now().year
         }
 
+        setListeners()
         agenda.setDay(day, month, year)
         agenda.setLimitTime(0, 24)
         updateDisplayedDay()
-        setListeners()
         return root
     }
 
