@@ -28,7 +28,7 @@ class TaskSliceView @JvmOverloads constructor(context: Context, attrs: Attribute
             task_name_tv.text = mTaskSlice?.parent?.name
             val deadline = mTaskSlice?.parent!!.deadline
             val simpleDateFormat = DateTimeFormatter.ofPattern(DATETIME_FORMAT)
-            deadline_tv.text = "DEADLINE: ${simpleDateFormat.format(deadline)}"
+            deadline_tv.text = "DL: ${simpleDateFormat.format(deadline)}"
 //                "${deadline.getDisplayName(Calendar.DAY_OF_MONTH, Calendar.LONG, Locale.ENGLISH)}." +
 //                    "${deadline.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH)}." +
 //                    "${deadline.getDisplayName(Calendar.YEAR, Calendar.LONG, Locale.ENGLISH)} " +

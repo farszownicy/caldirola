@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
+import farszownicy.caldirola.models.data_classes.Task
 import kotlinx.android.synthetic.main.task_list_card.view.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -16,6 +17,7 @@ import kotlin.time.ExperimentalTime
 class TaskListAdapter() : RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
 
     var showPastTasks: Boolean = false
+    var onTaskClick: ((Task) -> Unit)? = null
 
     @ExperimentalTime
     override fun getItemCount(): Int = if (showPastTasks) PlanManager.mTasks.size
@@ -58,9 +60,7 @@ class TaskListAdapter() : RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
         else
             holder.itemView.alpha = 1f
         holder.itemView.setOnClickListener {
-            //Zła praktyka \/ trzeba zrobić interface i wywoływać intenta w activity a nie tutaj
-            //val intent = Intent(holder.itemView.context, Activity::class.java)
-            //holder.itemView.context.startActivity(intent)
+            onTaskClick!!.invoke(currentItem)
         }
     }
 
