@@ -47,6 +47,7 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_event)
+        if(places.isEmpty()) places.add("Dom")
         ee_add_button.setOnClickListener {
             editEvent()
         }

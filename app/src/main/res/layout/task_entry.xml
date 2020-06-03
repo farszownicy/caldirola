@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
-        android:background="@drawable/card"
+        android:background="@drawable/event_backgr"
         android:bottomLeftRadius="20dp"
         android:bottomRightRadius="20dp"
         android:gravity="center"

@@ -34,15 +34,16 @@ class TaskSliceView @JvmOverloads constructor(context: Context, attrs: Attribute
             val durationHours = mTaskSlice?.parent!!.duration.inHours.toInt()
             val durationMinutes = mTaskSlice?.parent!!.duration.inMinutes.toInt() - durationHours*60
             val places = mTaskSlice?.parent!!.places.map{e -> e.name}
-            var placesToText: String = ""
-            places.forEach{e -> placesToText += "$e    "}
-            places_tv.text = placesToText
+            var placesToText: StringBuilder = StringBuilder()
+            places.forEach{e -> placesToText.append("$e    ")}
+            places_tv.text = placesToText.toString()
             when(mTaskSlice?.parent!!.priority){
                 Constants.PRIORITY_LOW -> item_event_content.setBackgroundColor(getColor(context, R.color.task_low))
                 Constants.PRIORITY_MEDIUM -> item_event_content.setBackgroundColor(getColor(context, R.color.task_medium))
                 Constants.PRIORITY_HIGH -> item_event_content.setBackgroundColor(getColor(context, R.color.task_high))
                 Constants.PRIORITY_URGENT -> item_event_content.setBackgroundColor(getColor(context, R.color.task_urgent))
             }
+            item_event_content.clipToOutline = true
         }
     var mTaskClickListener: OnTaskClickListener? = null
     var mTaskLongClickListener: OnTaskLongClickListener? = null
