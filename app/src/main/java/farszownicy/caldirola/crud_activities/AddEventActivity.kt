@@ -55,6 +55,7 @@ class AddEventActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_event)
+        if(places.isEmpty()) places.add("Dom")
 
         ae_add_button.setOnClickListener {
             addEvent()
@@ -116,8 +117,8 @@ class AddEventActivity : AppCompatActivity()
         datetime_utils.setTimePicker(ae_end_time,this@AddEventActivity)
         datetime_utils.setDefaultDate(ae_start_date, 0)
         datetime_utils.setDefaultDate(ae_end_date, 1)
-        datetime_utils.setDefaultTime(ae_start_time)
-        datetime_utils.setDefaultTime(ae_end_time)
+        datetime_utils.setDefaultTime(ae_start_time, 0)
+        datetime_utils.setDefaultTime(ae_end_time, 1)
     }
 
 

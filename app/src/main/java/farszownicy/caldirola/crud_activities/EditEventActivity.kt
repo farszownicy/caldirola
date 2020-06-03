@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.Logic.PlanManager
@@ -47,11 +48,12 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_event)
+        if(places.isEmpty()) places.add("Dom")
         ee_add_button.setOnClickListener {
             editEvent()
         }
         et_remove_btn.setOnClickListener{
-            deleteEvent()
+            deleteDialog()
         }
         ee_add_location_btn.setOnClickListener{
             addLocation()
@@ -111,6 +113,14 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
         setResult(Activity.RESULT_OK, eventIntent)
         saveEventsToMemory(this)
         finish()
+    }
+
+    @ExperimentalTime
+    fun deleteDialog(){
+        AlertDialog.Builder(this@EditEventActivity).setTitle("DO YOU REALLY WANT TO DELETE THIS EVENT?")
+            .setPositiveButton("YES"){_, _ -> deleteEvent()}
+            .setNegativeButton("NO"){_, _ -> }
+            .create().show()
     }
 
     private fun setAllDatePickers()

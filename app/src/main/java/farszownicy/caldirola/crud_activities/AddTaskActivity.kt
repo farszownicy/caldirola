@@ -221,7 +221,7 @@ class AddTaskActivity : AppCompatActivity(),
         calendarUtils.setDatePicker(at_deadline_date, this@AddTaskActivity)
         calendarUtils.setTimePicker(at_deadline_time, this@AddTaskActivity)
         calendarUtils.setDefaultDate(at_deadline_date, 0)
-        calendarUtils.setDefaultTime(at_deadline_time)
+        calendarUtils.setDefaultTime(at_deadline_time, 0)
     }
 
     private fun getSliceTimeInMinutes(): Int

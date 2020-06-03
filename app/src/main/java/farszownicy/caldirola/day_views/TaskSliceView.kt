@@ -1,4 +1,6 @@
 import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -6,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat.getColor
 import farszownicy.caldirola.Logic.PlanManager
+import androidx.core.content.ContextCompat.getDrawable
 import farszownicy.caldirola.R
 import farszownicy.caldirola.models.data_classes.TaskSlice
 import farszownicy.caldirola.utils.Constants
@@ -26,8 +29,8 @@ class TaskSliceView @JvmOverloads constructor(context: Context, attrs: Attribute
             field = task
             task_name_tv.text = mTaskSlice?.parent?.name
             val deadline = mTaskSlice?.parent!!.deadline
-            val simpleDateFormat = DateTimeFormatter.ofPattern(SHORT_DATETIME_FORMAT)
-            deadline_tv.text = "Deadline: ${simpleDateFormat.format(deadline)}"
+            val simpleDateFormat = DateTimeFormatter.ofPattern(DATETIME_FORMAT)
+            deadline_tv.text = "DL: ${simpleDateFormat.format(deadline)}"
 //                "${deadline.getDisplayName(Calendar.DAY_OF_MONTH, Calendar.LONG, Locale.ENGLISH)}." +
 //                    "${deadline.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH)}." +
 //                    "${deadline.getDisplayName(Calendar.YEAR, Calendar.LONG, Locale.ENGLISH)} " +
@@ -39,15 +42,19 @@ class TaskSliceView @JvmOverloads constructor(context: Context, attrs: Attribute
             val whichPart = PlanManager.mTaskSlices.filter{ts -> ts.parent == task!!.parent && PlanManager.isBefore(ts.startTime, task.startTime)}.count() + 1
             duration_tv.text = "part ${whichPart}/${numOfParts}"
             val places = mTaskSlice?.parent!!.places.map{e -> e.name}
-            var placesToText: String = ""
-            places.forEach{e -> placesToText += "$e    "}
-            places_tv.text = placesToText
+            var placesToText: StringBuilder = StringBuilder()
+            places.forEach{e -> placesToText.append("$e    ")}
+            places_tv.text = placesToText.toString()
+            val bgrDrawable = getDrawable(context, R.drawable.round_outline)
+            bgrDrawable!!.colorFilter=PorterDuffColorFilter(getColor(context, R.color.task_low), PorterDuff.Mode.MULTIPLY)
             when(mTaskSlice?.parent!!.priority){
-                Constants.PRIORITY_LOW -> item_event_content.setBackgroundColor(getColor(context, R.color.task_low))
-                Constants.PRIORITY_MEDIUM -> item_event_content.setBackgroundColor(getColor(context, R.color.task_medium))
-                Constants.PRIORITY_HIGH -> item_event_content.setBackgroundColor(getColor(context, R.color.task_high))
-                Constants.PRIORITY_URGENT -> item_event_content.setBackgroundColor(getColor(context, R.color.task_urgent))
-            }
+                Constants.PRIORITY_LOW -> bgrDrawable!!.colorFilter=PorterDuffColorFilter(getColor(context, R.color.task_low), PorterDuff.Mode.MULTIPLY)
+                Constants.PRIORITY_MEDIUM -> bgrDrawable!!.colorFilter=PorterDuffColorFilter(getColor(context, R.color.task_medium), PorterDuff.Mode.MULTIPLY)
+                Constants.PRIORITY_HIGH -> bgrDrawable!!.colorFilter=PorterDuffColorFilter(getColor(context, R.color.task_high), PorterDuff.Mode.MULTIPLY)
+                Constants.PRIORITY_URGENT -> bgrDrawable!!.colorFilter=PorterDuffColorFilter(getColor(context, R.color.task_urgent), PorterDuff.Mode.MULTIPLY)
+                }
+            item_event_content.background=bgrDrawable
+            item_event_content.clipToOutline = true
         }
     var mTaskClickListener: OnTaskClickListener? = null
     var mTaskLongClickListener: OnTaskLongClickListener? = null

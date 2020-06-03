@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
+import farszownicy.caldirola.models.data_classes.Event
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.time.ExperimentalTime
@@ -15,6 +16,7 @@ import kotlin.time.ExperimentalTime
 
 class EventListAdapter() : RecyclerView.Adapter<EventListAdapter.ViewHolder>() {
     var showPastEvents = false;
+    var onEventClick: ((Event) -> Unit)? = null
 
     @ExperimentalTime
     override fun getItemCount(): Int = if (showPastEvents) PlanManager.mEvents.size
@@ -47,9 +49,7 @@ class EventListAdapter() : RecyclerView.Adapter<EventListAdapter.ViewHolder>() {
             holder.itemView.alpha = 1f
 
         holder.itemView.setOnClickListener {
-            //Zła praktyka \/ trzeba zrobić interface i wywoływać intenta w activity a nie tutaj
-            //val intent = Intent(holder.itemView.context, Activity::class.java)
-            //holder.itemView.context.startActivity(intent)
+            onEventClick?.invoke(currentItem)
         }
     }
 

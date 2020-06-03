@@ -34,8 +34,6 @@ import farszownicy.caldirola.day_views.EventView
 import farszownicy.caldirola.models.data_classes.Event
 import farszownicy.caldirola.models.data_classes.TaskSlice
 import farszownicy.caldirola.utils.Constants
-import farszownicy.caldirola.utils.Constants.EDIT_EVENT_CODE
-import farszownicy.caldirola.utils.Constants.EDIT_TASK_CODE
 import farszownicy.caldirola.utils.memory.saveEventsToMemory
 import farszownicy.caldirola.utils.memory.saveTasksToMemory
 import java.time.LocalDateTime

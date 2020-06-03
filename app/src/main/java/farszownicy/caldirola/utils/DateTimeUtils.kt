@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.widget.TextView
+import java.sql.Time
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -54,8 +55,8 @@ class DateTimeUtils {
 
     fun setDefaultDate(tv :TextView, offset:Int)
     {
-        val cal = Calendar.getInstance()
-        cal.add(Calendar.HOUR_OF_DAY, offset)
+        val cal =  Calendar.getInstance()
+        cal.add(Calendar.HOUR, offset)
         val sdf = SimpleDateFormat(Constants.DATE_FORMAT, Locale.FRANCE)
         tv.text = sdf.format(cal.time)
     }
@@ -90,9 +91,10 @@ class DateTimeUtils {
         }
     }
 
-    fun setDefaultTime(tv :TextView)
+    fun setDefaultTime(tv :TextView, offset:Int)
     {
         val cal = Calendar.getInstance()
+        cal.add(Calendar.HOUR, offset)
         val sdf = SimpleDateFormat(Constants.TIME_FORMAT, Locale.FRANCE)
         tv.text = sdf.format(cal.time)
     }
