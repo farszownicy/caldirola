@@ -25,7 +25,7 @@ class TaskSliceView @JvmOverloads constructor(context: Context, attrs: Attribute
             task_name_tv.text = mTaskSlice?.parent?.name
             val deadline = mTaskSlice?.parent!!.deadline
             val simpleDateFormat = DateTimeFormatter.ofPattern(DATETIME_FORMAT)
-            deadline_tv.text = "${simpleDateFormat.format(deadline)}"
+            deadline_tv.text = "DEADLINE: ${simpleDateFormat.format(deadline)}"
 //                "${deadline.getDisplayName(Calendar.DAY_OF_MONTH, Calendar.LONG, Locale.ENGLISH)}." +
 //                    "${deadline.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH)}." +
 //                    "${deadline.getDisplayName(Calendar.YEAR, Calendar.LONG, Locale.ENGLISH)} " +
@@ -33,6 +33,10 @@ class TaskSliceView @JvmOverloads constructor(context: Context, attrs: Attribute
 //                    "${deadline.getDisplayName(Calendar.MINUTE, Calendar.LONG, Locale.ENGLISH)}."
             val durationHours = mTaskSlice?.parent!!.duration.inHours.toInt()
             val durationMinutes = mTaskSlice?.parent!!.duration.inMinutes.toInt() - durationHours*60
+            val places = mTaskSlice?.parent!!.places.map{e -> e.name}
+            var placesToText: String = ""
+            places.forEach{e -> placesToText += "$e    "}
+            places_tv.text = placesToText
             when(mTaskSlice?.parent!!.priority){
                 Constants.PRIORITY_LOW -> item_event_content.setBackgroundColor(getColor(context, R.color.task_low))
                 Constants.PRIORITY_MEDIUM -> item_event_content.setBackgroundColor(getColor(context, R.color.task_medium))
