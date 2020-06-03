@@ -112,7 +112,7 @@ object PlanManager {
         task.prerequisites = nPrereqs
 
         if((oldDivisible != nDivisible) || (oldMinSliceSize != nMinSlice) ||
-            isBefore(nDDL, oldDeadline) || nDuration != oldDuration ||
+            nDDL!= oldDeadline || nDuration != oldDuration ||
             nPriority != nPriority || prerequisitesChanged)
         {
             rearrangeTasks()
