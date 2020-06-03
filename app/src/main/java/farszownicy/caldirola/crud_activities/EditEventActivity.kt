@@ -50,7 +50,7 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
         setContentView(R.layout.activity_edit_event)
         if(places.isEmpty()) places.add("Dom")
         ee_add_button.setOnClickListener {
-            editEvent()
+            editEvent(false)
         }
         et_remove_btn.setOnClickListener{
             deleteDialog()
@@ -136,7 +136,7 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
     }
 
     @ExperimentalTime
-    private fun editEvent(){
+    private fun editEvent(force: Boolean){
         val name = ee_input_name.text.toString()
         val description = ee_input_description.text.toString()
 
@@ -144,19 +144,30 @@ class EditEventActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
         val dt_end = datetime_utils.getDTFromTV(ee_end_date, ee_end_time)
 
         val selected_location = Place(ee_location.selectedItem as String)
-        val eventUpdated = PlanManager.updateEvent(editedEvent!!, name, description, dt_start, dt_end, selected_location)
+        val eventUpdated = PlanManager.updateEvent(editedEvent!!, name, description, dt_start, dt_end, selected_location, force)
         val eventIntent = Intent()
 
-        if(eventUpdated)
+        if(eventUpdated == true)
         {
             eventIntent.putExtra(Constants.EDIT_EVENT_KEY, eventUpdated)
             setResult(Activity.RESULT_OK, eventIntent)
             saveEventsToMemory(this)
             finish()
         }
+        else if(eventUpdated == null){
+            conflictDialog()
+        }
         else{
             Toast.makeText(this, "Eventu ${editedEvent!!.name} nie da sie wcisnac do kalendarza.", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    @ExperimentalTime
+    fun conflictDialog(){
+        AlertDialog.Builder(this@EditEventActivity).setTitle("There is a task scheduled at this time. Continue anyway and reschedule?")
+            .setPositiveButton("YES"){_, _ -> editEvent(true)}
+            .setNegativeButton("NO"){_, _ -> }
+            .create().show()
     }
 
 }

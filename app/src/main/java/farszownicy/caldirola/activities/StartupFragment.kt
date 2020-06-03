@@ -71,11 +71,11 @@ class StartupFragment : Fragment() {
             if(entryTime > 0L) {
                 if(entry is Event)
                     visitors.add(PieEntry(entryTime.toFloat(), entry.name.substring(0,
-                        entry.name.length.coerceAtMost(10)
+                        entry.name.length.coerceAtMost(16)
                     )))
                 else if(entry is TaskSlice)
                     visitors.add(PieEntry(entryTime.toFloat(), entry.parent.name.substring(0,
-                        entry.parent.name.length.coerceAtMost(10))))
+                        entry.parent.name.length.coerceAtMost(16))))
                 colors.add(ColorTemplate.MATERIAL_COLORS[i % ColorTemplate.MATERIAL_COLORS.size])
             }
             if(now.isAfter(entry.startTime) && now.isBefore(entry.endTime)) {
@@ -126,9 +126,10 @@ class StartupFragment : Fragment() {
         pieChart.setDrawRoundedSlices(true)
         pieChart.data = pieData
         pieChart.description.isEnabled = false
-        pieChart.holeRadius = 70f
+        pieChart.holeRadius = 60f
         pieChart.setHoleColor(invisibleColor)
         pieChart.setDrawEntryLabels(true);
+        pieChart.setEntryLabelColor(Color.BLACK)
         pieChart.legend.isEnabled = false
         pieChart.isEnabled = true
         pieChart.invalidate()
@@ -144,7 +145,7 @@ class StartupFragment : Fragment() {
         }
         pieChart.centerText = "${busyMinutes/60}h ${busyMinutes%60}min" +
                 "\n ${LocalDate.now().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.UK)}"
-        pieChart.setCenterTextSize(28f)
+        pieChart.setCenterTextSize(26f)
     }
 
     @ExperimentalTime

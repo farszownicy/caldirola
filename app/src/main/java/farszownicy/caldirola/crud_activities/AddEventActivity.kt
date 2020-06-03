@@ -10,6 +10,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import farszownicy.caldirola.Logic.PlanManager
@@ -58,7 +59,7 @@ class AddEventActivity : AppCompatActivity()
         if(places.isEmpty()) places.add("Dom")
 
         ae_add_button.setOnClickListener {
-            addEvent()
+            addEvent(false)
         }
 
         ae_add_location_btn.setOnClickListener{
@@ -124,7 +125,7 @@ class AddEventActivity : AppCompatActivity()
 
     @ExperimentalTime
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addEvent()
+    fun addEvent(force:Boolean)
     {
         val name = ae_input_name.text.toString()
         val description = ae_input_description.text.toString()
@@ -146,11 +147,13 @@ class AddEventActivity : AppCompatActivity()
         val event = Event(UUID.randomUUID().toString(),name, description, dt_start, dt_end, selected_location)
         val eventIntent = Intent()
 
-        val eventAdded = PlanManager.addEvent(event)
+        val eventAdded = PlanManager.addEvent(event, force)
+        if(eventAdded == null)
+            conflictDialog()
         saveTasksToMemory(this)
         saveEventsToMemory(this)
         PlanManager.memoryUpToDate = true
-        if(eventAdded) {
+        if(eventAdded == true) {
             db.collection("events").add(event_data).addOnSuccessListener { documentReference ->
                 Log.d(TAG, "Event added with ID: ${documentReference.id}")
             }.addOnFailureListener { e -> Log.w(TAG, "Error adding event", e) }
@@ -168,6 +171,14 @@ class AddEventActivity : AppCompatActivity()
     override fun onBackPressed() {
         super.onBackPressed()
         //finishActivity(Activity.RESULT_CANCELED)
+    }
+
+    @ExperimentalTime
+    fun conflictDialog(){
+        AlertDialog.Builder(this@AddEventActivity).setTitle("There is a task scheduled at this time. Add anyway and reschedule?")
+            .setPositiveButton("YES"){_, _ -> addEvent(true)}
+            .setNegativeButton("NO"){_, _ -> }
+            .create().show()
     }
 
     //SPINNER METHODS

@@ -103,8 +103,8 @@ public class CalendarManager {
 
         //apply the same locale to all variables depending on that
         setToday(Calendar.getInstance(mLocale));
-        mWeekdayFormatter = new SimpleDateFormat(getContext().getString(R.string.day_name_format), mLocale);
-        mMonthHalfNameFormat = new SimpleDateFormat(getContext().getString(R.string.month_half_name_format), locale);
+        mWeekdayFormatter = new SimpleDateFormat("EEEEE", mLocale);
+        mMonthHalfNameFormat = new SimpleDateFormat("MMM", locale);
     }
 
     public Locale getLocale() {
