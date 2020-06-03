@@ -1,10 +1,13 @@
 import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat.getColor
+import androidx.core.content.ContextCompat.getDrawable
 import farszownicy.caldirola.R
 import farszownicy.caldirola.models.data_classes.TaskSlice
 import farszownicy.caldirola.utils.Constants
@@ -33,16 +36,20 @@ class TaskSliceView @JvmOverloads constructor(context: Context, attrs: Attribute
 //                    "${deadline.getDisplayName(Calendar.MINUTE, Calendar.LONG, Locale.ENGLISH)}."
             val durationHours = mTaskSlice?.parent!!.duration.inHours.toInt()
             val durationMinutes = mTaskSlice?.parent!!.duration.inMinutes.toInt() - durationHours*60
+            duration_tv.text = "EST. TIME: $durationHours"+"hr $durationMinutes"+"min"
             val places = mTaskSlice?.parent!!.places.map{e -> e.name}
             var placesToText: StringBuilder = StringBuilder()
             places.forEach{e -> placesToText.append("$e    ")}
             places_tv.text = placesToText.toString()
+            val bgrDrawable = getDrawable(context, R.drawable.round_outline)
+            bgrDrawable!!.colorFilter=PorterDuffColorFilter(getColor(context, R.color.task_low), PorterDuff.Mode.MULTIPLY)
             when(mTaskSlice?.parent!!.priority){
-                Constants.PRIORITY_LOW -> item_event_content.setBackgroundColor(getColor(context, R.color.task_low))
-                Constants.PRIORITY_MEDIUM -> item_event_content.setBackgroundColor(getColor(context, R.color.task_medium))
-                Constants.PRIORITY_HIGH -> item_event_content.setBackgroundColor(getColor(context, R.color.task_high))
-                Constants.PRIORITY_URGENT -> item_event_content.setBackgroundColor(getColor(context, R.color.task_urgent))
-            }
+                Constants.PRIORITY_LOW -> bgrDrawable!!.colorFilter=PorterDuffColorFilter(getColor(context, R.color.task_low), PorterDuff.Mode.MULTIPLY)
+                Constants.PRIORITY_MEDIUM -> bgrDrawable!!.colorFilter=PorterDuffColorFilter(getColor(context, R.color.task_medium), PorterDuff.Mode.MULTIPLY)
+                Constants.PRIORITY_HIGH -> bgrDrawable!!.colorFilter=PorterDuffColorFilter(getColor(context, R.color.task_high), PorterDuff.Mode.MULTIPLY)
+                Constants.PRIORITY_URGENT -> bgrDrawable!!.colorFilter=PorterDuffColorFilter(getColor(context, R.color.task_urgent), PorterDuff.Mode.MULTIPLY)
+                }
+            item_event_content.background=bgrDrawable
             item_event_content.clipToOutline = true
         }
     var mTaskClickListener: OnTaskClickListener? = null

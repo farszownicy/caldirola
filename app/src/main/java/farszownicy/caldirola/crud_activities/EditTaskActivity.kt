@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -73,7 +74,7 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             editTask()
         }
         et_remove_btn.setOnClickListener{
-            removeTask()
+            deleteDialog()
         }
         val taskID = intent.getStringExtra("ID")
         editedTask = PlanManager.getTask(taskID)
@@ -249,6 +250,14 @@ class EditTaskActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         PlanManager.memoryUpToDate = false
         CalendarManager.getInstance(applicationContext).loadEventsAndTasks()
         finish()
+    }
+
+    @ExperimentalTime
+    fun deleteDialog(){
+        AlertDialog.Builder(this@EditTaskActivity).setTitle("DO YOU REALLY WANT TO DELETE THIS TASK?")
+            .setPositiveButton("YES"){_, _ -> removeTask()}
+            .setNegativeButton("NO"){_, _ -> }
+            .create().show()
     }
 
     private fun setDefSpinner()
