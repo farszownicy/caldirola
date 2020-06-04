@@ -276,6 +276,15 @@ public class CalendarManager {
                         }
                     }
                 }
+                if (!wasThereEntryForDay) {
+                    Calendar dayInstance = Calendar.getInstance();
+                    dayInstance.setTime(dayItem.getDate());
+                    BaseCalendarEntry event = new BaseCalendarEntry(dayInstance, getContext().getResources().getString(R.string.agenda_event_no_events));
+                    event.setDayReference(dayItem);
+                    event.setWeekReference(weekItem);
+                    event.setInstanceDay(dayInstance);
+                    getEntries().add(event);
+                }
 //                for(TaskSlice slice : slices){
 //                    if(DateHelper.isBetweenInclusive(dayItem.getDate(), slice.getStartTime(), slice.getEndTime())){
 //                        BaseCalendarEntry copy = new BaseCalendarEntry(slice);
@@ -299,15 +308,6 @@ public class CalendarManager {
 //                        wasThereEntryForDay = true;
 //                    }
 //                }
-                if (!wasThereEntryForDay) {
-                    Calendar dayInstance = Calendar.getInstance();
-                    dayInstance.setTime(dayItem.getDate());
-                    BaseCalendarEntry event = new BaseCalendarEntry(dayInstance, getContext().getResources().getString(R.string.agenda_event_no_events));
-                    event.setDayReference(dayItem);
-                    event.setWeekReference(weekItem);
-                    event.setInstanceDay(dayInstance);
-                    getEntries().add(event);
-                }
             }
         }
         BusProvider.getInstance().send(new Events.EventsFetched());
