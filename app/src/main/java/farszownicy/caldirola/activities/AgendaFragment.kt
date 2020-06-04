@@ -59,7 +59,7 @@ class AgendaFragment : Fragment() {
         const val DAY_KEY = "DAY"
         const val MONTH_KEY = "MONTH"
         const val YEAR_KEY = "YEAR"
-        const val MIN_SWIPE_DISTANCE = 80
+        const val MIN_SWIPE_DISTANCE = 90
         const val VERTICAL_SWIPE_THRESHOLD = 150
     }
 
@@ -80,11 +80,10 @@ class AgendaFragment : Fragment() {
             month = LocalDateTime.now().monthValue
             year = LocalDateTime.now().year
         }
-
         setListeners()
         agenda.setDay(day, month, year)
         agenda.setLimitTime(0, 24)
-        updateDisplayedDay()
+        updateDisplayedDay(false)
         return root
     }
 
@@ -148,11 +147,11 @@ class AgendaFragment : Fragment() {
 
         root.findViewById<Button>(R.id.next_day_btn).setOnClickListener{
             agenda.moveDay(1)
-            updateDisplayedDay()
+            updateDisplayedDay(true)
         }
         root.findViewById<Button>(R.id.prev_day_btn).setOnClickListener{
             agenda.moveDay(-1)
-            updateDisplayedDay()
+            updateDisplayedDay(true)
         }
 
         root.findViewById<FloatingActionButton>(R.id.addButton).setOnClickListener {
@@ -172,11 +171,11 @@ class AgendaFragment : Fragment() {
                     val deltaY:Float = abs(y2- y1)
                     if (deltaX > MIN_SWIPE_DISTANCE && deltaY < VERTICAL_SWIPE_THRESHOLD) {
                         agenda.moveDay(-1)
-                        updateDisplayedDay()
+                        updateDisplayedDay(true)
                     }
                     else if(deltaX < - MIN_SWIPE_DISTANCE && deltaY < VERTICAL_SWIPE_THRESHOLD){
                         agenda.moveDay(1)
-                        updateDisplayedDay()
+                        updateDisplayedDay(true)
                     }
                 }
             }
@@ -204,7 +203,7 @@ class AgendaFragment : Fragment() {
     }
 
     @ExperimentalTime
-    private fun updateDisplayedDay() {
+    private fun updateDisplayedDay(animate: Boolean) {
         val formatDayOfMonth =
             DateTimeFormatter.ofPattern(Constants.DAY_OF_MONTH_FORMAT, Locale.UK)
         val formatDayOfWeek =
@@ -212,7 +211,8 @@ class AgendaFragment : Fragment() {
 
         root.findViewById<TextView>(R.id.day_of_month_tv).text = agenda.mDay.format(formatDayOfMonth)
         root.findViewById<TextView>(R.id.day_of_week_tv).text = agenda.mDay.format(formatDayOfWeek)
-        animateDaySwitch()
+        if(animate)
+            animateDaySwitch()
         agenda.refreshEntries()
     }
 

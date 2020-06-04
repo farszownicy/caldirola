@@ -37,8 +37,8 @@
     <!-- Preferences -->
     <string name="add_new_preference">Add new time</string>
     <string name="pref_illegal_intervals_label">Time periods to exclude from scheduling</string>
-    <string name="pref_max_task_hours_per_day">Maximum hours of tasks per day</string>
-    <string name="pref_min_time_between_tasks">Minimal time between tasks in minutes</string>
+    <string name="pref_max_task_hours_per_day">Max. hours of tasks per day</string>
+    <string name="pref_min_time_between_tasks">Min. time between tasks in minutes</string>
     <string-array name="WeekdayChoices">
         <item>Every day</item>
         <item>Monday</item>

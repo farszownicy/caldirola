@@ -17,6 +17,7 @@ import android.content.Context;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -151,6 +152,20 @@ public class CalendarManager {
 
     // region Public methods
 
+//    private void initEntries() {
+//        for (WeekItem weekItem : getWeeks()) {
+//            for (DayItem dayItem : weekItem.getDayItems()) {
+//                Calendar dayInstance = Calendar.getInstance();
+//                dayInstance.setTime(dayItem.getDate());
+//                BaseCalendarEntry event = new BaseCalendarEntry(dayInstance, getContext().getResources().getString(R.string.agenda_event_no_events));
+//                event.setDayReference(dayItem);
+//                event.setWeekReference(weekItem);
+//                event.setInstanceDay(dayInstance);
+//                getEntries().add(event);
+//            }
+//        }
+//    }
+
     public void buildCal(Calendar minDate, Calendar maxDate, Locale locale) {
         if (minDate == null || maxDate == null) {
             throw new IllegalArgumentException(
@@ -219,41 +234,46 @@ public class CalendarManager {
     }
 
     public void loadEventsAndTasks() {
-        mEntries = new ArrayList<>();
+        mEntries.clear();
         List <AgendaDrawableEntry> entries = PlanManager.INSTANCE.getMAllInsertedEntries();
+        Date maxEntryDate = DateHelper.convertToDate(entries.stream().
+                map(AgendaDrawableEntry::getEndTime).max(LocalDateTime::compareTo).orElse(LocalDateTime.now()).plusDays(1));
         for (WeekItem weekItem : getWeeks()) {
             for (DayItem dayItem : weekItem.getDayItems()) {
                 boolean wasThereEntryForDay = false;
-                for (AgendaDrawableEntry entry : entries) {
-                    if (DateHelper.isBetweenInclusive(dayItem.getDate(), entry.getStartTime(), entry.getEndTime())) {
-                        BaseCalendarEntry copy;
-                        if(entry instanceof Event) {
-                            copy = new BaseCalendarEntry((Event) entry);//event.copy();
-                        }
-                        else {
-                            copy = new BaseCalendarEntry((TaskSlice) entry);
-                        }
-                        //Log.d("load events", "dddd");
-                        Calendar dayInstance = Calendar.getInstance();
-                        dayInstance.setTime(dayItem.getDate());
+                if(dayItem.getDate().before(maxEntryDate)) {
+//                    entries = new ArrayList<>(PlanManager.INSTANCE.getEventsByDate(DateHelper.convertToLDT(dayItem.getDate())));
+//                    entries.addAll(PlanManager.INSTANCE.getTaskSlicesByDate(DateHelper.convertToLDT(dayItem.getDate())));
+                    for (AgendaDrawableEntry entry : entries) {
+                        if (DateHelper.isBetweenInclusive(dayItem.getDate(), entry.getStartTime(), entry.getEndTime())) {
+                            BaseCalendarEntry copy;
+                            if (entry instanceof Event) {
+                                copy = new BaseCalendarEntry((Event) entry);//event.copy();
+                            } else {
+                                copy = new BaseCalendarEntry((TaskSlice) entry);
+                            }
+                            //Log.d("load events", "dddd");
+                            Calendar dayInstance = Calendar.getInstance();
+                            dayInstance.setTime(dayItem.getDate());
 //                        dayInstance.add(Calendar.MONTH, 1);
-                        copy.setInstanceDay(dayInstance);
-                        copy.setDayReference(dayItem);
-                        copy.setWeekReference(weekItem);
-                        boolean isDayOfStart = DateHelper.sameDate(entry.getStartTime(), dayItem.getDate());
-                        boolean isDayOfEnd = DateHelper.sameDate(entry.getEndTime(), dayItem.getDate());
-                        if(isDayOfStart)
-                            copy.setStartTime(entry.getStartTime());
-                        else if(isDayOfEnd)
-                            copy.setEndTime(entry.getEndTime());
-                        else {
-                            LocalDateTime dayLDT = DateHelper.convertToLDT(dayItem.getDate());
-                            copy.setStartTime(dayLDT.withHour(0).withMinute(0));
-                            copy.setEndTime(dayLDT.withHour(23).withMinute(59));
+                            copy.setInstanceDay(dayInstance);
+                            copy.setDayReference(dayItem);
+                            copy.setWeekReference(weekItem);
+                            boolean isDayOfStart = DateHelper.sameDate(entry.getStartTime(), dayItem.getDate());
+                            boolean isDayOfEnd = DateHelper.sameDate(entry.getEndTime(), dayItem.getDate());
+                            if (isDayOfStart)
+                                copy.setStartTime(entry.getStartTime());
+                            else if (isDayOfEnd)
+                                copy.setEndTime(entry.getEndTime());
+                            else {
+                                LocalDateTime dayLDT = DateHelper.convertToLDT(dayItem.getDate());
+                                copy.setStartTime(dayLDT.withHour(0).withMinute(0));
+                                copy.setEndTime(dayLDT.withHour(23).withMinute(59));
+                            }
+                            // add instances in chronological order
+                            getEntries().add(copy);
+                            wasThereEntryForDay = true;
                         }
-                        // add instances in chronological order
-                        getEntries().add(copy);
-                        wasThereEntryForDay = true;
                     }
                 }
 //                for(TaskSlice slice : slices){
