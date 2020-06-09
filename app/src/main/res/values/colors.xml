@@ -35,10 +35,15 @@
     <color name="agenda_list_header_divider">#E4E4E4</color>
 
     <!-- Task urgency colors -->
-    <color name="task_urgent">#fc3503</color>
+<!--    <color name="task_urgent">#fc3503</color>-->
+<!--    <color name="task_high">#fc9003</color>-->
+<!--    <color name="task_medium">#fcf003</color>-->
+<!--    <color name="task_low">#88fc03</color>-->
+    <color name="task_urgent">#e74c3c</color>
     <color name="task_high">#fc9003</color>
-    <color name="task_medium">#fcf003</color>
-    <color name="task_low">#88fc03</color>
+    <color name="task_medium">#f1c40f</color>
+    <color name="task_low">#2ecc71</color>
+    <color name="event_circle_color">#3498db</color>
 
     <!-- General -->
 <!--    <color name="blue_selected">#1D87E7</color>-->

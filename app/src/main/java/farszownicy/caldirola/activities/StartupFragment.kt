@@ -12,22 +12,20 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.github.mikephil.charting.utils.ColorTemplate.rgb
 import farszownicy.caldirola.Logic.PlanManager
 import farszownicy.caldirola.R
 import farszownicy.caldirola.models.data_classes.AgendaDrawableEntry
 import farszownicy.caldirola.models.data_classes.Event
 import farszownicy.caldirola.models.data_classes.TaskSlice
-import farszownicy.caldirola.utils.memory.loadEventsFromMemory
-import farszownicy.caldirola.utils.memory.loadTasksFromMemory
-import kotlinx.android.synthetic.main.activity_add_event.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.TextStyle
-import java.time.temporal.ChronoUnit
 import java.time.temporal.ChronoUnit.MINUTES
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.roundToInt
 import kotlin.time.ExperimentalTime
 
 
@@ -69,15 +67,30 @@ class StartupFragment : Fragment() {
                 colors.add(Color.rgb(240, 240, 240))
             }
             if(entryTime > 0L) {
-                if(entry is Event)
-                    visitors.add(PieEntry(entryTime.toFloat(), entry.name.substring(0,
-                        entry.name.length.coerceAtMost(16)
-                    )))
-                else if(entry is TaskSlice)
-                    visitors.add(PieEntry(entryTime.toFloat(), entry.parent.name.substring(0,
-                        entry.parent.name.length.coerceAtMost(16))))
-                colors.add(ColorTemplate.MATERIAL_COLORS[i % ColorTemplate.MATERIAL_COLORS.size])
+                if(entry is Event) {
+                    visitors.add(
+                        PieEntry(entryTime.toFloat(), abbreviateMiddle(entry.name, "...",
+                            (entryTime.toFloat()/7).toInt()
+                        )))
+//                            entry.name.substring(
+//                                0, entry.name.length.coerceAtMost(16))))
+                    colors.add(rgb("#3498db"))
+                }
+                else if(entry is TaskSlice) {
+                    visitors.add(
+                            PieEntry(entryTime.toFloat(), abbreviateMiddle(entry.parent.name, "...", 16)))
+                            //entry.parent.name.substring(0, entry.parent.name.length.coerceAtMost(16))))
+                    when(entry.parent.priority.toLowerCase()){
+                        "low" -> colors.add(rgb("#2ecc71"))
+                        "medium" ->colors.add(rgb("#f1c40f"))
+                        "high" -> colors.add(rgb("#fc9003"))
+                        "urgent" -> colors.add(rgb("#e74c3c"))
+                        }
+                }
+                //colors.add(ColorTemplate.MATERIAL_COLORS[i % ColorTemplate.MATERIAL_COLORS.size])
             }
+            visitors.add(PieEntry(3f, ""))
+            colors.add(rgb("#000000"))
             if(now.isAfter(entry.startTime) && now.isBefore(entry.endTime)) {
                 currentEntry = entry
             }
@@ -94,9 +107,9 @@ class StartupFragment : Fragment() {
         textView.text = if(currentEntry != null) {
             "In progress: " +
             if(currentEntry is TaskSlice) {
-                (currentEntry as TaskSlice).parent.name
+                abbreviateMiddle((currentEntry as TaskSlice).parent.name, "...", 20)
             } else {
-                (currentEntry as Event).name
+                abbreviateMiddle((currentEntry as Event).name, "...", 20)
             }
         } else {
             val nextEntry =
@@ -104,9 +117,9 @@ class StartupFragment : Fragment() {
             if(nextEntry != null) {
                 "In ${LocalDateTime.now().until(nextEntry.startTime, MINUTES)} minutes: " +
                 if (nextEntry is TaskSlice) {
-                    (nextEntry as TaskSlice).parent.name
+                    abbreviateMiddle(nextEntry.parent.name, "...", 20)
                 } else {
-                    (nextEntry as Event).name
+                    abbreviateMiddle((nextEntry as Event).name, "...", 20)
                 }
             }
             else
@@ -120,6 +133,7 @@ class StartupFragment : Fragment() {
 
         pieDataSet.valueTextColor = Color.BLACK
         pieDataSet.valueTextSize = 0f
+        pieDataSet.formLineWidth = 20f
 
         val pieData = PieData(pieDataSet)
 
@@ -163,4 +177,24 @@ class StartupFragment : Fragment() {
         }
         return ret
     }
+
+    fun abbreviateMiddle(
+        input: String?,
+        middle: String,
+        targetLength: Int
+    ): String? {
+        if (input == null || input.length <= targetLength) {
+            return input
+        }
+        val inputLength = input.length
+        val halfTargetLength = (targetLength - middle.length) / 2
+        val startLastSpace = input.substring(0, halfTargetLength)//.lastIndexOf(" ")
+        val endFirstSpace = input.substring(input.length - halfTargetLength, input.length)
+        //return if (startLastSpace != -1 || endFirstSpace != -1) {
+//            (input.substring(0, startLastSpace)
+//                    + middle
+//                    + input.substring(endFirstSpace + 1, inputLength))
+        return startLastSpace + middle + endFirstSpace
+    }
+
 }
