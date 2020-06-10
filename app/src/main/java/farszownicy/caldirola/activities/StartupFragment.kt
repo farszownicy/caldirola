@@ -78,7 +78,8 @@ class StartupFragment : Fragment() {
                 }
                 else if(entry is TaskSlice) {
                     visitors.add(
-                            PieEntry(entryTime.toFloat(), abbreviateMiddle(entry.parent.name, "...", 16)))
+                            PieEntry(entryTime.toFloat(), abbreviateMiddle(entry.parent.name, "...",
+                                (entryTime.toFloat()/7).toInt())))
                             //entry.parent.name.substring(0, entry.parent.name.length.coerceAtMost(16))))
                     when(entry.parent.priority.toLowerCase()){
                         "low" -> colors.add(rgb("#2ecc71"))
